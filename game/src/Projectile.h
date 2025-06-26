@@ -21,8 +21,9 @@ struct ProjectileMissile
 
 	float time;
 
+	Vector3 target_position;	// Where to seek, state-dependent
 	Vector3 launch_position;
-	Vector3 target_position;
+	Vector3 launch_direction;	// Mech's torso direction at the time of launch
 };
 
 struct Projectile

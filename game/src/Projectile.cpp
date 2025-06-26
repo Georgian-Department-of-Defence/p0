@@ -9,6 +9,9 @@
 #include "Audio.h"
 #include "Steering.h"
 
+constexpr float MISSILE_MAX_HEIGHT = 30.0f;
+constexpr float MISSILE_SEEK_SPEED = 50.0f;
+
 void UpdateProjectileMissile(Projectile& p, World& world);
 
 void CreateParticleTrail(Projectile* p)
@@ -119,11 +122,14 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.mesh = g_meshes.prj_missile;
 	p.material = LoadMaterialDefault();
 
+	Vector3 mech_dir = TorsoDirection(mech);
 	p.missile.state = MISSILE_RISE;
 	p.missile.time = 0;
 	p.missile.target_id = 0;
 	p.missile.launch_position = base_pos;
-	p.missile.target_position = base_pos + Vector3UnitZ * 25.0f + TorsoDirection(mech) * 25.0f;
+	p.missile.launch_direction = mech_dir;
+	p.missile.target_position = base_pos + mech_dir * 25.0f;
+	p.missile.target_position.z = MISSILE_MAX_HEIGHT;
 
 	CreateParticleTrail(&p);
 
@@ -184,14 +190,15 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 	ProjectileMissile& m = p.missile;
 	if (m.state == MISSILE_RISE)
 	{
-		// TODO - See if there's a more reliable way to do this!?
-		p.acc = Seek(p.pos, m.target_position, p.vel, 50.0f);
+		// Seek is the best way to do this because its smooth, and physics-based!
+		p.acc = Seek(p.pos, m.target_position, p.vel, MISSILE_SEEK_SPEED);
 
 		m.time += GetFrameTime();
 		if (m.time >= 1.0f)
 		{
 			m.time = 0.0f;
 			m.state = MISSILE_SEEK;
+			p.gravity_scale = 0.0f;
 
 			// Acquire target on-transition
 			float distance = FLT_MAX;
@@ -199,8 +206,15 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 			{
 				if (p.team != mech.team)
 				{
-					float target_distance = Vector3Distance(mech.pos, p.pos);
-					if (target_distance < distance)
+					Vector2 mech_pos_2d = { mech.pos.x, mech.pos.y };
+					Vector2 missile_pos_2d = { p.pos.x, p.pos.y };
+					Vector2 missile_dir_2d = { m.launch_direction.x, m.launch_direction.y };
+					Vector2 target_dir_2d = Vector2Normalize(mech_pos_2d - missile_pos_2d);
+
+					// TODO - Add FoV_2d function so I don't have to think about this calculation xD
+					float target_angle = acosf(Vector2DotProduct(missile_dir_2d, target_dir_2d));
+					float target_distance = Vector2Distance(missile_pos_2d, mech_pos_2d);
+					if (target_distance < distance && target_angle <= 45.0f * DEG2RAD)
 					{
 						distance = target_distance;
 						m.target_id = mech.id;
@@ -211,7 +225,7 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 	}
 	else if (m.state == MISSILE_SEEK)
 	{
-		p.destroy |= true;
+		p.color = MAROON;
 
 		m.time += GetFrameTime();
 		if (m.time >= 2.5f)
@@ -220,23 +234,17 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 			m.state = MISSILE_DIVE;
 		}
 
-		Mech* mech = GetMechById(m.target_id, world);
-		if (mech != nullptr)
-		{
-			float target_distance = Vector3Distance(mech->pos, p.pos);
-			if (target_distance <= 25.0f)
-			{
+		// Seek towards enemy mech, fallback to seeking towards launch direction if no enemies in range
+		Vector3 target_position = m.target_id != 0 ?
+			GetMechById(m.target_id, world)->pos :
+			m.launch_position + m.launch_direction * 1000.0f;
 
-			}
-		}
-		else
-		{
-			m.state = MISSILE_DIVE;
-		}
+		target_position.z = MISSILE_MAX_HEIGHT;
+		p.acc = Seek(p.pos, target_position, p.vel, MISSILE_SEEK_SPEED);
 	}
 	else if (m.state == MISSILE_DIVE)
 	{
-
+		p.color = PINK;
 	}
 }
 
