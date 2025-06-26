@@ -2,6 +2,7 @@
 #include "rlgl.h"
 #include "Camera.h"
 #include "Collision3D.h"
+#include "Audio.h"
 #include <algorithm>
 
 constexpr size_t MAX_MECHS = 4;
@@ -386,13 +387,15 @@ void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi)
 
 void OnCollisionMechProjectileDefault(Mech& mech, Projectile& projectile, HitInfo hi)
 {
-    
+    projectile.destroy |= true;
+    PlaySound(g_audio.hit_mech);
 }
 
 void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& building, HitInfo hi)
 {
-    building.durability -= 25.0f;
     projectile.destroy |= true;
+    building.durability -= 25.0f;
+    PlaySound(g_audio.hit);
 }
 
 void OnDestroyMech(Mech& mech, World& world)
@@ -408,8 +411,9 @@ void OnDestroyBuilding(Building& building, World& world)
 void OnDestroyProjectile(Projectile& projectile, World& world)
 {
     // TODO -- Spawn particles
-    if (projectile.type == PROJECTILE_MISSILE)
+    if (projectile.type == PROJECTILE_GRENADE || projectile.type == PROJECTILE_MISSILE)
     {
+        PlaySound(g_audio.hit);
         // Damage mech if in range
     }
 }
