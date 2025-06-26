@@ -211,8 +211,8 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 					Vector2 missile_dir_2d = { m.launch_direction.x, m.launch_direction.y };
 					Vector2 target_dir_2d = Vector2Normalize(mech_pos_2d - missile_pos_2d);
 
-					// TODO - Add FoV_2d function so I don't have to think about this calculation xD
-					float target_angle = acosf(Vector2DotProduct(missile_dir_2d, target_dir_2d));
+					// TODO - Lerp the angle from 30-60 based on mech heat level (if I want heat-seeking to begin with)
+					float target_angle = Vector2UnsignedAngle(missile_dir_2d, target_dir_2d);
 					float target_distance = Vector2Distance(missile_pos_2d, mech_pos_2d);
 					if (target_distance < distance && target_angle <= 45.0f * DEG2RAD)
 					{
