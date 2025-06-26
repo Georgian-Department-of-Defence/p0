@@ -18,7 +18,10 @@ void UnloadMechs(Mechs& mechs);
 
 void UpdateDebug(World& world);
 
+void UpdateEntities(World& world);
 void UpdateParticles(World& world);
+
+void DrawEntities(const World& world);
 void DrawParticles(const World& world);
 
 void UpdateCollisionsMechMech(Mechs& mechs);
@@ -34,6 +37,8 @@ static void OnCollisionProjectileBuildingDefault(Projectile& projectile, Buildin
 static void OnDestroyMech(Mech& mech, World& world);
 static void OnDestroyBuilding(Building& building, World& world);
 static void OnDestroyProjectile(Projectile& projectile, World& world);
+
+void DestroyEntities(World& world);
 
 void LoadWorld(World& world)
 {
@@ -59,9 +64,6 @@ void UnloadWorld(World& world)
 
 void UpdateWorld(World& world)
 {
-    // 1. Detect collisions and dispatch collision callbacks
-    // 2. Update entities
-    // 3. Destroy entities, then remove them from world
     UpdateDebug(world);
 
     UpdateCollisionsMechMech(world.mechs);
@@ -69,63 +71,10 @@ void UpdateWorld(World& world)
     UpdateCollisionsMechProjectile(world.mechs, world.projectiles);
     UpdateCollisionsProjectileBuilding(world.projectiles, world.buildings);
 
-    for (Mech& mech : world.mechs)
-        UpdateMech(mech, world);
-
-    for (Building& building : world.buildings)
-        UpdateBuilding(building);
-
-    for (Projectile& projectile : world.projectiles)
-        UpdateProjectile(projectile, world);
-
+    UpdateEntities(world);
     UpdateParticles(world);
 
-    for (Mech& mech : world.mechs)
-    {
-        if (mech.destroy)
-        {
-            OnDestroyMech(mech, world);             // Game logic
-            DestroyMech(&mech);                     // Delete mech-specific dynamic memory
-        }
-    }
-
-    for (Building& building : world.buildings)
-    {
-        if (building.destroy)
-        {
-            OnDestroyBuilding(building, world);     // Game logic
-            DestroyBuilding(&building);             // Delete building-specific dynamic memory
-        }
-    }
-
-    for (Projectile& projectile : world.projectiles)
-    {
-        if (projectile.destroy)
-        {
-            OnDestroyProjectile(projectile, world); // Game logic
-            DestroyProjectile(&projectile);         // Delete projectile-specific dynamic memory
-        }
-    }
-
-    world.mechs.erase
-    (
-        std::remove_if(world.mechs.begin(), world.mechs.end(), [](Mech& mech) { return mech.destroy; }),
-        world.mechs.end()
-    );
-
-    world.buildings.erase
-    (
-        std::remove_if(world.buildings.begin(), world.buildings.end(), [](Building& building) { return building.destroy; }),
-        world.buildings.end()
-    );
-
-    world.projectiles.erase
-    (
-        std::remove_if(world.projectiles.begin(), world.projectiles.end(), [](Projectile& projectile) { return projectile.destroy; }),
-        world.projectiles.end()
-    );
-
-    // TODO - Time-based projectile destruction
+    DestroyEntities(world);
 }
 
 void DrawWorld(const World& world)
@@ -143,16 +92,8 @@ void DrawWorld(const World& world)
         rlTranslatef(-50.0f, 0.0f, 0.0f);
         DrawGrid(100, 1.0f);
         rlPopMatrix();
-
-        for (const Mech& mech : world.mechs)
-            DrawMech(mech);
-
-        for (const Building& building : world.buildings)
-            DrawBuilding(building);
-
-        for (const Projectile& projectile : world.projectiles)
-            DrawProjectile(projectile);
-
+        
+        DrawEntities(world);
         DrawParticles(world);
 
     EndMode3D();
@@ -173,6 +114,18 @@ void DrawWorldDebug(const World& world)
             DrawProjectileDebug(projectile);
 
     EndMode3D();
+}
+
+void DrawEntities(const World& world)
+{
+    for (const Mech& mech : world.mechs)
+        DrawMech(mech);
+
+    for (const Building& building : world.buildings)
+        DrawBuilding(building);
+
+    for (const Projectile& projectile : world.projectiles)
+        DrawProjectile(projectile);
 }
 
 void DrawParticles(const World& world)
@@ -255,6 +208,18 @@ void UpdateDebug(World& world)
         projectile.debug_collion = false;
     }
 #endif
+}
+
+void UpdateEntities(World& world)
+{
+    for (Mech& mech : world.mechs)
+        UpdateMech(mech, world);
+
+    for (Building& building : world.buildings)
+        UpdateBuilding(building);
+
+    for (Projectile& projectile : world.projectiles)
+        UpdateProjectile(projectile, world);
 }
 
 void UpdateParticles(World& world)
@@ -447,4 +412,38 @@ void OnDestroyProjectile(Projectile& projectile, World& world)
     {
         // Damage mech if in range
     }
+}
+
+void DestroyEntities(World& world)
+{
+    // Separate between alive entities vs entities pending destruction
+    Mechs::iterator mech_partition_point = std::partition(world.mechs.begin(), world.mechs.end(), [](Mech& mech) { return !mech.destroy; });
+    Buildings::iterator building_partition_point = std::partition(world.buildings.begin(), world.buildings.end(), [](Building& building) { return !building.destroy; });
+    Projectiles::iterator projectile_partition_point = std::partition(world.projectiles.begin(), world.projectiles.end(), [](Projectile& projectile) { return !projectile.destroy; });
+
+    // Determine alive entities count
+    size_t mech_enabled_count = std::distance(world.mechs.begin(), mech_partition_point);
+    size_t building_enabled_count = std::distance(world.buildings.begin(), building_partition_point);
+    size_t projectile_enabled_count = std::distance(world.projectiles.begin(), projectile_partition_point);
+
+    // Perform game destroy-logic before deleting dynamic memory
+    for (size_t i = mech_enabled_count; i < world.mechs.size(); i++)
+        OnDestroyMech(world.mechs[i], world);
+    for (size_t i = building_enabled_count; i < world.buildings.size(); i++)
+        OnDestroyBuilding(world.buildings[i], world);
+    for (size_t i = projectile_enabled_count; i < world.projectiles.size(); i++)
+        OnDestroyProjectile(world.projectiles[i], world);
+
+    // Delete dynamic memory
+    for (size_t i = mech_enabled_count; i < world.mechs.size(); i++)
+        DestroyMech(&world.mechs[i]);
+    for (size_t i = building_enabled_count; i < world.buildings.size(); i++)
+        DestroyBuilding(&world.buildings[i]);
+    for (size_t i = projectile_enabled_count; i < world.projectiles.size(); i++)
+        DestroyProjectile(&world.projectiles[i]);
+
+    // Remove entities from pools
+    world.mechs.erase(mech_partition_point, world.mechs.end());
+    world.buildings.erase(building_partition_point, world.buildings.end());
+    world.projectiles.erase(projectile_partition_point, world.projectiles.end());
 }

@@ -11,6 +11,10 @@
 #include "Scene.h"
 #include "World.h"
 
+#include <algorithm>
+#include <vector>
+#include <iostream>
+
 void AppLoad()
 {
     LoadCamera();
@@ -29,6 +33,13 @@ void AppUnload()
     UnloadCamera();
 }
 
+struct Object {
+    int id;
+    bool enabled;
+
+    Object(int i, bool e) : id(i), enabled(e) {}
+};
+
 int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
@@ -37,6 +48,50 @@ int main()
     SetTargetFPS(144);
     AppLoad();
     Scene::Load(SCENE_DEV_MAP);
+
+    //std::vector<Object> objects = {
+    //    Object(1, false),
+    //    Object(2, true),
+    //    Object(3, false),
+    //    Object(4, true),
+    //    Object(5, false),
+    //    Object(6, true)
+    //};
+    //
+    //std::cout << "Before partition:\n";
+    //for (const auto& obj : objects) {
+    //    std::cout << "ID: " << obj.id << ", Enabled: " << obj.enabled << "\n";
+    //}
+    //
+    //// Partition: enabled objects at front, disabled at back
+    //auto partition_point = std::partition(objects.begin(), objects.end(),
+    //    [](const Object& obj) { return obj.enabled; });
+    //
+    //std::cout << "\nAfter partition:\n";
+    //for (const auto& obj : objects) {
+    //    std::cout << "ID: " << obj.id << ", Enabled: " << obj.enabled << "\n";
+    //}
+    //
+    //// You can also get the count of enabled objects
+    //size_t enabled_count = std::distance(objects.begin(), partition_point);
+    //std::cout << "\nNumber of enabled objects: " << enabled_count << "\n";
+    //
+    //for (size_t i = 0; i < enabled_count; i++)
+    //{
+    //    Object obj = objects[i];
+    //    std::cout << "ID: " << obj.id << ", Enabled: " << obj.enabled << "\n";
+    //}
+    //
+    //for (size_t i = enabled_count; i < objects.size(); i++)
+    //{
+    //    Object obj = objects[i];
+    //    std::cout << "ID: " << obj.id << ", Enabled: " << obj.enabled << "\n";
+    //}
+    //
+    //objects.erase(partition_point, objects.end());
+    //for (const auto& obj : objects) {
+    //    std::cout << "ID: " << obj.id << ", Enabled: " << obj.enabled << "\n";
+    //}
 
     while (!WindowShouldClose())
     {
