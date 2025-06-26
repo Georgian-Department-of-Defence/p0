@@ -2,6 +2,7 @@
 #include "rlgl.h"
 #include "Camera.h"
 #include "Collision3D.h"
+#include <algorithm>
 
 constexpr size_t MAX_MECHS = 4;
 constexpr size_t MAX_BUILDINGS = 64;
@@ -17,6 +18,9 @@ void UnloadMechs(Mechs& mechs);
 
 void UpdateDebug(World& world);
 
+void UpdateParticles(World& world);
+void DrawParticles(const World& world);
+
 void UpdateCollisionsMechMech(Mechs& mechs);
 void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings);
 void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles);
@@ -26,6 +30,10 @@ static void OnCollisionMechMechDefault(Mech& a, Mech& b, HitInfo hi);
 static void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi);
 static void OnCollisionMechProjectileDefault(Mech& mech, Projectile& projectile, HitInfo hi);
 static void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& building, HitInfo hi);
+
+static void OnDestroyMech(Mech& mech, World& world);
+static void OnDestroyBuilding(Building& building, World& world);
+static void OnDestroyProjectile(Projectile& projectile, World& world);
 
 void LoadWorld(World& world)
 {
@@ -70,22 +78,33 @@ void UpdateWorld(World& world)
     for (Projectile& projectile : world.projectiles)
         UpdateProjectile(projectile, world);
 
+    UpdateParticles(world);
+
     for (Mech& mech : world.mechs)
     {
         if (mech.destroy)
-            DestroyMech(&mech);
+        {
+            OnDestroyMech(mech, world);             // Game logic
+            DestroyMech(&mech);                     // Delete mech-specific dynamic memory
+        }
     }
 
     for (Building& building : world.buildings)
     {
         if (building.destroy)
-            DestroyBuilding(&building);
+        {
+            OnDestroyBuilding(building, world);     // Game logic
+            DestroyBuilding(&building);             // Delete building-specific dynamic memory
+        }
     }
 
     for (Projectile& projectile : world.projectiles)
     {
         if (projectile.destroy)
-            DestroyProjectile(&projectile);
+        {
+            OnDestroyProjectile(projectile, world); // Game logic
+            DestroyProjectile(&projectile);         // Delete projectile-specific dynamic memory
+        }
     }
 
     world.mechs.erase
@@ -134,6 +153,8 @@ void DrawWorld(const World& world)
         for (const Projectile& projectile : world.projectiles)
             DrawProjectile(projectile);
 
+        DrawParticles(world);
+
     EndMode3D();
 }
 
@@ -152,6 +173,19 @@ void DrawWorldDebug(const World& world)
             DrawProjectileDebug(projectile);
 
     EndMode3D();
+}
+
+void DrawParticles(const World& world)
+{
+    for (const Mech& mech : world.mechs)
+        DrawParticleEmitter(mech.trail, *GetCamera());
+
+    for (const Building& building : world.buildings)
+    {
+    }
+
+    for (const Projectile& projectile : world.projectiles)
+        DrawParticleEmitter(projectile.trail, *GetCamera());
 }
 
 void LoadMechs(Mechs& mechs)
@@ -221,6 +255,30 @@ void UpdateDebug(World& world)
         projectile.debug_collion = false;
     }
 #endif
+}
+
+void UpdateParticles(World& world)
+{
+    for (Mech& mech : world.mechs)
+    {
+        ParticleEmitter& pe = mech.trail;
+        pe.position = mech.pos;
+        pe.direction = TorsoDirection(mech) * -1.0f;
+        UpdateParticleEmitter(pe);
+    }
+
+    for (Building& building : world.buildings)
+    {
+
+    }
+
+    for (Projectile& projectile : world.projectiles)
+    {
+        ParticleEmitter& pe = projectile.trail;
+        pe.position = projectile.pos;
+        pe.direction = Vector3Normalize(projectile.vel) * -1.0f;
+        UpdateParticleEmitter(pe);
+    }
 }
 
 void UpdateCollisionsMechMech(Mechs& mechs)
@@ -370,4 +428,23 @@ void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& buil
 {
     building.durability -= 25.0f;
     projectile.destroy |= true;
+}
+
+void OnDestroyMech(Mech& mech, World& world)
+{
+    // TODO -- Spawn particles
+}
+
+void OnDestroyBuilding(Building& building, World& world)
+{
+    // TODO -- Spawn particles
+}
+
+void OnDestroyProjectile(Projectile& projectile, World& world)
+{
+    // TODO -- Spawn particles
+    if (projectile.type == PROJECTILE_MISSILE)
+    {
+        // Damage mech if in range
+    }
 }

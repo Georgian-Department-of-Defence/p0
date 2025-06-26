@@ -148,11 +148,6 @@ void UpdateProjectile(Projectile& p, World& world)
 
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
 	p.material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
-
-	ParticleEmitter& pe = p.trail;
-	pe.position = p.pos;
-	pe.direction = Vector3Normalize(p.vel) * -1.0f;
-	UpdateParticleEmitter(pe);
 }
 
 void DrawProjectile(const Projectile& p)
@@ -160,7 +155,6 @@ void DrawProjectile(const Projectile& p)
 	Matrix t = MatrixTranslate(p.pos.x, p.pos.y, p.pos.z);
 	Matrix r = MatrixLookRotation(Vector3Normalize(p.vel));
 	DrawMesh(*p.mesh, p.material, r * t);
-	DrawParticleEmitter(p.trail, *GetCamera());
 }
 
 void DrawProjectileDebug(const Projectile& p)

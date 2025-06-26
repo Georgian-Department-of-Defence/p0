@@ -96,11 +96,6 @@ void UpdateMech(Mech& mech, World& world)
 
     BoundingBox world_box = WorldBox();
     mech.pos = Vector3Clamp(mech.pos, world_box.min, world_box.max);
-
-    ParticleEmitter& pe = mech.trail;
-    pe.position = mech.pos;
-    pe.direction = TorsoDirection(mech) * -1.0f;
-    UpdateParticleEmitter(pe);
 }
 
 void DrawMech(const Mech& mech)
