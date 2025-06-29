@@ -1,6 +1,7 @@
 #include "World.h"
 #include "rlgl.h"
 #include "Camera.h"
+#include "Collision.h"
 #include "Collision3D.h"
 #include "Audio.h"
 #include <algorithm>
@@ -320,9 +321,9 @@ void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
         for (Projectile& projectile : projectiles)
         {
             HitInfo hi;
-            bool collision = SphereSphere(
-                mech.pos, mech.radius,
-                projectile.pos, projectile.radius);
+            bool collision = CircleCircle(
+                { mech.pos.x, mech.pos.y }, mech.radius,
+                { projectile.pos.x, projectile.pos.y }, projectile.radius) && (projectile.pos.z <= 20.0f);
 
             if (collision)
             {
@@ -387,8 +388,12 @@ void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi)
 
 void OnCollisionMechProjectileDefault(Mech& mech, Projectile& projectile, HitInfo hi)
 {
-    projectile.destroy |= true;
-    PlaySound(g_audio.hit_mech);
+    if (mech.team != projectile.team) 
+    {
+        projectile.destroy |= true;
+        PlaySound(g_audio.hit_mech);
+    }
+    
 }
 
 void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& building, HitInfo hi)
