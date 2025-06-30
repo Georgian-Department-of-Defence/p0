@@ -411,10 +411,23 @@ void OnDestroyBuilding(Building& building, World& world)
 void OnDestroyProjectile(Projectile& projectile, World& world)
 {
     // TODO -- Spawn particles
-    if (projectile.type == PROJECTILE_GRENADE || projectile.type == PROJECTILE_MISSILE)
+    if (projectile.type == PROJECTILE_GRENADE)
     {
         PlaySound(g_audio.hit);
-        // Damage mech if in range
+    }
+    if (projectile.type == PROJECTILE_MISSILE)
+    {
+        if (projectile.missile.target_hit)
+        {
+            // Cannot be nullptr since gameplay OnDestroy happens before memory operations
+            Mech* mech = GetMechById(projectile.missile.target_id, world);
+            mech->health -= projectile.damage;
+            PlaySound(g_audio.hit_mech);
+        }
+        else
+        {
+            PlaySound(g_audio.hit);
+        }
     }
 }
 

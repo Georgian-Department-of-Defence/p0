@@ -20,6 +20,7 @@ struct ProjectileMissile
 	float turn_speed;
 
 	float time;
+	bool target_hit;
 
 	Vector3 target_position;	// Where to seek, state-dependent
 	Vector3 launch_position;

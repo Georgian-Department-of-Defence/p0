@@ -8,6 +8,7 @@
 #include "World.h"
 #include "Audio.h"
 #include "Steering.h"
+#include "Collision.h"
 
 constexpr float MISSILE_MAX_HEIGHT = 30.0f;
 constexpr float MISSILE_SEEK_SPEED = 50.0f;
@@ -126,6 +127,7 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.missile.state = MISSILE_RISE;
 	p.missile.time = 0;
 	p.missile.target_id = 0;
+	p.missile.target_hit = false;
 	p.missile.launch_position = base_pos;
 	p.missile.launch_direction = mech_dir;
 	p.missile.target_position = base_pos + mech_dir * 25.0f;
@@ -182,6 +184,8 @@ void DrawProjectileDebug(const Projectile& p)
 void UpdateProjectileMissile(Projectile& p, World& world)
 {
 	ProjectileMissile& m = p.missile;
+	p.pos.z = Clamp(p.pos.z, 0.0f, MISSILE_MAX_HEIGHT);
+
 	if (m.state == MISSILE_RISE)
 	{
 		// Seek is the best way to do this because its smooth, and physics-based!
@@ -193,6 +197,7 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 			m.time = 0.0f;
 			m.state = MISSILE_SEEK;
 			p.gravity_scale = 0.0f;
+			p.acc = Vector3Zeros;
 
 			// Acquire target on-transition
 			float distance = FLT_MAX;
@@ -226,12 +231,21 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 		{
 			m.time = 0.0f;
 			m.state = MISSILE_DIVE;
+			p.acc = Vector3Zeros;
 		}
 
-		// Seek towards enemy mech, fallback to seeking towards launch direction if no enemies in range
-		Vector3 target_position = m.target_id != 0 ?
-			GetMechById(m.target_id, world)->pos :
-			m.launch_position + m.launch_direction * 1000.0f;
+		Vector3 target_position = m.launch_position + m.launch_direction * 1000.0f;
+		Mech* mech = GetMechById(m.target_id, world);
+		if (mech != nullptr)
+		{
+			target_position = mech->pos;
+			if (Vector2Distance({ p.pos.x, p.pos.y }, { mech->pos.x, mech->pos.y }) <= 30.0f)
+			{
+				m.time = 0.0f;
+				m.state = MISSILE_DIVE;
+				p.acc = Vector3Zeros;
+			}
+		}
 
 		target_position.z = MISSILE_MAX_HEIGHT;
 		p.acc = Seek(p.pos, target_position, p.vel, MISSILE_SEEK_SPEED);
@@ -243,12 +257,20 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 		m.time += GetFrameTime();
 		p.destroy |= m.time >= 1.0f;
 
-		Vector3 target_position = m.target_id != 0 ?
-			GetMechById(m.target_id, world)->pos :
-			m.launch_position + m.launch_direction * 1000.0f;
-		target_position.z = 0.0f;
+		Vector3 target_position = m.launch_position + m.launch_direction * 1000.0f;
+		Mech* mech = GetMechById(m.target_id, world);
+		if (mech != nullptr)
+		{
+			target_position = mech->pos;
+			if (CircleCircle({ p.pos.x, p.pos.y }, p.radius, { mech->pos.x, mech->pos.y }, mech->radius))
+			{
+				p.destroy |= true;
+				m.target_hit = true;
+			}
+		}
 
-		// Proximity-based detonation is awkward. Easier to do on-collision (increase seek-force if need be)!
+		target_position.z = 0.0f;
+		p.acc = Seek(p.pos, target_position, p.vel, MISSILE_SEEK_SPEED);
 	}
 }
 
