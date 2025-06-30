@@ -206,7 +206,7 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 					Vector2 target_dir_2d = Vector2Normalize(mech_pos_2d - missile_pos_2d);
 
 					// TODO - Lerp the angle from 30-60 based on mech heat level (if I want heat-seeking to begin with)
-					float target_angle = Vector2UnsignedAngle(missile_dir_2d, target_dir_2d);
+					float target_angle = fabsf(Vector2Angle(missile_dir_2d, target_dir_2d));
 					float target_distance = Vector2Distance(missile_pos_2d, mech_pos_2d);
 					if (target_distance < distance && target_angle <= 45.0f * DEG2RAD)
 					{
@@ -239,6 +239,16 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 	else if (m.state == MISSILE_DIVE)
 	{
 		p.color = PINK;
+
+		m.time += GetFrameTime();
+		p.destroy |= m.time >= 1.0f;
+
+		Vector3 target_position = m.target_id != 0 ?
+			GetMechById(m.target_id, world)->pos :
+			m.launch_position + m.launch_direction * 1000.0f;
+		target_position.z = 0.0f;
+
+		// Proximity-based detonation is awkward. Easier to do on-collision (increase seek-force if need be)!
 	}
 }
 

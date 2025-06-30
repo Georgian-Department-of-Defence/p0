@@ -51,12 +51,6 @@ RMAPI Vector2 Vector2RotateTowards(Vector2 from, Vector2 to, float maxRadiansDel
     return result;
 }
 
-RMAPI float Vector2UnsignedAngle(Vector2 v1, Vector2 v2)
-{
-    float angle = Vector2Angle(v1, v2);
-    return fabsf(angle);
-}
-
 RMAPI Vector2 Vector2ProjectPointLine(Vector2 A, Vector2 B, Vector2 P)
 {
     Vector2 AB = (B - A);

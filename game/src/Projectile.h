@@ -46,6 +46,8 @@ struct Projectile
 	float restitution = 0.0f;
 	bool destroy = false;
 
+	float damage = 0.0f;
+
 	OnCollisionMechProjectile on_collision_mech = nullptr;
 	OnCollisionProjectileBuilding on_collision_building = nullptr;
 
