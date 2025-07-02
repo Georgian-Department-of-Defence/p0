@@ -388,7 +388,9 @@ void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi)
 void OnCollisionMechProjectileDefault(Mech& mech, Projectile& projectile, HitInfo hi)
 {
     projectile.destroy |= true;
-    PlaySound(g_audio.hit_mech);
+    // Note - Move all destruction logic to OnDestroyProjectile.
+    // Collision isn't the only case for projectile destruction (ie proximity-based missile), so simply flag for destruction here and handle in OnDestroy
+    // Example: no longer playing mech hit sound in on-collision, deferring till projectile on-destroy with target-hit
 }
 
 void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& building, HitInfo hi)
