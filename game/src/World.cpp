@@ -320,10 +320,14 @@ void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
     {
         for (Projectile& projectile : projectiles)
         {
+            // All gear is launched from z = 15.0f (see Mech.cpp UpdateGearPositions)
+            // Might be more correct to offset mech position to z = 15.0f for "true 3d"
+            //Vector3 mech_collider_pos = { mech.pos.x, mech.pos.y, MECH_GEAR_Z };
+
             HitInfo hi;
             bool collision = CircleCircle(
                 { mech.pos.x, mech.pos.y }, mech.radius,
-                { projectile.pos.x, projectile.pos.y }, projectile.radius) && (projectile.pos.z <= 20.0f);
+                { projectile.pos.x, projectile.pos.y }, projectile.radius) && (projectile.pos.z <= MECH_GEAR_Z + mech.radius);
 
             if (collision)
             {

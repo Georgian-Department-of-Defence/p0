@@ -262,10 +262,10 @@ void UpdateGear(Mech& mech, World& world, int slot)
 void UpdateGearPositions(Mech& mech)
 {
     Vector3 mount_offsets[4];
-    mount_offsets[0] = { -8.0f, 5.0f, 15.0f };
-    mount_offsets[1] = { -3.0f, 2.0f, 15.0f };
-    mount_offsets[2] = {  3.0f, 2.0f, 15.0f };
-    mount_offsets[3] = {  8.0f, 5.0f, 15.0f };
+    mount_offsets[0] = { -8.0f, 5.0f, MECH_GEAR_Z };
+    mount_offsets[1] = { -3.0f, 2.0f, MECH_GEAR_Z };
+    mount_offsets[2] = {  3.0f, 2.0f, MECH_GEAR_Z };
+    mount_offsets[3] = {  8.0f, 5.0f, MECH_GEAR_Z };
     
     Matrix rotation = QuaternionToMatrix(mech.torso_rotation);
     for (int i = 0; i < 4; i++)
