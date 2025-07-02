@@ -6,6 +6,7 @@ struct Audio
 	Sound fire_rifle;
 	Sound fire_shotgun;
 	Sound fire_grenade;
+	Sound fire_missile;
 	Sound fire_dasher;
 
 	Sound hit;

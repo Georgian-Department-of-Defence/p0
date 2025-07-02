@@ -1,6 +1,7 @@
 #include "World.h"
 #include "rlgl.h"
 #include "Camera.h"
+#include "Collision.h"
 #include "Collision3D.h"
 #include "Audio.h"
 #include <algorithm>
@@ -319,10 +320,14 @@ void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
     {
         for (Projectile& projectile : projectiles)
         {
+            // All gear is launched from z = 15.0f (see Mech.cpp UpdateGearPositions)
+            // Might be more correct to offset mech position to z = 15.0f for "true 3d"
+            //Vector3 mech_collider_pos = { mech.pos.x, mech.pos.y, MECH_GEAR_Z };
+
             HitInfo hi;
-            bool collision = SphereSphere(
-                mech.pos, mech.radius,
-                projectile.pos, projectile.radius);
+            bool collision = CircleCircle(
+                { mech.pos.x, mech.pos.y }, mech.radius,
+                { projectile.pos.x, projectile.pos.y }, projectile.radius) && (projectile.pos.z <= MECH_GEAR_Z + mech.radius);
 
             if (collision)
             {
@@ -387,7 +392,12 @@ void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi)
 
 void OnCollisionMechProjectileDefault(Mech& mech, Projectile& projectile, HitInfo hi)
 {
-    projectile.destroy |= true;
+    if (projectile.team != mech.team)
+    {
+        projectile.target_mech_id = mech.id;
+        projectile.mech_hit = true;
+        projectile.destroy |= true;
+    }
     // Note - Move all destruction logic to OnDestroyProjectile.
     // Collision isn't the only case for projectile destruction (ie proximity-based missile), so simply flag for destruction here and handle in OnDestroy
     // Example: no longer playing mech hit sound in on-collision, deferring till projectile on-destroy with target-hit
@@ -412,24 +422,16 @@ void OnDestroyBuilding(Building& building, World& world)
 
 void OnDestroyProjectile(Projectile& projectile, World& world)
 {
-    // TODO -- Spawn particles
-    if (projectile.type == PROJECTILE_GRENADE)
+    Mech* hit_mech = GetMechById(projectile.target_mech_id, world);
+
+    if (hit_mech != nullptr)
+    {
+        hit_mech->health -= projectile.damage;
+        PlaySound(g_audio.hit_mech);
+    }
+    else
     {
         PlaySound(g_audio.hit);
-    }
-    if (projectile.type == PROJECTILE_MISSILE)
-    {
-        if (projectile.missile.target_hit)
-        {
-            // Cannot be nullptr since gameplay OnDestroy happens before memory operations
-            Mech* mech = GetMechById(projectile.missile.target_id, world);
-            mech->health -= projectile.damage;
-            PlaySound(g_audio.hit_mech);
-        }
-        else
-        {
-            PlaySound(g_audio.hit);
-        }
     }
 }
 

@@ -15,12 +15,10 @@ struct ProjectileGrenade
 struct ProjectileMissile
 {
 	MissileState state;
-	uint32_t target_id;
 	float move_speed;
 	float turn_speed;
 
 	float time;
-	bool target_hit;
 
 	Vector3 target_position;	// Where to seek, state-dependent
 	Vector3 launch_position;
@@ -48,6 +46,12 @@ struct Projectile
 	bool destroy = false;
 
 	float damage = 0.0f;
+
+	uint32_t owner_mech_id = 0;
+	uint32_t target_mech_id = 0;
+
+	bool mech_hit = false;
+	// TODO - Add flags for none vs mech vs building hit??
 
 	OnCollisionMechProjectile on_collision_mech = nullptr;
 	OnCollisionProjectileBuilding on_collision_building = nullptr;

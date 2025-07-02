@@ -39,22 +39,28 @@ void DestroyProjectile(Projectile* p)
 	DestroyParticleEmitter(&p->trail);
 }
 
+void CreateProjectileDefault(Projectile* p, Mech& mech, World& world)
+{
+	p->team = mech.team;
+	p->owner_mech_id = mech.id;
+	p->material = LoadMaterialDefault();
+
+	CreateParticleTrail(p);
+	world.projectiles.push_back(*p);
+}
+
 void CreateProjectileRifle(Mech& mech, World& world, Vector3 base_pos)
 {
 	Projectile p;
 	p.pos = base_pos;
 	p.vel = TorsoDirection(mech) * 75.0f;
 	p.radius = 1.5f;
-	p.team = mech.team;
 	p.type = PROJECTILE_RIFLE;
 
 	p.color = RED;
 	p.mesh = g_meshes.prj_straight;
-	p.material = LoadMaterialDefault();
 
-	CreateParticleTrail(&p);
-
-	world.projectiles.push_back(p);
+	CreateProjectileDefault(&p, mech, world);
 	PlaySound(g_audio.fire_rifle);
 }
 
@@ -70,16 +76,12 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos)
 		p.pos = base_pos;
 		p.vel = dir * 60.0f;
 		p.radius = 2.0f;
-		p.team = mech.team;
 		p.type = PROJECTILE_SHOTGUN;
 
 		p.color = GREEN;
 		p.mesh = g_meshes.prj_straight;
-		p.material = LoadMaterialDefault();
 
-		CreateParticleTrail(&p);
-
-		world.projectiles.push_back(p);
+		CreateProjectileDefault(&p, mech, world);
 	}
 	PlaySound(g_audio.fire_shotgun);
 }
@@ -95,16 +97,12 @@ void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
 	p.vel = dir * 50.0f;
 	p.radius = 2.0f;
 	p.gravity_scale = 6.0f;
-	p.team = mech.team;
 	p.type = PROJECTILE_GRENADE;
 
 	p.color = BLUE;
 	p.mesh = g_meshes.prj_grenade;
-	p.material = LoadMaterialDefault();
 
-	CreateParticleTrail(&p);
-
-	world.projectiles.push_back(p);
+	CreateProjectileDefault(&p, mech, world);
 	PlaySound(g_audio.fire_grenade);
 }
 
@@ -116,26 +114,21 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.pos = base_pos;
 	p.vel = dir * 20.0f;
 	p.radius = 2.0f;
-	p.team = mech.team;
 	p.type = PROJECTILE_MISSILE;
 
 	p.color = GOLD;
 	p.mesh = g_meshes.prj_missile;
-	p.material = LoadMaterialDefault();
 
 	Vector3 mech_dir = TorsoDirection(mech);
 	p.missile.state = MISSILE_RISE;
 	p.missile.time = 0;
-	p.missile.target_id = 0;
-	p.missile.target_hit = false;
 	p.missile.launch_position = base_pos;
 	p.missile.launch_direction = mech_dir;
 	p.missile.target_position = base_pos + mech_dir * 25.0f;
 	p.missile.target_position.z = MISSILE_MAX_HEIGHT;
 
-	CreateParticleTrail(&p);
-
-	world.projectiles.push_back(p);
+	CreateProjectileDefault(&p, mech, world);
+	PlaySound(g_audio.fire_missile);
 }
 
 void UpdateProjectile(Projectile& p, World& world)
@@ -216,7 +209,7 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 					if (target_distance < distance && target_angle <= 45.0f * DEG2RAD)
 					{
 						distance = target_distance;
-						m.target_id = mech.id;
+						p.target_mech_id = mech.id;
 					}
 				}
 			}
@@ -235,7 +228,7 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 		}
 
 		Vector3 target_position = m.launch_position + m.launch_direction * 1000.0f;
-		Mech* mech = GetMechById(m.target_id, world);
+		Mech* mech = GetMechById(p.target_mech_id, world);
 		if (mech != nullptr)
 		{
 			target_position = mech->pos;
@@ -258,14 +251,14 @@ void UpdateProjectileMissile(Projectile& p, World& world)
 		p.destroy |= m.time >= 1.0f;
 
 		Vector3 target_position = m.launch_position + m.launch_direction * 1000.0f;
-		Mech* mech = GetMechById(m.target_id, world);
+		Mech* mech = GetMechById(p.target_mech_id, world);
 		if (mech != nullptr)
 		{
 			target_position = mech->pos;
 			if (CircleCircle({ p.pos.x, p.pos.y }, p.radius, { mech->pos.x, mech->pos.y }, mech->radius))
 			{
 				p.destroy |= true;
-				m.target_hit = true;
+				p.mech_hit = true;
 			}
 		}
 
