@@ -36,6 +36,8 @@ void CreateMech(Mech* mech, int player)
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
+    mech->gear[4] = CreateGearRifle();
+    mech->gear[4].type = GEAR_MACHINEGUN;
 
     ParticleEmitter& pe = mech->trail;
     pe.spawn_rate = 10.0f;
