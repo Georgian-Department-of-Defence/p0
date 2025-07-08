@@ -294,6 +294,7 @@ void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings)
             Vector2* pB = (Vector2*)&building.pos;
 
             bool collision = CircleCircle(*pA, mech.radius, *pB, building.radius, (Vector2*)&mtv);
+            //bool collision = CircleRectangle(*pA, mech.radius, *pB, *(Vector2*)&building.extents.x, (Vector2*)&mtv);
             mech.pos += mtv;
             if (collision)
             {
@@ -357,6 +358,10 @@ void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& bui
 
             Vector2* pA = (Vector2*)&projectile.pos;
             Vector2* pB = (Vector2*)&building.pos;
+
+            //bool collision =
+            //    CircleRectangle(*pA, projectile.radius, *pB, *(Vector2*)&building.extents.x, (Vector2*)&mtv) &&
+            //    projectile.pos.z <= building.extents.z;
 
             bool collision = CircleCircle(*pA, projectile.radius, *pB, building.radius, (Vector2*)&mtv) && projectile.pos.z <= building.height;
             if (collision)

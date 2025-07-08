@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "Types.h"
 
 struct Meshes
 {
@@ -29,3 +30,5 @@ extern Meshes g_meshes;
 
 void LoadMeshes();
 void UnloadMeshes();
+
+Vector3 BuildingExtents(BuildingType type);

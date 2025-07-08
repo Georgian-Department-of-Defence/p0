@@ -88,6 +88,7 @@ void CreateBuilding(Building* building, BuildingType type)
 
     building->radius = BuildingRadius(type);
     building->height = BuildingHeight(type);
+    //building->extents = BuildingExtents(type);
 
     building->durability = BuildingDurability(type);
     building->death_timer = 2.0f;
@@ -123,6 +124,10 @@ void DrawBuildingDebug(const Building& building)
 {
     Color color = building.debug_collion ? RED : building.material.maps[MATERIAL_MAP_DIFFUSE].color;
     color.a = 128;
+    
+    //Vector3 p = building.pos;
+    //p.z += building.extents.z * 0.5f;
+    //DrawCube(p, building.extents.x * 2.0f, building.extents.y * 2.0f, building.extents.z, color);
 
     //DrawSphere(building.pos, building.radius, color);
 

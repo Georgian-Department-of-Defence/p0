@@ -1,4 +1,5 @@
 #include "Meshes.h"
+#include "raymathext.h"
 
 Meshes g_meshes;
 
@@ -13,6 +14,8 @@ static Model f_prj_straight;	// 2 x 30 x 2, 4.5 from origin to tip
 static Model f_prj_grenade;		// 1.94 x 4.45 x 2.24, origin in centre
 static Model f_prj_missile;		// 2.27 x 9.00 x 2.62, origin in centre
 
+static BoundingBox f_boxes[BUILDING_TYPE_COUNT];
+
 void LoadMeshes()
 {
 	f_mech_torso = LoadModel("./assets/meshes/mech_torso.obj");
@@ -26,14 +29,16 @@ void LoadMeshes()
 	f_prj_grenade = LoadModel("./assets/meshes/prj_grenade.obj");
 	f_prj_missile = LoadModel("./assets/meshes/prj_missile.obj");
 
-	
-
 	g_meshes.mech_torso = &f_mech_torso.meshes[0];
 	g_meshes.mech_legs = &f_mech_legs.meshes[0];
 
 	g_meshes.bld_td = &f_bld_td.meshes[0];
 	g_meshes.bld_bmo = &f_bld_bmo.meshes[0];
 	g_meshes.bld_condo = &f_bld_condo.meshes[0];
+
+	f_boxes[BUILDING_TD] = GetMeshBoundingBox(*g_meshes.bld_td);
+	f_boxes[BUILDING_BMO] = GetMeshBoundingBox(*g_meshes.bld_bmo);
+	f_boxes[BUILDING_CONDO] = GetMeshBoundingBox(*g_meshes.bld_condo);
 
 	g_meshes.prj_straight = &f_prj_straight.meshes[0];
 	g_meshes.prj_grenade = &f_prj_grenade.meshes[0];
@@ -63,4 +68,9 @@ void UnloadMeshes()
 
 	UnloadModel(f_mech_legs);
 	UnloadModel(f_mech_torso);
+}
+
+Vector3 BuildingExtents(BuildingType type)
+{
+	return f_boxes[type].max;
 }
