@@ -54,10 +54,6 @@ RMAPI Vector2 Vector2RotateTowards(Vector2 from, Vector2 to, float maxRadiansDel
 RMAPI Vector2 Vector2ProjectPointLine(Vector2 A, Vector2 B, Vector2 P)
 {
     Vector2 AB = (B - A);
-    if (Vector2DotProduct(AB, AB) < 0.000001f)
-    {
-        return A;
-    }
     float t = Vector2DotProduct((P - A), AB) / Vector2DotProduct(AB, AB);
     return A + (AB * Clamp(t, 0.0f, 1.0f));
 }
