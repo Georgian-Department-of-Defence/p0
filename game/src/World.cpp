@@ -163,10 +163,9 @@ void LoadBuildings(Buildings& buildings)
         {
             // Temporarily omit centre building for visibility
             //if (x == 0.0f && y == 0.0f) continue;
-
             Building building;
             building.pos = { x, y, 0.0f };
-            CreateBuilding(&building, BUILDING_CONDO);
+            CreateBuilding(&building, BuildingType(rand() % 3));
             buildings.push_back(building);
         }
     }
@@ -259,11 +258,15 @@ void UpdateCollisionsMechMech(Mechs& mechs)
             Mech& other = mechs[j];
 
             HitInfo hi;
-            bool collision = false;
+            Vector3 mtv = Vector3Zeros;
 
+            Vector2* pA = (Vector2*)&self.pos;
+            Vector2* pB = (Vector2*)&other.pos;
+
+            // TODO - Respond to mech-mech collision
+            bool collision = CircleCircle(*pA, self.radius, *pB, other.radius, (Vector2*)&mtv);
             if (collision)
             {
-                Vector3 mtv = Vector3Zeros;
                 OnCollisionMechMechDefault(self, other, hi);
 
                 if (self.on_collision_mech != nullptr)
@@ -284,19 +287,16 @@ void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings)
     {
         for (Building& building : buildings)
         {
-
             HitInfo hi;
-            Vector3 mtv;
+            Vector3 mtv = Vector3Zeros;
 
-            bool collision = SphereCapsule(
-                mech.pos, mech.radius,
-                building.pos + Vector3UnitZ * building.length * 0.5f, Vector3UnitZ, building.radius, building.length * 0.5f - building.radius, &mtv);
+            Vector2* pA = (Vector2*)&mech.pos;
+            Vector2* pB = (Vector2*)&building.pos;
 
+            bool collision = CircleCircle(*pA, mech.radius, *pB, building.radius, (Vector2*)&mtv);
+            mech.pos += mtv;
             if (collision)
             {
-                mtv.z = 0.0f;
-                mech.pos += mtv;
-
                 OnCollisionMechBuildingDefault(mech, building, hi);
 
                 if (mech.on_collision_building != nullptr)
@@ -320,18 +320,15 @@ void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles)
     {
         for (Projectile& projectile : projectiles)
         {
-            // All gear is launched from z = 15.0f (see Mech.cpp UpdateGearPositions)
-            // Might be more correct to offset mech position to z = 15.0f for "true 3d"
-            //Vector3 mech_collider_pos = { mech.pos.x, mech.pos.y, MECH_GEAR_Z };
-
             HitInfo hi;
-            bool collision = CircleCircle(
-                { mech.pos.x, mech.pos.y }, mech.radius,
-                { projectile.pos.x, projectile.pos.y }, projectile.radius) && (projectile.pos.z <= MECH_GEAR_Z + mech.radius);
+            Vector3 mtv = Vector3Zeros;
 
+            Vector2* pA = (Vector2*)&mech.pos;
+            Vector2* pB = (Vector2*)&projectile.pos;
+
+            bool collision = CircleCircle(*pA, mech.radius, *pB, projectile.radius, (Vector2*)&mtv) && projectile.pos.z <= MECH_GEAR_Z;
             if (collision)
             {
-                Vector3 mtv = Vector3Zeros;
                 OnCollisionMechProjectileDefault(mech, projectile, hi);
                 
                 if (mech.on_collision_projectile != nullptr)
@@ -356,13 +353,14 @@ void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& bui
         for (Building& building : buildings)
         {
             HitInfo hi;
-            bool collision = SphereCapsule(
-                projectile.pos, projectile.radius,
-                building.pos + Vector3UnitZ * building.length * 0.5f, Vector3UnitZ, building.radius, building.length * 0.5f - building.radius);
+            Vector3 mtv = Vector3Zeros;
 
+            Vector2* pA = (Vector2*)&projectile.pos;
+            Vector2* pB = (Vector2*)&building.pos;
+
+            bool collision = CircleCircle(*pA, projectile.radius, *pB, building.radius, (Vector2*)&mtv) && projectile.pos.z <= building.height;
             if (collision)
             {
-                Vector3 mtv = Vector3Zeros;
                 OnCollisionProjectileBuildingDefault(projectile, building, hi);
 
                 if (building.on_collision_projectile != nullptr)

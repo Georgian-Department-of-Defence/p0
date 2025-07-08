@@ -7,9 +7,11 @@ struct Building
 	Vector3 pos = Vector3Zeros;
 
 	float radius = 0.0f;
-	float length = 0.0f;
+	float height = 0.0f;
 
+	Mesh* mesh;
 	Material material;
+
 	float durability = 0.0f;
 	float death_timer = 0.0f;
 

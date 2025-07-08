@@ -4,6 +4,7 @@
 enum BuildingType : uint32_t
 {
 	BUILDING_TD,
+	BUILDING_BMO,
 	BUILDING_CONDO,
 	BUILDING_TYPE_COUNT
 };

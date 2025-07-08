@@ -8,7 +8,7 @@ struct Meshes
 	Mesh* mech_legs;
 
 	Mesh* bld_td;
-	//Mesh* bld_bmo;
+	Mesh* bld_bmo;
 	Mesh* bld_condo;
 	//Mesh* bld_cn_tower;
 

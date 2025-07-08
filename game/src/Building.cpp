@@ -26,6 +26,10 @@ inline Mesh* BuildingMesh(BuildingType type)
         mesh = g_meshes.bld_td;
         break;
 
+    case BUILDING_BMO:
+        mesh = g_meshes.bld_bmo;
+        break;
+
     case BUILDING_CONDO:
         mesh = g_meshes.bld_condo;
         break;
@@ -34,14 +38,58 @@ inline Mesh* BuildingMesh(BuildingType type)
     assert(mesh != nullptr, "Invalid building type");
     return mesh;
 }
- 
+
+inline float BuildingRadius(BuildingType type)
+{
+    float radius = 0.0f;
+    switch (type)
+    {
+    case BUILDING_TD:
+        radius = 5.0f;
+        break;
+
+    case BUILDING_BMO:
+        radius = 2.5f;
+        break;
+
+    case BUILDING_CONDO:
+        radius = 4.0f;
+        break;
+    }
+    return radius;
+}
+
+inline float BuildingHeight(BuildingType type)
+{
+    float height = 0.0f;
+    switch (type)
+    {
+    case BUILDING_TD:
+        height = 50.0f;
+        break;
+
+    case BUILDING_BMO:
+        height = 25.0f;
+        break;
+
+    case BUILDING_CONDO:
+        height = 25.0f;
+        break;
+    }
+    return height;
+}
+
 void CreateBuilding(Building* building, BuildingType type)
 {
     building->type = type;
-    building->durability = BuildingDurability(type);
+
+    building->mesh = BuildingMesh(type);
     building->material = LoadMaterialDefault();
-    building->radius = 5.0f;
-    building->length = 25.0f;
+
+    building->radius = BuildingRadius(type);
+    building->height = BuildingHeight(type);
+
+    building->durability = BuildingDurability(type);
     building->death_timer = 2.0f;
 }
 
@@ -68,17 +116,21 @@ void UpdateBuilding(Building& building)
 
 void DrawBuilding(const Building& building)
 {
-    DrawMesh(*BuildingMesh(building.type), building.material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
+    DrawMesh(*building.mesh, building.material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
 
 void DrawBuildingDebug(const Building& building)
 {
-    Vector3 bot = building.pos;
-    Vector3 top = building.pos + Vector3UnitZ * (building.length - building.radius);
     Color color = building.debug_collion ? RED : building.material.maps[MATERIAL_MAP_DIFFUSE].color;
     color.a = 128;
-    //DrawCapsule(bot, top, building.radius, 8, 4, color);
 
+    // Buildings switched to radius + height, might need to revert to capsules for sideways colliders.
+    // Building a map editor would be kind of cool long-term!
+    //
+    //Vector3 bot = building.pos;
+    //Vector3 top = building.pos + Vector3UnitZ * (building.length - building.radius);
+    //DrawCapsule(bot, top, building.radius, 8, 4, color);
+    // 
     // top & bot spheres vs capsule test
     //DrawCapsule(bot, top, building.radius, 8, 4, { 200, 122, 255, 128 });
     //DrawSphere(top, building.radius, { 0, 82, 172, 128 });
