@@ -136,6 +136,25 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	world.projectiles.push_back(p);
 }
 
+void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
+{
+	Projectile p;
+	p.pos = base_pos;
+	p.vel = TorsoDirection(mech) * 75.0f;
+	p.radius = 1.5f;
+	p.team = mech.team;
+	p.type = PROJECTILE_MACHINEGUN;
+
+	p.color = ORANGE;
+	p.mesh = g_meshes.prj_straight;
+	p.material = LoadMaterialDefault();
+
+	CreateParticleTrail(&p);
+
+	world.projectiles.push_back(p);
+	PlaySound(g_audio.fire_rifle);
+}
+
 void UpdateProjectile(Projectile& p, World& world)
 {
 	if (p.type == PROJECTILE_MISSILE)
@@ -170,6 +189,7 @@ void DrawProjectileDebug(const Projectile& p)
 	case PROJECTILE_RIFLE:
 	case PROJECTILE_SHOTGUN:
 	case PROJECTILE_GRENADE:
+	case PROJECTILE_MACHINEGUN:
 	case PROJECTILE_MISSILE:
 		DrawSphere(p.pos, p.radius, color);
 		break;

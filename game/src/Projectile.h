@@ -26,6 +26,12 @@ struct ProjectileMissile
 	Vector3 launch_direction;	// Mech's torso direction at the time of launch
 };
 
+struct ProjectileMachineGun
+{
+	float speed;
+	float lifetime;
+};
+
 struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
@@ -60,6 +66,7 @@ struct Projectile
 		ProjectileStraight straight;
 		ProjectileGrenade grenade;
 		ProjectileMissile missile;
+		ProjectileMachineGun machineGun;
 	};
 };
 
@@ -68,6 +75,7 @@ void CreateProjectileRifle(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll);
+void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos);
 
 void UpdateProjectile(Projectile& p, World& world);
 void DrawProjectile(const Projectile& p);

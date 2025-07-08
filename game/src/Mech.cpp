@@ -188,6 +188,11 @@ void UpdateInputFire(Mech& mech, World& world)
     {
         FireGear(mech, world, 3);
     }
+
+    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_LEFT_FACE_LEFT))
+    {
+        FireGear(mech, world, 4);
+    }
 }
 
 void FireGear(Mech& mech, World& world, int slot)
@@ -197,7 +202,7 @@ void FireGear(Mech& mech, World& world, int slot)
 
     if (gear.cooldown <= 0.0f)
     {
-        TraceLog(LOG_INFO, "Slot %i", slot);
+        //TraceLog(LOG_INFO, "Slot %i", slot);
         gear.cooldown = gear.cooldown_max;
         switch (gear.type)
         {
@@ -218,9 +223,15 @@ void FireGear(Mech& mech, World& world, int slot)
             gear.missile_launcher.launch_roll = 20.0f * DEG2RAD;
             break;
 
+        case GEAR_MACHINEGUN:
+            TraceLog(LOG_INFO, "Machine Gun");
+            CreateProjectileMachineGun(mech, world, mech.gear_positions[0]);
+            break;
+
         case GEAR_TYPE_COUNT:
             assert(false, "Invalid gear type!");
             break;
+
         }
     }
     // Don't need FireGearX functions yet. Either create projectile or defer to UpdateGear

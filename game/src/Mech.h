@@ -33,7 +33,7 @@ struct Mech
     OnCollisionMechBuilding on_collision_building = nullptr;
     OnCollisionMechProjectile on_collision_projectile = nullptr;
 
-    Gear gear[4];
+    Gear gear[5];
     Vector3 gear_positions[4];
 
     ParticleEmitter trail;
