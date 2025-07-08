@@ -4,10 +4,12 @@
 struct Building
 {
 	BuildingType type = BUILDING_TYPE_COUNT;
+
 	Vector3 pos = Vector3Zeros;
 
 	float radius = 0.0f;
 	float height = 0.0f;
+	Vector3 extents = Vector3Zeros;
 
 	Mesh* mesh;
 	Material material;

@@ -26,6 +26,8 @@ void LoadMeshes()
 	f_prj_grenade = LoadModel("./assets/meshes/prj_grenade.obj");
 	f_prj_missile = LoadModel("./assets/meshes/prj_missile.obj");
 
+	
+
 	g_meshes.mech_torso = &f_mech_torso.meshes[0];
 	g_meshes.mech_legs = &f_mech_legs.meshes[0];
 

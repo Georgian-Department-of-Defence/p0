@@ -124,6 +124,8 @@ void DrawBuildingDebug(const Building& building)
     Color color = building.debug_collion ? RED : building.material.maps[MATERIAL_MAP_DIFFUSE].color;
     color.a = 128;
 
+    //DrawSphere(building.pos, building.radius, color);
+
     // Buildings switched to radius + height, might need to revert to capsules for sideways colliders.
     // Building a map editor would be kind of cool long-term!
     //
