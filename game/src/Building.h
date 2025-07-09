@@ -10,10 +10,6 @@ struct Building
 	float radius = 0.0f;
 	float height = 0.0f;
 
-	//Vector3 extents = Vector3Zeros;
-	// Note: only xy should be used in rect collisions
-	// (Currently extents.z = full height but 3d box collisions use extents.z as half height)
-
 	Mesh* mesh;
 	Material material;
 

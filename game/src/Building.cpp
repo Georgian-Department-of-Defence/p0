@@ -88,7 +88,6 @@ void CreateBuilding(Building* building, BuildingType type)
 
     building->radius = BuildingRadius(type);
     building->height = BuildingHeight(type);
-    //building->extents = BuildingExtents(type);
 
     building->durability = BuildingDurability(type);
     building->death_timer = 2.0f;
