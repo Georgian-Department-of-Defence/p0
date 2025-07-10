@@ -30,8 +30,16 @@ void LoadCamera()
     fp_camera.fovy = 60.0f;
     fp_camera.projection = CAMERA_PERSPECTIVE;
 
+    Camera editor_camera;
+    editor_camera.position = Vector3UnitZ * 100.0f;
+    editor_camera.target = Vector3Zeros;
+    editor_camera.up = Vector3UnitY;
+    editor_camera.fovy = WORLD_MAX_Y - WORLD_MIN_Y;
+    editor_camera.projection = CAMERA_ORTHOGRAPHIC;
+
     g_camera_system.td_camera = td_camera;
     g_camera_system.fp_camera = fp_camera;
+    g_camera_system.editor_camera = editor_camera;
     g_camera_system.behaviour = CAM_TOP_DOWN;
     g_camera_system.is_enabled = false;
 

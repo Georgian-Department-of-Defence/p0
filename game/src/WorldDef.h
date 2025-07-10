@@ -1,7 +1,7 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
+#include "Constants.h"
 #include "Types.h"
+
 struct World;
 struct Mech;
 struct Building;

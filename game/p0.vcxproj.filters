@@ -136,6 +136,9 @@
     <ClCompile Include="src\Audio.cpp">
       <Filter>Assets\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="src\EditorScene.cpp">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -240,6 +243,12 @@
     </ClInclude>
     <ClInclude Include="src\Steering.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EditorScene.h">
+      <Filter>Scenes\Deveopment</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Constants.h">
+      <Filter>World</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

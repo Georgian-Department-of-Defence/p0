@@ -1,12 +1,12 @@
 #pragma once
-#include "raylib.h"
-#include "raymath.h"
+#include "Constants.h"
 
 enum CameraBehaviour
 {
     CAM_TOP_DOWN,
     CAM_FIRST_PERSON,
-    CAM_FOLLOW
+    CAM_FOLLOW,
+    CAM_EDITOR
 };
 
 struct CameraSystem
@@ -14,6 +14,7 @@ struct CameraSystem
     Camera td_camera;
     Camera fp_camera;
     Camera fl_camera;
+    Camera editor_camera;
     CameraBehaviour behaviour;
     bool is_enabled;
 };
@@ -36,6 +37,9 @@ inline Camera* GetCamera()
     case CAM_FOLLOW:
         camera = &g_camera_system.fl_camera;
         break;
+
+    case CAM_EDITOR:
+        camera = &g_camera_system.editor_camera;
     }
     return camera;
 }
