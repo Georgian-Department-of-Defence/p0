@@ -1,11 +1,36 @@
 #include "EditorScene.h"
-#include "Camera.h"
 #include "rlgl.h"
+#include "Camera.h"
+#include "Meshes.h"
+#include <vector>
 
 static Camera f_camera;
 
+struct EditorBuilding
+{
+    Vector3 pos;
+    Color color;
+    Material material;
+    Mesh* mesh;
+};
+
+static EditorBuilding* f_selected = nullptr;
+static std::vector<EditorBuilding> f_buildings;
+
 void EditorScene::OnLoad()
 {
+    float step = 40.0f;
+    for (float y = -40.0f; y <= 40.0f; y += step)
+    {
+        for (float x = -80.0f; x <= 80.0f; x += step)
+        {
+            EditorBuilding building;
+            building.pos = { x, y, 0.0f };
+            building.mesh = g_meshes.bld_td;
+            building.material = LoadMaterialDefault();
+            f_buildings.push_back(building);
+        }
+    }
 }
 
 void EditorScene::OnUnload()
@@ -20,6 +45,39 @@ void EditorScene::OnStart()
 void EditorScene::OnUpdate()
 {
 	UpdateCamera();
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        //Vector3 p1 = { WORLD_MIN_X, WORLD_MAX_Y, 0.0f };
+        //Vector3 p2 = { WORLD_MIN_X, WORLD_MIN_Y, 0.0f };
+        //Vector3 p3 = { WORLD_MAX_X, WORLD_MIN_Y, 0.0f };
+        //Vector3 p4 = { WORLD_MAX_X, WORLD_MAX_Y, 0.0f };
+        //RayCollision collision = GetRayCollisionQuad(ray, p1, p2, p3, p4);
+        Ray ray = GetScreenToWorldRay(GetMousePosition(), *GetCamera());      
+
+        for (size_t i = 0; i < f_buildings.size(); i++)
+        {
+            EditorBuilding& bld = f_buildings[i];
+
+            // Not worth caching mesh bounding boxes since this is an editor
+            BoundingBox box = GetMeshBoundingBox(*bld.mesh);
+            box.min += bld.pos;
+            box.max += bld.pos;
+
+            RayCollision collision = GetRayCollisionBox(ray, box);
+            if (collision.hit)
+            {
+                if (f_selected != nullptr)
+                    f_selected->color = GRAY;
+
+                f_selected = &bld;
+                f_selected->color = GREEN;
+            }
+        }
+    }
+
+    for (EditorBuilding& bld : f_buildings)
+        bld.material.maps[MATERIAL_MAP_DIFFUSE].color = bld.color;
 }
 
 void EditorScene::OnDraw()
@@ -38,6 +96,9 @@ void EditorScene::OnDraw()
     DrawGrid(100, 1.0f);
     rlPopMatrix();
 
+    for (const EditorBuilding& bld : f_buildings)
+        DrawMesh(*bld.mesh, bld.material, MatrixTranslate(bld.pos.x, bld.pos.y, bld.pos.z));
+
     EndMode3D();
 }
 
@@ -47,14 +108,4 @@ void EditorScene::OnDrawDebug()
 
 void EditorScene::OnDrawGui()
 {
-    Ray ray = GetScreenToWorldRay(GetMousePosition(), *GetCamera());
-    Vector3 p1 = { WORLD_MIN_X, WORLD_MAX_Y, 0.0f };
-    Vector3 p2 = { WORLD_MIN_X, WORLD_MIN_Y, 0.0f };
-    Vector3 p3 = { WORLD_MAX_X, WORLD_MIN_Y, 0.0f };
-    Vector3 p4 = { WORLD_MAX_X, WORLD_MAX_Y, 0.0f };
-    RayCollision collision = GetRayCollisionQuad(ray, p1, p2, p3, p4);
-    if (collision.hit)
-    {
-        DrawText(TextFormat("%f %f %f", collision.point.x, collision.point.y, collision.point.z), 10, 40, 20, RED);
-    }
 }
