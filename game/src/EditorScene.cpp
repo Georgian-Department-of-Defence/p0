@@ -3,11 +3,18 @@
 #include "Camera.h"
 #include "Meshes.h"
 #include <vector>
+#include <algorithm>
+
+enum EditorState
+{
+    
+};
 
 static Camera f_camera;
 
 struct EditorBuilding
 {
+    Id id;
     Vector3 pos;
     Color color;
     Material material;
@@ -17,6 +24,17 @@ struct EditorBuilding
 static EditorBuilding* f_selected = nullptr;
 static std::vector<EditorBuilding> f_buildings;
 
+void RemoveSelected()
+{
+    if (f_selected == nullptr) return;
+
+    auto first = std::remove_if(f_buildings.begin(), f_buildings.end(),
+        [](const EditorBuilding& building) { return f_selected->id == building.id; });
+
+    f_buildings.erase(first, f_buildings.end());
+    f_selected = nullptr;
+}
+
 void EditorScene::OnLoad()
 {
     float step = 40.0f;
@@ -25,6 +43,7 @@ void EditorScene::OnLoad()
         for (float x = -80.0f; x <= 80.0f; x += step)
         {
             EditorBuilding building;
+            building.id = GenId();
             building.pos = { x, y, 0.0f };
             building.mesh = g_meshes.bld_td;
             building.material = LoadMaterialDefault();
@@ -82,6 +101,9 @@ void EditorScene::OnUpdate()
         if (f_selected != nullptr)
             f_selected->color = GREEN;
     }
+
+    if (IsKeyPressed(KEY_DELETE))
+        RemoveSelected();
 
     for (EditorBuilding& bld : f_buildings)
         bld.material.maps[MATERIAL_MAP_DIFFUSE].color = bld.color;
