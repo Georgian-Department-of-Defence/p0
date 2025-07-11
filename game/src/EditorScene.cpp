@@ -28,6 +28,7 @@ void EditorScene::OnLoad()
             building.pos = { x, y, 0.0f };
             building.mesh = g_meshes.bld_td;
             building.material = LoadMaterialDefault();
+            building.color = GRAY;
             f_buildings.push_back(building);
         }
     }
@@ -39,7 +40,7 @@ void EditorScene::OnUnload()
 
 void EditorScene::OnStart()
 {
-    g_camera_system.behaviour = CAM_EDITOR;
+    //g_camera_system.behaviour = CAM_EDITOR;
 }
 
 void EditorScene::OnUpdate()
@@ -55,6 +56,7 @@ void EditorScene::OnUpdate()
         //RayCollision collision = GetRayCollisionQuad(ray, p1, p2, p3, p4);
         Ray ray = GetScreenToWorldRay(GetMousePosition(), *GetCamera());      
 
+        EditorBuilding* building_hit = nullptr;
         for (size_t i = 0; i < f_buildings.size(); i++)
         {
             EditorBuilding& bld = f_buildings[i];
@@ -67,13 +69,18 @@ void EditorScene::OnUpdate()
             RayCollision collision = GetRayCollisionBox(ray, box);
             if (collision.hit)
             {
-                if (f_selected != nullptr)
-                    f_selected->color = GRAY;
-
-                f_selected = &bld;
-                f_selected->color = GREEN;
+                building_hit = &bld;
+                break;
             }
         }
+
+        if (f_selected != nullptr)
+            f_selected->color = GRAY;
+
+        f_selected = building_hit;
+
+        if (f_selected != nullptr)
+            f_selected->color = GREEN;
     }
 
     for (EditorBuilding& bld : f_buildings)
