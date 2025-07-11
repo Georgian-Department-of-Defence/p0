@@ -6,14 +6,24 @@
 #include <array>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 struct EditorBuilding
 {
     Id id;
+    BuildingType type = BUILDING_TYPE_COUNT;
+
     Vector3 pos;
     Color color;
-    Material material;
+
     Mesh* mesh;
+    Material material;
+};
+
+struct BuildingBinary
+{
+    BuildingType type;
+    Vector3 pos;
 };
 
 static EditorBuilding* f_selected = nullptr;
@@ -33,6 +43,28 @@ void RemoveSelected()
     f_selected = nullptr;
 }
 
+void Load()
+{
+    const char* path = "./assets/maps/test.p0_map";
+    std::ifstream file;
+    file.open(path, std::ios::binary | std::ios::in);
+
+    int data[2];
+    file.read((char*)&data, sizeof(data));
+    file.close();
+}
+
+void Save()
+{
+    const char* path = "./assets/maps/test.p0_map";
+    std::ofstream file;
+    file.open(path, std::ios::binary | std::ios::out | std::ios::trunc);
+
+    int data[2] = { 1, 2 };
+    file.write((const char*)data, sizeof(data));
+    file.close();
+}
+
 void EditorScene::OnLoad()
 {
     //float step = 40.0f;
@@ -49,10 +81,12 @@ void EditorScene::OnLoad()
     //        f_buildings.push_back(building);
     //    }
     //}
+    ::Load();
 }
 
 void EditorScene::OnUnload()
 {
+    ::Save();
 }
 
 void EditorScene::OnUpdate()
@@ -104,10 +138,11 @@ void EditorScene::OnUpdate()
     {
         EditorBuilding building;
         building.id = GenId();
+        building.type = f_type;
         building.pos = f_cursor;
+        building.color = GRAY;
         building.mesh = BuildingMesh(f_type);
         building.material = LoadMaterialDefault();
-        building.color = GRAY;
         f_buildings.push_back(building);
     }
 
