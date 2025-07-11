@@ -16,7 +16,7 @@ inline Color BuildingColor(const Building& building)
     return ColorLerp(src, dst, t);
 }
 
-inline Mesh* BuildingMesh(BuildingType type)
+Mesh* BuildingMesh(BuildingType type)
 {
     Mesh* mesh = nullptr;
 

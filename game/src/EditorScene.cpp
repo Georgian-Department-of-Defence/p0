@@ -2,13 +2,10 @@
 #include "rlgl.h"
 #include "Camera.h"
 #include "Meshes.h"
+#include "Building.h"
+#include <array>
 #include <vector>
 #include <algorithm>
-
-enum EditorState
-{
-    
-};
 
 struct EditorBuilding
 {
@@ -23,6 +20,7 @@ static EditorBuilding* f_selected = nullptr;
 static std::vector<EditorBuilding> f_buildings;
 
 static Vector3 f_cursor = Vector3Zeros;
+static BuildingType f_type = BUILDING_TD;
 
 void RemoveSelected()
 {
@@ -37,20 +35,20 @@ void RemoveSelected()
 
 void EditorScene::OnLoad()
 {
-    float step = 40.0f;
-    for (float y = -40.0f; y <= 40.0f; y += step)
-    {
-        for (float x = -80.0f; x <= 80.0f; x += step)
-        {
-            EditorBuilding building;
-            building.id = GenId();
-            building.pos = { x, y, 0.0f };
-            building.mesh = g_meshes.bld_td;
-            building.material = LoadMaterialDefault();
-            building.color = GRAY;
-            f_buildings.push_back(building);
-        }
-    }
+    //float step = 40.0f;
+    //for (float y = -40.0f; y <= 40.0f; y += step)
+    //{
+    //    for (float x = -80.0f; x <= 80.0f; x += step)
+    //    {
+    //        EditorBuilding building;
+    //        building.id = GenId();
+    //        building.pos = { x, y, 0.0f };
+    //        building.mesh = g_meshes.bld_td;
+    //        building.material = LoadMaterialDefault();
+    //        building.color = GRAY;
+    //        f_buildings.push_back(building);
+    //    }
+    //}
 }
 
 void EditorScene::OnUnload()
@@ -107,10 +105,23 @@ void EditorScene::OnUpdate()
         EditorBuilding building;
         building.id = GenId();
         building.pos = f_cursor;
-        building.mesh = g_meshes.bld_td;
+        building.mesh = BuildingMesh(f_type);
         building.material = LoadMaterialDefault();
         building.color = GRAY;
         f_buildings.push_back(building);
+    }
+
+    if (IsKeyPressed(KEY_EIGHT))
+    {
+        int type = f_type;
+        type = (type - 1 + BUILDING_TYPE_COUNT) % BUILDING_TYPE_COUNT;
+        f_type = (BuildingType)type;
+    }
+    if (IsKeyPressed(KEY_NINE))
+    {
+        int type = f_type;
+        ++type %= BUILDING_TYPE_COUNT;
+        f_type = (BuildingType)type;
     }
 
     for (EditorBuilding& bld : f_buildings)
@@ -139,7 +150,7 @@ void EditorScene::OnDraw()
     for (const EditorBuilding& bld : f_buildings)
         DrawMesh(*bld.mesh, bld.material, MatrixTranslate(bld.pos.x, bld.pos.y, bld.pos.z));
 
-    DrawMesh(*g_meshes.bld_td, mat, MatrixTranslate(f_cursor.x, f_cursor.y, f_cursor.z));
+    DrawMesh(*BuildingMesh(f_type), mat, MatrixTranslate(f_cursor.x, f_cursor.y, f_cursor.z));
 
     EndMode3D();
 }

@@ -32,3 +32,5 @@ void DestroyBuilding(Building* building);
 void UpdateBuilding(Building& building);
 void DrawBuilding(const Building& building);
 void DrawBuildingDebug(const Building& building);
+
+Mesh* BuildingMesh(BuildingType type);
