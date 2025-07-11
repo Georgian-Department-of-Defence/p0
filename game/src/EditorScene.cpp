@@ -49,8 +49,27 @@ void Load()
     std::ifstream file;
     file.open(path, std::ios::binary | std::ios::in);
 
-    int data[2];
-    file.read((char*)&data, sizeof(data));
+    std::vector<BuildingBinary> data;
+    data.resize(15);
+    file.read((char*)data.data(), sizeof(BuildingBinary) * data.size());
+
+    for (size_t i = 0; i < data.size(); i++)
+    {
+        EditorBuilding building;
+        building.id = GenId();
+        building.type = data[i].type;
+
+        building.pos = data[i].pos;
+        building.color = GRAY;
+
+        building.mesh = g_meshes.bld_td;
+        building.material = LoadMaterialDefault();
+        
+        f_buildings.push_back(building);
+    }
+
+    //int data[2];
+    //file.read((char*)&data, sizeof(data));
     file.close();
 }
 
@@ -60,13 +79,25 @@ void Save()
     std::ofstream file;
     file.open(path, std::ios::binary | std::ios::out | std::ios::trunc);
 
-    int data[2] = { 1, 2 };
-    file.write((const char*)data, sizeof(data));
+    std::vector<BuildingBinary> data;
+    data.resize(f_buildings.size());
+
+    for (size_t i = 0; i < f_buildings.size(); i++)
+    {
+        data[i].type = f_buildings[i].type;
+        data[i].pos = f_buildings[i].pos;
+    }
+
+    file.write((const char*)data.data(), sizeof(BuildingBinary) * data.size());
+
+    //int data[2] = { 1, 2 };
+    //file.write((const char*)data, sizeof(data));
     file.close();
 }
 
 void EditorScene::OnLoad()
 {
+    //int count = 15;
     //float step = 40.0f;
     //for (float y = -40.0f; y <= 40.0f; y += step)
     //{
