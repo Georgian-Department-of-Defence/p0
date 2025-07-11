@@ -7,8 +7,6 @@ public:
 	void OnLoad() final;
 	void OnUnload() final;
 
-	void OnStart() final;
-
 	void OnUpdate()final;
 	void OnDraw() final;
 

@@ -10,8 +10,6 @@ enum EditorState
     
 };
 
-static Camera f_camera;
-
 struct EditorBuilding
 {
     Id id;
@@ -23,6 +21,8 @@ struct EditorBuilding
 
 static EditorBuilding* f_selected = nullptr;
 static std::vector<EditorBuilding> f_buildings;
+
+static Vector3 f_cursor = Vector3Zeros;
 
 void RemoveSelected()
 {
@@ -57,24 +57,13 @@ void EditorScene::OnUnload()
 {
 }
 
-void EditorScene::OnStart()
-{
-    //g_camera_system.behaviour = CAM_EDITOR;
-}
-
 void EditorScene::OnUpdate()
 {
 	UpdateCamera();
+    Ray ray = GetScreenToWorldRay(GetMousePosition(), *GetCamera());
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        //Vector3 p1 = { WORLD_MIN_X, WORLD_MAX_Y, 0.0f };
-        //Vector3 p2 = { WORLD_MIN_X, WORLD_MIN_Y, 0.0f };
-        //Vector3 p3 = { WORLD_MAX_X, WORLD_MIN_Y, 0.0f };
-        //Vector3 p4 = { WORLD_MAX_X, WORLD_MAX_Y, 0.0f };
-        //RayCollision collision = GetRayCollisionQuad(ray, p1, p2, p3, p4);
-        Ray ray = GetScreenToWorldRay(GetMousePosition(), *GetCamera());      
-
         EditorBuilding* building_hit = nullptr;
         for (size_t i = 0; i < f_buildings.size(); i++)
         {
@@ -105,12 +94,34 @@ void EditorScene::OnUpdate()
     if (IsKeyPressed(KEY_DELETE))
         RemoveSelected();
 
+    Vector3 p1 = { WORLD_MIN_X, WORLD_MAX_Y, 0.0f };
+    Vector3 p2 = { WORLD_MIN_X, WORLD_MIN_Y, 0.0f };
+    Vector3 p3 = { WORLD_MAX_X, WORLD_MIN_Y, 0.0f };
+    Vector3 p4 = { WORLD_MAX_X, WORLD_MAX_Y, 0.0f };
+    RayCollision ground_collision = GetRayCollisionQuad(ray, p1, p2, p3, p4);
+    if (ground_collision.hit)
+        f_cursor = ground_collision.point;
+
+    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON) && ground_collision.hit)
+    {
+        EditorBuilding building;
+        building.id = GenId();
+        building.pos = f_cursor;
+        building.mesh = g_meshes.bld_td;
+        building.material = LoadMaterialDefault();
+        building.color = GRAY;
+        f_buildings.push_back(building);
+    }
+
     for (EditorBuilding& bld : f_buildings)
         bld.material.maps[MATERIAL_MAP_DIFFUSE].color = bld.color;
 }
 
 void EditorScene::OnDraw()
 {
+    static Material mat = LoadMaterialDefault();
+    mat.maps[MATERIAL_MAP_DIFFUSE].color = SKYBLUE;
+
     BeginMode3D(*GetCamera());
 
     rlPushMatrix();
@@ -127,6 +138,8 @@ void EditorScene::OnDraw()
 
     for (const EditorBuilding& bld : f_buildings)
         DrawMesh(*bld.mesh, bld.material, MatrixTranslate(bld.pos.x, bld.pos.y, bld.pos.z));
+
+    DrawMesh(*g_meshes.bld_td, mat, MatrixTranslate(f_cursor.x, f_cursor.y, f_cursor.z));
 
     EndMode3D();
 }
