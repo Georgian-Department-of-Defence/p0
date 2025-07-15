@@ -27,6 +27,11 @@ struct GearMissileLauncher
 	float launch_roll;
 };
 
+struct GearMachineGun
+{
+
+};
+
 struct Gear
 {
 	GearType type = GEAR_TYPE_COUNT;
@@ -34,6 +39,9 @@ struct Gear
 	float cooldown;
 	float cooldown_max;
 	float heat;
+	float current_heat = 0;
+	float heat_max = 100.0f;
+	bool overheat = false;
 	// TODO - Make heat system
 
 	union
@@ -42,6 +50,7 @@ struct Gear
 		GearShotgun shotgun;
 		GearGrenadeLauncher grenade_launcher;
 		GearMissileLauncher missile_launcher;
+		GearMachineGun machine_gun;
 	};
 };
 
@@ -89,5 +98,15 @@ inline Gear CreateGearMissileLauncher()
 	g.missile_launcher.missiles = 0;
 	g.missile_launcher.launch_cooldown_max = 0.05f;
 	g.missile_launcher.launch_cooldown = 0.0f;
+	return g;
+}
+
+inline Gear CreateGearMachineGun()
+{
+	Gear g;
+	g.type = GEAR_MACHINEGUN;
+	g.cooldown_max = 0.12f;
+	g.cooldown = 0.0f;
+	g.heat = 10;
 	return g;
 }

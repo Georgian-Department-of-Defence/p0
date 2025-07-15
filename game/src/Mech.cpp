@@ -32,10 +32,11 @@ void CreateMech(Mech* mech, int player)
     mech->material.maps[MATERIAL_MAP_DIFFUSE].color = mech->team == TEAM_RED ? RED : BLUE;
 
     // Default loadout / testing
-    mech->gear[0] = CreateGearRifle();
+    mech->gear[0] = CreateGearMachineGun();
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
+    mech->gear[4] = CreateGearRifle();
 
     ParticleEmitter& pe = mech->trail;
     pe.spawn_rate = 10.0f;
@@ -188,6 +189,11 @@ void UpdateInputFire(Mech& mech, World& world)
     {
         FireGear(mech, world, 3);
     }
+
+    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_LEFT_FACE_LEFT))
+    {
+        FireGear(mech, world, 4);
+    }
 }
 
 void FireGear(Mech& mech, World& world, int slot)
@@ -195,10 +201,18 @@ void FireGear(Mech& mech, World& world, int slot)
     Gear& gear = mech.gear[slot];
     Vector3 gear_position = mech.gear_positions[slot];
 
-    if (gear.cooldown <= 0.0f)
+    if (gear.cooldown <= 0.0f && gear.overheat == false)
     {
-        TraceLog(LOG_INFO, "Slot %i", slot);
+        //TraceLog(LOG_INFO, "Slot %i", slot);
         gear.cooldown = gear.cooldown_max;
+        gear.current_heat += gear.heat;
+
+
+        if (gear.current_heat >= gear.heat_max)
+        {
+            gear.overheat = true;
+        }
+
         switch (gear.type)
         {
         case GEAR_RIFLE:
@@ -218,9 +232,14 @@ void FireGear(Mech& mech, World& world, int slot)
             gear.missile_launcher.launch_roll = 20.0f * DEG2RAD;
             break;
 
+        case GEAR_MACHINEGUN:
+            CreateProjectileMachineGun(mech, world, gear_position);
+            break;
+
         case GEAR_TYPE_COUNT:
             assert(false, "Invalid gear type!");
             break;
+
         }
     }
     // Don't need FireGearX functions yet. Either create projectile or defer to UpdateGear
@@ -228,11 +247,19 @@ void FireGear(Mech& mech, World& world, int slot)
 
 void UpdateGear(Mech& mech, World& world, int slot)
 {
+
     Gear& gear = mech.gear[slot];
     Vector3 gear_position = mech.gear_positions[slot];
 
     float dt = GetFrameTime();
     gear.cooldown -= dt;
+    gear.current_heat -= 20 * dt;
+    gear.current_heat = Clamp(gear.current_heat, 0, 100);
+
+    if (gear.current_heat <= 0 && gear.overheat == true)
+    {
+        gear.overheat = false;
+    }
 
     if (gear.type == GEAR_GRENADE_LAUNCHER)
     {
