@@ -122,6 +122,7 @@
     <ClCompile Include="src\Gear.cpp" />
     <ClCompile Include="src\GearScene.cpp" />
     <ClCompile Include="src\LoadoutSelectScene.cpp" />
+    <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\MapScene.cpp" />
     <ClCompile Include="src\Meshes.cpp" />
     <ClCompile Include="src\ParticleEmitter.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\GearScene.h" />
     <ClInclude Include="src\LoadoutSelectScene.h" />
+    <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\MapScene.h" />
     <ClInclude Include="src\Meshes.h" />
     <ClInclude Include="src\ParticleEmitter.h" />

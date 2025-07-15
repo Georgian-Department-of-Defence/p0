@@ -40,7 +40,7 @@ int main()
     InitAudioDevice();
     SetTargetFPS(144);
     AppLoad();
-    Scene::Load(SCENE_DEV_EDITOR);
+    Scene::Load(SCENE_DEV_MAP);
 
     while (!WindowShouldClose())
     {

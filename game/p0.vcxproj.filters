@@ -139,6 +139,9 @@
     <ClCompile Include="src\EditorScene.cpp">
       <Filter>Scenes\Deveopment</Filter>
     </ClCompile>
+    <ClCompile Include="src\Map.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -248,6 +251,9 @@
       <Filter>Scenes\Deveopment</Filter>
     </ClInclude>
     <ClInclude Include="src\Constants.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Map.h">
       <Filter>World</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,7 +9,6 @@
 
 #include <vector>
 
-
 using Mechs = std::vector<Mech>;
 using Buildings = std::vector<Building>;
 using Projectiles = std::vector<Projectile>;

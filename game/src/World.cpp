@@ -4,6 +4,7 @@
 #include "Collision.h"
 #include "Collision3D.h"
 #include "Audio.h"
+#include "Map.h"
 #include <algorithm>
 
 constexpr size_t MAX_MECHS = 4;
@@ -49,7 +50,8 @@ void LoadWorld(World& world)
 	world.projectiles.reserve(MAX_PROJECTILES);
 
     LoadMechs(world.mechs);
-    LoadBuildings(world.buildings);
+    LoadMap(MAP_TEST_1, world);
+    //LoadBuildings(world.buildings);
     LoadProjectiles(world.projectiles);
 }
 

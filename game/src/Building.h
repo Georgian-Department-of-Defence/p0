@@ -23,6 +23,10 @@ struct Building
 
 #ifdef DEBUG
 	bool debug_collion = false;
+
+	// Only add map editor information in debug
+	Id edt_id;
+	Color edt_color;
 #endif
 };
 
