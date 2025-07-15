@@ -14,14 +14,13 @@ void SetCursor(bool enabled)
 void LoadCamera()
 {
     Camera td_camera;
-    //tdCamera.position = Vector3UnitZ * 100.0f;
-    //tdCamera.target = Vector3Zeros;
-    td_camera.position = { 0.0f, -30.0f, 70.0f };
-    td_camera.target = { 0.0f, -20.0f, 0.0f };
+    td_camera.position = { 0.0f, -45.0f, 230.0f };
+    td_camera.target = { 0.0f, 5.0f, 0.0f };
     td_camera.up = Vector3UnitY;
-    td_camera.fovy = 75.0f;
+    td_camera.fovy = 30.0f;
     td_camera.projection = CAMERA_PERSPECTIVE;
-    CameraPitch(&td_camera, 10.0f * DEG2RAD, false, false, true);
+    //CameraPitch(&td_camera, 10.0f * DEG2RAD, false, false, true);
+    // Original FoV was 28.5 degrees
 
     Camera fp_camera;
     fp_camera.position = { 0.0f, 25.0f, 2.0f };

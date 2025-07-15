@@ -36,7 +36,7 @@ void AppUnload()
 int main()
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-    InitWindow(800, 800, "PRIMEOPS ZERO");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
     SetTargetFPS(144);
     AppLoad();

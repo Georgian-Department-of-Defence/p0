@@ -46,14 +46,19 @@ void RemoveSelected()
 void Load()
 {
     const char* path = "./assets/maps/test.p0_map";
+    if (!FileExists(path)) return;
+
     std::ifstream file;
     file.open(path, std::ios::binary | std::ios::in);
 
-    std::vector<BuildingBinary> data;
-    data.resize(15);
-    file.read((char*)data.data(), sizeof(BuildingBinary) * data.size());
+    int building_count = 0;
+    file.read((char*)&building_count, sizeof(building_count));
 
-    for (size_t i = 0; i < data.size(); i++)
+    std::vector<BuildingBinary> data;
+    data.resize(building_count);
+    file.read((char*)data.data(), sizeof(BuildingBinary) * building_count);
+
+    for (size_t i = 0; i < building_count; i++)
     {
         EditorBuilding building;
         building.id = GenId();
@@ -62,14 +67,12 @@ void Load()
         building.pos = data[i].pos;
         building.color = GRAY;
 
-        building.mesh = g_meshes.bld_td;
+        building.mesh = BuildingMesh(building.type);
         building.material = LoadMaterialDefault();
         
         f_buildings.push_back(building);
     }
 
-    //int data[2];
-    //file.read((char*)&data, sizeof(data));
     file.close();
 }
 
@@ -79,39 +82,23 @@ void Save()
     std::ofstream file;
     file.open(path, std::ios::binary | std::ios::out | std::ios::trunc);
 
+    int building_count = f_buildings.size();
     std::vector<BuildingBinary> data;
-    data.resize(f_buildings.size());
+    data.resize(building_count);
 
-    for (size_t i = 0; i < f_buildings.size(); i++)
+    for (size_t i = 0; i < building_count; i++)
     {
         data[i].type = f_buildings[i].type;
         data[i].pos = f_buildings[i].pos;
     }
 
+    file.write((const char*)&building_count, sizeof(building_count));
     file.write((const char*)data.data(), sizeof(BuildingBinary) * data.size());
-
-    //int data[2] = { 1, 2 };
-    //file.write((const char*)data, sizeof(data));
     file.close();
 }
 
 void EditorScene::OnLoad()
 {
-    //int count = 15;
-    //float step = 40.0f;
-    //for (float y = -40.0f; y <= 40.0f; y += step)
-    //{
-    //    for (float x = -80.0f; x <= 80.0f; x += step)
-    //    {
-    //        EditorBuilding building;
-    //        building.id = GenId();
-    //        building.pos = { x, y, 0.0f };
-    //        building.mesh = g_meshes.bld_td;
-    //        building.material = LoadMaterialDefault();
-    //        building.color = GRAY;
-    //        f_buildings.push_back(building);
-    //    }
-    //}
     ::Load();
 }
 
