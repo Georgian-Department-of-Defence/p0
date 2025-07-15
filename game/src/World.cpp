@@ -6,18 +6,11 @@
 #include "Audio.h"
 #include "Map.h"
 #include <algorithm>
+#include <cassert>
 
 constexpr size_t MAX_MECHS = 4;
 constexpr size_t MAX_BUILDINGS = 64;
 constexpr size_t MAX_PROJECTILES = 256;
-
-void LoadMechs(Mechs& mechs);
-void LoadBuildings(Buildings& buildings);
-void LoadProjectiles(Projectiles& projectiles);
-
-void UnloadProjectiles(Projectiles& projectiles);
-void UnloadBuildings(Buildings& buildings);
-void UnloadMechs(Mechs& mechs);
 
 void UpdateDebug(World& world);
 
@@ -49,21 +42,31 @@ void LoadWorld(World& world)
 	world.buildings.reserve(MAX_BUILDINGS);
 	world.projectiles.reserve(MAX_PROJECTILES);
 
-    LoadMechs(world.mechs);
+    for (int i = 0; i < 4; i++)
+    {
+        Mech mech;
+        CreateMech(&mech, i);
+        world.mechs.push_back(mech);
+    }
+
     LoadMap(MAP_TEST_1, world);
-    //LoadBuildings(world.buildings);
-    LoadProjectiles(world.projectiles);
 }
 
 void UnloadWorld(World& world)
 {
-    UnloadProjectiles(world.projectiles);
-    UnloadBuildings(world.buildings);
-    UnloadMechs(world.mechs);
+    for (Mech& mech : world.mechs)
+        mech.destroy |= true;
 
-	world.projectiles.clear();
-	world.buildings.clear();
-	world.mechs.clear();
+    for (Building& building : world.buildings)
+        building.destroy |= true;
+
+    for (Projectile& projectile : world.projectiles)
+        projectile.destroy |= true;
+
+    DestroyEntities(world);
+    assert(world.mechs.empty());
+    assert(world.buildings.empty());
+    assert(world.projectiles.empty());
 }
 
 void UpdateWorld(World& world)
@@ -143,54 +146,6 @@ void DrawParticles(const World& world)
 
     for (const Projectile& projectile : world.projectiles)
         DrawParticleEmitter(projectile.trail, *GetCamera());
-}
-
-void LoadMechs(Mechs& mechs)
-{
-    for (int i = 0; i < 4; i++)
-    {
-        Mech mech;
-        CreateMech(&mech, i);
-        mechs.push_back(mech);
-    }
-}
-
-void LoadBuildings(Buildings& buildings)
-{
-    //float step = 20.0f; <-- changed to 40 for missile testing
-    float step = 40.0f;
-    for (float y = -40.0f; y <= 40.0f; y += step)
-    {
-        for (float x = -80.0f; x <= 80.0f; x += step)
-        {
-            // Temporarily omit centre building for visibility
-            //if (x == 0.0f && y == 0.0f) continue;
-            Building building;
-            building.pos = { x, y, 0.0f };
-            CreateBuilding(&building, BuildingType(rand() % 3));
-            buildings.push_back(building);
-        }
-    }
-}
-
-void LoadProjectiles(Projectiles& projectiles)
-{
-}
-
-void UnloadProjectiles(Projectiles& projectiles)
-{
-}
-
-void UnloadBuildings(Buildings& buildings)
-{
-    for (Building& building : buildings)
-        DestroyBuilding(&building);
-}
-
-void UnloadMechs(Mechs& mechs)
-{
-    for (Mech& mech : mechs)
-        DestroyMech(&mech);
 }
 
 void UpdateDebug(World& world)

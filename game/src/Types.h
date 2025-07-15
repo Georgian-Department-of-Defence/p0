@@ -48,8 +48,11 @@ enum MapType : uint32_t
 	MAP_MINTY_AFTERSHAVE,
 	MAP_BUTTON_UP,
 	MAP_FOX_ONLY_NO_ITEMS,
-	MAP_TEST_1,
-	MAP_TEST_2,
-	MAP_TEST_3,
+
+	MAP_TEST_1,	// Connor's test map
+	MAP_TEST_2,	// Josh's test map
+	MAP_TEST_3, // Jesse's test map (NSFW warning)
+	// Nick and Regan feel free to add test maps 4 & 5 if you emerge from the shadows
+
 	MAP_TYPE_COUNT
 };

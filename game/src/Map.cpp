@@ -9,6 +9,8 @@ struct BuildingBinary
     Vector3 pos;
 };
 
+void LoadMintyAftershave(World& world);
+
 void LoadMap(MapType map, World& world)
 {
 	const char* path = nullptr;
@@ -47,11 +49,19 @@ void LoadMap(MapType map, World& world)
 		break;
 	}
 
-    // Comment this out when creating a new map
-	if (map != MAP_FOX_ONLY_NO_ITEMS && map != MAP_MINTY_AFTERSHAVE)
-		assert(FileExists(path));
+    if (map == MAP_MINTY_AFTERSHAVE)
+    {
+        LoadMintyAftershave(world);
+    }
+    else if (map == MAP_FOX_ONLY_NO_ITEMS)
+    {
 
-    Load(path, world.buildings);
+    }
+    else
+    {
+        assert(FileExists(path));       // <-- Comment this out when creating a new map
+        Load(path, world.buildings);
+    }
 }
 
 void Load(const char* path, std::vector<Building>& buildings)
@@ -71,9 +81,7 @@ void Load(const char* path, std::vector<Building>& buildings)
         Building building;
         CreateBuilding(&building, data[i].type);
 
-        building.type = data[i].type;
         building.pos = data[i].pos;
-
 #if DEBUG
         building.edt_id = GenId();
         building.edt_color = GRAY;
@@ -103,4 +111,28 @@ void Save(const char* path, std::vector<Building>& buildings)
     file.write((const char*)&building_count, sizeof(building_count));
     file.write((const char*)data.data(), sizeof(BuildingBinary) * data.size());
     file.close();
+}
+
+void LoadMintyAftershave(World& world)
+{
+    // Note - mechs are smaller than TD buildings in the original
+    const float step = 20.0f;
+    for (float y = -40.0f; y <= 40.0f; y += step)
+    {
+        for (float x = -80.0f; x <= 80.0f; x += step)
+        {
+            //if (x == 0.0f && y == 0.0f) continue;
+            //BuildingType type = BuildingType(rand() % 3);
+            Building building;
+            CreateBuilding(&building, BUILDING_TD);
+
+            building.pos = { x, y, 0.0f };
+#if DEBUG
+            building.edt_id = GenId();
+            building.edt_color = GRAY;
+#endif
+
+            world.buildings.push_back(building);
+        }
+    }
 }
