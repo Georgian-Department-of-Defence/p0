@@ -13,12 +13,18 @@ void LoadAudio()
 	g_audio.hit = LoadSound("./assets/audio/hit.wav");
 	g_audio.hit_mech = LoadSound("./assets/audio/hit_mech.wav");
 
+	g_audio.heat_overheat = LoadSound("./assets/audio/heat_overheat.wav");
+	g_audio.heat_restore = LoadSound("./assets/audio/heat_restore.wav");
+
 	// Make audio quiet for testing ;)
 	SetMasterVolume(0.25f);
 }
 
 void UnloadAudio()
 {
+	UnloadSound(g_audio.heat_restore);
+	UnloadSound(g_audio.heat_overheat);
+
 	UnloadSound(g_audio.hit_mech);
 	UnloadSound(g_audio.hit);
 

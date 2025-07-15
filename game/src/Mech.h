@@ -3,6 +3,8 @@
 #include "Gear.h"
 #include "ParticleEmitter.h"
 
+constexpr size_t GEAR_COUNT = 4;
+
 struct Mech
 {
     uint32_t id = 0;
@@ -12,6 +14,11 @@ struct Mech
     bool destroy = false;
 
     float health = 100.0f;
+
+    float heat = 0.0f;
+    float heat_max = 100.0f;
+    float heat_dissipation = 20.0f;
+    bool overheated = false;
 
     Vector3 pos = Vector3Zeros;
     Vector3 vel = Vector3Zeros;
@@ -33,8 +40,8 @@ struct Mech
     OnCollisionMechBuilding on_collision_building = nullptr;
     OnCollisionMechProjectile on_collision_projectile = nullptr;
 
-    Gear gear[5];
-    Vector3 gear_positions[4];
+    Gear gear[GEAR_COUNT];
+    Vector3 gear_positions[GEAR_COUNT];
 
     ParticleEmitter trail;
 

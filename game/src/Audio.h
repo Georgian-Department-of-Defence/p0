@@ -11,6 +11,9 @@ struct Audio
 
 	Sound hit;
 	Sound hit_mech;
+
+	Sound heat_overheat;
+	Sound heat_restore;
 };
 
 extern Audio g_audio;

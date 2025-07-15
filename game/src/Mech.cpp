@@ -1,7 +1,8 @@
 #include "Mech.h"
 #include "DebugDraw.h"
-#include "Meshes.h"
 #include "Camera.h"
+#include "Meshes.h"
+#include "Audio.h"
 
 #include "World.h"
 #include <cassert>
@@ -9,10 +10,13 @@
 void UpdateInputMove(Mech& mech);
 void UpdateInputAim(Mech& mech);
 void UpdateInputFire(Mech& mech, World& world);
+void UpdateInput(Mech& mech, World& world);
 
 void FireGear(Mech& mech, World& world, int slot);
 void UpdateGear(Mech& mech, World& world, int slot);
-void UpdateGearPositions(Mech& mech);
+
+void UpdateHeat(Mech& mech);
+void UpdateMotion(Mech& mech);
 
 void CreateMech(Mech* mech, int player)
 {
@@ -36,7 +40,6 @@ void CreateMech(Mech* mech, int player)
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
-    mech->gear[4] = CreateGearRifle();
 
     ParticleEmitter& pe = mech->trail;
     pe.spawn_rate = 10.0f;
@@ -46,7 +49,7 @@ void CreateMech(Mech* mech, int player)
     pe.shape_type = PARTICLE_SHAPE_SPHERE;
     pe.shape.sphere.radius = 5.0f;
 
-    Vector3 positions[4];
+    Vector3 positions[GEAR_COUNT];
     positions[0] = { -20.0f, -40.0f, 0.0f };
     positions[1] = { -20.0f,  40.0f, 0.0f };
     positions[2] = {  20.0f, -40.0f, 0.0f };
@@ -69,34 +72,13 @@ void UpdateMech(Mech& mech, World& world)
     assert(mech.id != 0);
     assert(mech.team != TEAM_NONE);
 
-    bool poll_input = false;
-#ifdef DEBUG
-    poll_input = mech.debug_poll_input;
-#endif
-    if (poll_input)
-    {
-        if (IsGamepadAvailable(mech.player))
-        {
-            UpdateInputAim(mech);
-            UpdateInputMove(mech);
-            UpdateInputFire(mech, world);
-        }
-        else
-        {
-            TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
-        }
-    }
+    UpdateInput(mech, world);
     
-    UpdateGearPositions(mech);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < GEAR_COUNT; i++)
         UpdateGear(mech, world, i);
 
-    float dt = GetFrameTime();
-    mech.vel *= powf(mech.drag, dt);
-    mech.pos += mech.vel * dt;
-
-    BoundingBox world_box = WorldBox();
-    mech.pos = Vector3Clamp(mech.pos, world_box.min, world_box.max);
+    UpdateHeat(mech);
+    UpdateMotion(mech);
 }
 
 void DrawMech(const Mech& mech)
@@ -145,6 +127,27 @@ void UpdateInputAim(Mech& mech)
     }
 }
 
+void UpdateInput(Mech& mech, World& world)
+{
+    bool poll_input = false;
+#ifdef DEBUG
+    poll_input = mech.debug_poll_input;
+#endif
+    if (poll_input)
+    {
+        if (IsGamepadAvailable(mech.player))
+        {
+            UpdateInputAim(mech);
+            UpdateInputMove(mech);
+            UpdateInputFire(mech, world);
+        }
+        else
+        {
+            TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
+        }
+    }
+}
+
 void UpdateInputMove(Mech& mech)
 {
     const float deadzone = 0.1f;
@@ -189,11 +192,6 @@ void UpdateInputFire(Mech& mech, World& world)
     {
         FireGear(mech, world, 3);
     }
-
-    if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_LEFT_FACE_LEFT))
-    {
-        FireGear(mech, world, 4);
-    }
 }
 
 void FireGear(Mech& mech, World& world, int slot)
@@ -201,17 +199,10 @@ void FireGear(Mech& mech, World& world, int slot)
     Gear& gear = mech.gear[slot];
     Vector3 gear_position = mech.gear_positions[slot];
 
-    if (gear.cooldown <= 0.0f && gear.overheat == false)
+    if (gear.cooldown <= 0.0f && !mech.overheated)
     {
-        //TraceLog(LOG_INFO, "Slot %i", slot);
         gear.cooldown = gear.cooldown_max;
-        gear.current_heat += gear.heat;
-
-
-        if (gear.current_heat >= gear.heat_max)
-        {
-            gear.overheat = true;
-        }
+        mech.heat += gear.heat;
 
         switch (gear.type)
         {
@@ -242,24 +233,15 @@ void FireGear(Mech& mech, World& world, int slot)
 
         }
     }
-    // Don't need FireGearX functions yet. Either create projectile or defer to UpdateGear
 }
 
 void UpdateGear(Mech& mech, World& world, int slot)
 {
-
     Gear& gear = mech.gear[slot];
     Vector3 gear_position = mech.gear_positions[slot];
 
     float dt = GetFrameTime();
     gear.cooldown -= dt;
-    gear.current_heat -= 20 * dt;
-    gear.current_heat = Clamp(gear.current_heat, 0, 100);
-
-    if (gear.current_heat <= 0 && gear.overheat == true)
-    {
-        gear.overheat = false;
-    }
 
     if (gear.type == GEAR_GRENADE_LAUNCHER)
     {
@@ -286,15 +268,44 @@ void UpdateGear(Mech& mech, World& world, int slot)
     }
 }
 
-void UpdateGearPositions(Mech& mech)
+void UpdateHeat(Mech& mech)
 {
-    Vector3 mount_offsets[4];
-    mount_offsets[0] = { -8.0f, 5.0f, MECH_GEAR_Z };
-    mount_offsets[1] = { -3.0f, 2.0f, MECH_GEAR_Z };
-    mount_offsets[2] = {  3.0f, 2.0f, MECH_GEAR_Z };
-    mount_offsets[3] = {  8.0f, 5.0f, MECH_GEAR_Z };
-    
-    Matrix rotation = QuaternionToMatrix(mech.torso_rotation);
-    for (int i = 0; i < 4; i++)
-        mech.gear_positions[i] = mech.pos + Vector3Transform(mount_offsets[i], rotation);
+    if (!mech.overheated && mech.heat >= mech.heat_max)
+    {
+        mech.overheated = true;
+        PlaySound(g_audio.heat_overheat);
+
+    }
+    else if (mech.overheated && mech.heat <= 0.0f)
+    {
+        mech.overheated = false;
+        PlaySound(g_audio.heat_restore);
+    }
+
+    mech.heat -= mech.heat_dissipation * GetFrameTime();
+    mech.heat = Clamp(mech.heat, 0.0f, mech.heat_max);
+}
+
+void UpdateMotion(Mech& mech)
+{
+    // Physics update
+    float dt = GetFrameTime();
+    mech.vel *= powf(mech.drag, dt);
+    mech.pos += mech.vel * dt;
+
+    BoundingBox world_box = WorldBox();
+    mech.pos = Vector3Clamp(mech.pos, world_box.min, world_box.max);
+
+    // Gear position update (after mech moves)
+    {
+        Vector3 mount_offsets[GEAR_COUNT];
+        mount_offsets[0] = { -8.0f, 5.0f, MECH_GEAR_Z };
+        mount_offsets[1] = { -3.0f, 2.0f, MECH_GEAR_Z };
+        mount_offsets[2] = { 3.0f, 2.0f, MECH_GEAR_Z };
+        mount_offsets[3] = { 8.0f, 5.0f, MECH_GEAR_Z };
+
+        Matrix rotation = QuaternionToMatrix(mech.torso_rotation);
+        for (int i = 0; i < GEAR_COUNT; i++)
+            mech.gear_positions[i] = mech.pos + Vector3Transform(mount_offsets[i], rotation);
+    }
 }

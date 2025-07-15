@@ -39,10 +39,6 @@ struct Gear
 	float cooldown;
 	float cooldown_max;
 	float heat;
-	float current_heat = 0;
-	float heat_max = 100.0f;
-	bool overheat = false;
-	// TODO - Make heat system
 
 	union
 	{
