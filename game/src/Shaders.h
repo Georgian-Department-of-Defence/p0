@@ -4,6 +4,8 @@
 struct Shaders
 {
     Shader skinning;
+    Shader lighting;
+    Shader shadow;
 };
 
 extern Shaders g_shaders;

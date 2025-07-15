@@ -6,14 +6,8 @@
 #include "Shaders.h"
 #include "Textures.h"
 #include "Audio.h"
-#include "DebugDraw.h"
 
 #include "Scene.h"
-#include "World.h"
-
-#include <algorithm>
-#include <vector>
-#include <iostream>
 
 void AppLoad()
 {
@@ -38,7 +32,7 @@ int main()
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
-    SetTargetFPS(144);
+    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
     AppLoad();
     Scene::Load(SCENE_DEV_MAP);
 
