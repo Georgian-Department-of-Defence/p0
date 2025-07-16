@@ -44,7 +44,6 @@ struct Projectile
 	float length = 0.0f;
 
 	Color color = WHITE;
-	Material material;
 	Mesh* mesh = nullptr;
 
 	float gravity_scale = 0.0f;

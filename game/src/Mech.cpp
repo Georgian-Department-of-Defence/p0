@@ -2,6 +2,7 @@
 #include "DebugDraw.h"
 #include "Camera.h"
 #include "Meshes.h"
+#include "Shaders.h"
 #include "Audio.h"
 
 #include "World.h"
@@ -23,6 +24,7 @@ void CreateMech(Mech* mech, int player)
     mech->id = GenId();
     mech->player = player;
     mech->team = player < 2 ? TEAM_RED : TEAM_BLUE;
+    mech->color = mech->team == TEAM_RED ? RED : BLUE;
 
     float roll = player % 2 == 0 ? 0.0f : PI;
     Quaternion rotation = QuaternionFromEuler(0.0f, 0.0f, roll);
@@ -31,9 +33,6 @@ void CreateMech(Mech* mech, int player)
     mech->torso_rotation = rotation;
     mech->legs_rotation_goal = rotation;
     mech->torso_rotation_goal = rotation;
-
-    mech->material = LoadMaterialDefault();
-    mech->material.maps[MATERIAL_MAP_DIFFUSE].color = mech->team == TEAM_RED ? RED : BLUE;
 
     // Default loadout / testing
     mech->gear[0] = CreateGearMachineGun();
@@ -64,7 +63,7 @@ void CreateMech(Mech* mech, int player)
 void DestroyMech(Mech* mech)
 {
     mech->id = 0;
-    UnloadMaterial(mech->material);
+    mech->team = TEAM_NONE;
 }
 
 void UpdateMech(Mech& mech, World& world)
@@ -91,17 +90,19 @@ void DrawMech(const Mech& mech)
     Matrix torso_world = torso_rotation * translation;
     Matrix legs_world = legs_rotation * translation;
 
-    DrawMesh(*g_meshes.mech_torso, mech.material, torso_world);
-    DrawMesh(*g_meshes.mech_legs, mech.material, legs_world);
-    //DrawParticleEmitter(mech.trail, *GetCamera());
+    Material& material = g_materials.mech;
+    material.maps[MATERIAL_MAP_DIFFUSE].color = mech.color;
+
+    DrawMesh(*g_meshes.mech_torso, material, torso_world);
+    DrawMesh(*g_meshes.mech_legs, material, legs_world);
 }
 
 void DrawMechDebug(const Mech& mech)
 {
-    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
-    Color color = mech.debug_collion ? SKYBLUE : mech.material.maps[MATERIAL_MAP_DIFFUSE].color;
+    Color color = mech.debug_collion ? SKYBLUE : mech.color;
     color.a = 128;
 
+    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
     for (int i = 0; i < 4; i++)
         DrawSphere(mech.gear_positions[i], 0.5f, DARKGREEN);
 
@@ -230,7 +231,6 @@ void FireGear(Mech& mech, World& world, int slot)
         case GEAR_TYPE_COUNT:
             assert(false, "Invalid gear type!");
             break;
-
         }
     }
 }

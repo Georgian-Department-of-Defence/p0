@@ -12,6 +12,8 @@ void LoadShaders()
 
 	g_materials.mech = LoadMaterialDefault();
 	g_materials.building = LoadMaterialDefault();
+	g_materials.projectile = LoadMaterialDefault();
+
 	//g_materials.building.shader = g_shaders.lighting;
 }
 
@@ -24,7 +26,9 @@ void UnloadShaders()
 	// Prevent material unload from trying to unload associated shader
 	g_materials.mech.shader.id = rlGetShaderIdDefault();
 	g_materials.building.shader.id = rlGetShaderIdDefault();
+	g_materials.projectile.shader.id = rlGetShaderIdDefault();
 
 	UnloadMaterial(g_materials.mech);
 	UnloadMaterial(g_materials.building);
+	UnloadMaterial(g_materials.projectile);
 }

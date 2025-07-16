@@ -12,6 +12,7 @@ struct Materials
 {
     Material mech;
     Material building;
+    Material projectile;
 };
 
 extern Shaders g_shaders;

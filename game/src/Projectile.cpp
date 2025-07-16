@@ -1,14 +1,16 @@
 #include "Projectile.h"
-#include "Meshes.h"
-#include "Camera.h"
-#include <cassert>
 #include "DebugDraw.h"
+#include "Camera.h"
+#include "Meshes.h"
+#include "Shaders.h"
+#include "Audio.h"
 
 #include "Mech.h"
 #include "World.h"
-#include "Audio.h"
 #include "Steering.h"
 #include "Collision.h"
+
+#include <cassert>
 
 constexpr float MISSILE_MAX_HEIGHT = 30.0f;
 constexpr float MISSILE_SEEK_SPEED = 50.0f;
@@ -34,7 +36,6 @@ void DestroyProjectile(Projectile* p)
 {
 	p->mesh = nullptr;
 	p->type = PROJECTILE_TYPE_COUNT;
-	UnloadMaterial(p->material);
 
 	DestroyParticleEmitter(&p->trail);
 }
@@ -43,7 +44,6 @@ void CreateProjectileDefault(Projectile* p, Mech& mech, World& world)
 {
 	p->team = mech.team;
 	p->owner_mech_id = mech.id;
-	p->material = LoadMaterialDefault();
 
 	CreateParticleTrail(p);
 	world.projectiles.push_back(*p);
@@ -142,7 +142,6 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 
 	p.color = ORANGE;
 	p.mesh = g_meshes.prj_straight;
-	p.material = LoadMaterialDefault();
 
 	CreateParticleTrail(&p);
 
@@ -152,6 +151,8 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 
 void UpdateProjectile(Projectile& p, World& world)
 {
+	assert(p.type != PROJECTILE_TYPE_COUNT);
+
 	if (p.type == PROJECTILE_MISSILE)
 		UpdateProjectileMissile(p, world);
 
@@ -161,14 +162,17 @@ void UpdateProjectile(Projectile& p, World& world)
 	p.pos += p.vel * dt;
 
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
-	p.material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
 }
 
 void DrawProjectile(const Projectile& p)
 {
 	Matrix t = MatrixTranslate(p.pos.x, p.pos.y, p.pos.z);
 	Matrix r = MatrixLookRotation(Vector3Normalize(p.vel));
-	DrawMesh(*p.mesh, p.material, r * t);
+
+	Material& material = g_materials.projectile;
+	material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
+
+	DrawMesh(*p.mesh, material, r * t);
 }
 
 void DrawProjectileDebug(const Projectile& p)
@@ -176,7 +180,7 @@ void DrawProjectileDebug(const Projectile& p)
 	Vector3 dir = Vector3Normalize(p.vel);
 	Vector3 top = p.pos + dir * p.length;
 	Vector3 bot = p.pos - dir * p.length;
-	Color color = p.debug_collion ? VIOLET : p.material.maps[MATERIAL_MAP_DIFFUSE].color;
+	Color color = p.debug_collion ? VIOLET : p.color;
 	color.a = 128;
 
 	switch (p.type)

@@ -28,13 +28,12 @@ struct Mech
     float drag = 0.05f; // 0.0 = full drag, 1.0 = no drag
 
     float radius = 8.0f;
+    Color color = WHITE;
 
     Quaternion legs_rotation;
     Quaternion torso_rotation;
     Quaternion legs_rotation_goal;
     Quaternion torso_rotation_goal;
-
-    Material material;
 
     OnCollisionMechMech on_collision_mech = nullptr;
     OnCollisionMechBuilding on_collision_building = nullptr;

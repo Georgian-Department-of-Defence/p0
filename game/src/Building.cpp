@@ -103,7 +103,8 @@ void DestroyBuilding(Building* building)
 
 void UpdateBuilding(Building& building)
 {
-    building.color = BuildingColor(building);
+    assert(building.type != BUILDING_TYPE_COUNT);
+    assert(building.id != 0);
 
     float dt = GetFrameTime();
     if (building.durability <= 0.0f)
@@ -112,6 +113,7 @@ void UpdateBuilding(Building& building)
         building.pos.z -= 10.0f * dt;
     }
 
+    building.color = BuildingColor(building);
     building.destroy = building.death_timer <= 0.0f;
 }
 
