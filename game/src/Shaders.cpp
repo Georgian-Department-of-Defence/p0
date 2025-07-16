@@ -14,7 +14,7 @@ void LoadShaders()
 	g_materials.building = LoadMaterialDefault();
 	g_materials.projectile = LoadMaterialDefault();
 
-	//g_materials.building.shader = g_shaders.lighting;
+	g_materials.building.shader = g_shaders.lighting;
 }
 
 void UnloadShaders()

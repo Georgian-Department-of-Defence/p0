@@ -1,10 +1,13 @@
 #include "World.h"
 #include "rlgl.h"
 #include "Camera.h"
-#include "Collision.h"
-#include "Collision3D.h"
+#include "Meshes.h"
+#include "Shaders.h"
 #include "Audio.h"
 #include "Map.h"
+
+#include "Collision.h"
+#include "Collision3D.h"
 #include <algorithm>
 #include <cassert>
 
@@ -50,6 +53,11 @@ void LoadWorld(World& world)
     }
 
     LoadMap(MAP_TEST_1, world);
+
+    // Successful uniform test
+    Vector4 col = { 1.0f, 0.2f, 1.0f, 1.0f };
+    int loc = GetShaderLocation(g_shaders.lighting, "test");
+    SetShaderValue(g_shaders.lighting, loc, (float*)&col.x, SHADER_UNIFORM_VEC4);
 }
 
 void UnloadWorld(World& world)

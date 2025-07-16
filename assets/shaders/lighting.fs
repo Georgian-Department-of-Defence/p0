@@ -31,6 +31,7 @@ struct Light {
 uniform Light lights[MAX_LIGHTS];
 uniform vec4 ambient;
 uniform vec3 viewPos;
+uniform vec4 test;
 
 void main()
 {
@@ -75,5 +76,5 @@ void main()
 
     // Gamma correction
     finalColor = pow(finalColor, vec4(1.0/2.2));
-    finalColor = vec4(1.0, 0.0, 0.0, 1.0);
+    finalColor = test;
 }
