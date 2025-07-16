@@ -1,5 +1,6 @@
 #include "Building.h"
 #include "Meshes.h"
+#include "Shaders.h"
 #include "rlgl.h"
 #include <cassert>
 
@@ -82,27 +83,27 @@ inline float BuildingHeight(BuildingType type)
 void CreateBuilding(Building* building, BuildingType type)
 {
     building->type = type;
-
-    building->mesh = BuildingMesh(type);
-    building->material = LoadMaterialDefault();
+    building->id = GenId();
 
     building->radius = BuildingRadius(type);
     building->height = BuildingHeight(type);
 
     building->durability = BuildingDurability(type);
     building->death_timer = 2.0f;
+
+    building->mesh = BuildingMesh(type);
+    building->color = BuildingColor(*building);
 }
 
 void DestroyBuilding(Building* building)
 {
-    UnloadMaterial(building->material);
     building->type = BUILDING_TYPE_COUNT;
+    building->id = 0;
 }
 
 void UpdateBuilding(Building& building)
 {
-    Color color = BuildingColor(building);
-    building.material.maps[MATERIAL_MAP_DIFFUSE].color = color;
+    building.color = BuildingColor(building);
 
     float dt = GetFrameTime();
     if (building.durability <= 0.0f)
@@ -116,12 +117,14 @@ void UpdateBuilding(Building& building)
 
 void DrawBuilding(const Building& building)
 {
-    DrawMesh(*building.mesh, building.material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
+    Material& mat = g_materials.building;
+    mat.maps[MATERIAL_MAP_DIFFUSE].color = building.color;
+    DrawMesh(*building.mesh, mat, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
 
 void DrawBuildingDebug(const Building& building)
 {
-    Color color = building.debug_collion ? RED : building.material.maps[MATERIAL_MAP_DIFFUSE].color;
+    Color color = building.debug_collion ? RED : building.color;
     color.a = 128;
     
     //Vector3 p = building.pos;

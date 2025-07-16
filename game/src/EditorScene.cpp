@@ -20,7 +20,7 @@ void RemoveSelected()
     if (f_selected == nullptr) return;
 
     auto first = std::remove_if(f_buildings.begin(), f_buildings.end(),
-        [](const Building& building) { return f_selected->edt_id == building.edt_id; });
+        [](const Building& building) { return f_selected->id == building.id; });
 
     f_buildings.erase(first, f_buildings.end());
     f_selected = nullptr;
@@ -62,12 +62,12 @@ void EditorScene::OnUpdate()
         }
 
         if (f_selected != nullptr)
-            f_selected->edt_color = GRAY;
+            f_selected->color = GRAY;
 
         f_selected = building_hit;
 
         if (f_selected != nullptr)
-            f_selected->edt_color = GREEN;
+            f_selected->color = GREEN;
     }
 
     if (IsKeyPressed(KEY_DELETE))
@@ -84,16 +84,8 @@ void EditorScene::OnUpdate()
     if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON) && ground_collision.hit)
     {
         Building building;
-
-        building.type = f_type;
+        CreateBuilding(&building, f_type);
         building.pos = f_cursor;
-
-        building.mesh = BuildingMesh(f_type);
-        building.material = LoadMaterialDefault();
-
-        building.edt_id = GenId();
-        building.edt_color = GRAY;
-
         f_buildings.push_back(building);
     }
 
@@ -109,17 +101,10 @@ void EditorScene::OnUpdate()
         ++type %= BUILDING_TYPE_COUNT;
         f_type = (BuildingType)type;
     }
-
-    // Different logic from non-editor building colour
-    for (Building& bld : f_buildings)
-        bld.material.maps[MATERIAL_MAP_DIFFUSE].color = bld.edt_color;
 }
 
 void EditorScene::OnDraw()
 {
-    static Material mat = LoadMaterialDefault();
-    mat.maps[MATERIAL_MAP_DIFFUSE].color = SKYBLUE;
-
     BeginMode3D(*GetCamera());
 
     rlPushMatrix();
@@ -134,9 +119,14 @@ void EditorScene::OnDraw()
     DrawGrid(100, 1.0f);
     rlPopMatrix();
 
+    static Material mat = LoadMaterialDefault();
     for (const Building& bld : f_buildings)
-        DrawMesh(*bld.mesh, bld.material, MatrixTranslate(bld.pos.x, bld.pos.y, bld.pos.z));
+    {
+        mat.maps[MATERIAL_MAP_DIFFUSE].color = bld.color;
+        DrawMesh(*bld.mesh, mat, MatrixTranslate(bld.pos.x, bld.pos.y, bld.pos.z));
+    }
 
+    mat.maps[MATERIAL_MAP_DIFFUSE].color = SKYBLUE;
     DrawMesh(*BuildingMesh(f_type), mat, MatrixTranslate(f_cursor.x, f_cursor.y, f_cursor.z));
 
     EndMode3D();

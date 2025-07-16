@@ -80,13 +80,7 @@ void Load(const char* path, std::vector<Building>& buildings)
     {
         Building building;
         CreateBuilding(&building, data[i].type);
-
         building.pos = data[i].pos;
-#if DEBUG
-        building.edt_id = GenId();
-        building.edt_color = GRAY;
-#endif
-
         buildings.push_back(building);
     }
 
@@ -125,13 +119,7 @@ void LoadMintyAftershave(World& world)
             //BuildingType type = BuildingType(rand() % 3);
             Building building;
             CreateBuilding(&building, BUILDING_TD);
-
             building.pos = { x, y, 0.0f };
-#if DEBUG
-            building.edt_id = GenId();
-            building.edt_color = GRAY;
-#endif
-
             world.buildings.push_back(building);
         }
     }
