@@ -7,7 +7,7 @@ Materials g_materials;
 void LoadShaders()
 {
 	g_shaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
-	g_shaders.lighting = LoadShader("./assets/shaders/lighting.vs", "./assets/shaders/lighting2.fs");
+	g_shaders.lighting = LoadShader("./assets/shaders/lighting.vs", "./assets/shaders/lighting.fs");
 	g_shaders.shadow = LoadShader("./assets/shaders/shadowmap.vs", "./assets/shaders/shadowmap.fs");
 
 	g_materials.flat = LoadMaterialDefault();
