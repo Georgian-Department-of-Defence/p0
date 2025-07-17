@@ -80,28 +80,24 @@ vec3 spotLight(vec3 P, vec3 N, vec3 cameraPosition, Light light)
     return lighting;
 }
 
-uniform Light sun;
-uniform Light mechLights[4];
-
-//uniform int mechLightCount;
+#define MAX_LIGHTS 1
+uniform Light lights[MAX_LIGHTS];
 uniform vec3 viewPos;
 
 void main()
 {
-    vec3 P = fragPosition;
     vec3 N = normalize(fragNormal);
-    vec3 C = viewPos;
     vec3 lighting = vec3(0.0);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 1; i++)
     {
-        lighting += directionLight(P, N, C, mechLights[i]);
+        lighting += directionLight(fragPosition, N, viewPos, lights[i]);
     }
 
     vec4 texelColor = texture(texture0, fragTexCoord);
     vec4 tint = colDiffuse * fragColor;
-    finalColor = texelColor * tint;
-    finalColor.xyz = lighting;
 
-    // Gamma correction
+    vec4 objectColor = texelColor * tint;
+    vec4 lightColor = vec4(lighting, 1.0);
+    finalColor = objectColor * lightColor;
     //finalColor = pow(finalColor, vec4(1.0/2.2));
 }

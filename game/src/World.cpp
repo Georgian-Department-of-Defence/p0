@@ -11,10 +11,6 @@
 #include <algorithm>
 #include <cassert>
 
-constexpr size_t MAX_MECHS = 4;
-constexpr size_t MAX_BUILDINGS = 64;
-constexpr size_t MAX_PROJECTILES = 256;
-
 void UpdateDebug(World& world);
 
 void UpdateEntities(World& world);
@@ -55,25 +51,40 @@ void LoadWorld(World& world)
 
     LoadMap(MAP_TEST_1, world);
 
-    //Light sun = CreateLight(LIGHT_DIRECTIONAL, { 25.0f, 25.0f, 100.0f }, Vector3Zeros, SKYBLUE, g_shaders.lighting);
-    //world.lights.push_back(sun);
+    Vector3 sun_position = { WORLD_MAX_X, WORLD_MAX_Y, 100.0f };
+    Vector3 sun_target = Vector3Zeros;
+    Light sun;
+    LoadLightUniforms(sun, 0, g_shaders.lighting);
+    sun.direction = Vector3Normalize(sun_target - sun_position);
+    sun.color = Vector3Ones;
+    sun.ambient = 0.4f;
+    sun.diffuse = 1.0f;
+    sun.specular = 1.0f;
+    sun.specular_exponent = 64.0f;
+    world.lights.push_back(sun);
+    assert(world.lights.size() == MAX_LIGHTS);
 
-    float s = 0.75f;
-    world.lights.resize(4);
-    world.lights[0].direction = Vector3Normalize({ -s,  0.0f, -1.0f});
-    world.lights[1].direction = Vector3Normalize({  s,  0.0f, -1.0f});
-    world.lights[2].direction = Vector3Normalize({  0.0f, -s, -1.0f});
-    world.lights[3].direction = Vector3Normalize({  0.0f,  s, -1.0f});
-    for (size_t i = 0; i < world.lights.size(); i++)
-    {
-        Light2& light = world.lights[i];
-        GetLightUniforms(light, i, g_shaders.lighting);
-        light.color = { 1.0f, 0.0f, 1.0f };
-        light.ambient = 0.0f;
-        light.diffuse = 0.1f;
-        light.specular = 1.0f;
-        light.specular_exponent = 16.0f;
-    }
+    // TODO - play with lighting:
+    // -Put a point light in-front or on-top of each mech?
+    // -Put a spot light in the direction of each mech?
+    // -Will differentiating between lights applied BY mech vs lights applied TO mech make my life miserable!?
+    // 
+    //float s = 0.75f;
+    //world.lights.resize(4);
+    //world.lights[0].direction = Vector3Normalize({ -s,  0.0f, -1.0f});
+    //world.lights[1].direction = Vector3Normalize({  s,  0.0f, -1.0f});
+    //world.lights[2].direction = Vector3Normalize({  0.0f, -s, -1.0f});
+    //world.lights[3].direction = Vector3Normalize({  0.0f,  s, -1.0f});
+    //for (size_t i = 0; i < world.lights.size(); i++)
+    //{
+    //    Light& light = world.lights[i];
+    //    LoadLightUniforms(light, i, g_shaders.lighting);
+    //    light.color = { 1.0f, 0.0f, 1.0f };
+    //    light.ambient = 0.0f;
+    //    light.diffuse = 0.1f;
+    //    light.specular = 1.0f;
+    //    light.specular_exponent = 16.0f;
+    //}
 }
 
 void UnloadWorld(World& world)
@@ -206,8 +217,8 @@ void UpdateEntities(World& world)
     for (Projectile& projectile : world.projectiles)
         UpdateProjectile(projectile, world);
 
-    for (Light2& light : world.lights)
-        UpdateLight2(light, g_shaders.lighting);
+    for (Light& light : world.lights)
+        UpdateLightUniforms(light, g_shaders.lighting);
 }
 
 void UpdateParticles(World& world)

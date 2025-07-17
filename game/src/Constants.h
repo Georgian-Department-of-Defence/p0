@@ -13,6 +13,11 @@ constexpr Vector3 GRAVITY = { 0.0f, 0.0f, -9.81f };
 
 constexpr float MECH_GEAR_Z = 15.0f;
 
+constexpr size_t MAX_MECHS = 4;
+constexpr size_t MAX_BUILDINGS = 64;
+constexpr size_t MAX_PROJECTILES = 256;
+constexpr int MAX_LIGHTS = 1;
+
 using Id = uint32_t;
 inline Id GenId()
 {

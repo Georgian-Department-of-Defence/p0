@@ -12,7 +12,7 @@ inline float BuildingDurability(BuildingType type)
 
 inline Color BuildingColor(const Building& building)
 {
-    Color src = LIGHTGRAY;
+    Color src = WHITE;
     Color dst = DARKGRAY;
     float t = 1.0f - (building.durability / BuildingDurability(building.type));
     return ColorLerp(src, dst, t);
