@@ -5,19 +5,21 @@
 #include "Mech.h"
 #include "Building.h"
 #include "Projectile.h"
+#include "Light.h"
 
 #include <vector>
 
 using Mechs = std::vector<Mech>;
 using Buildings = std::vector<Building>;
 using Projectiles = std::vector<Projectile>;
+using Lights = std::vector<Light>;
 
 struct World
 {
 	Mechs mechs;
 	Buildings buildings;
 	Projectiles projectiles;
-	// Walls walls; // Probably don't need wall planes anymore unless we want things to bounce off walls?
+	Lights lights;
 };
 
 void LoadWorld(World& world);

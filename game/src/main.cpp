@@ -37,6 +37,7 @@ int main()
     AppLoad();
 
     Game game;
+    LoadRenderer(game.renderer);
     Scene::Load(game, SCENE_DEV_MAP);
     while (!WindowShouldClose())
     {
@@ -58,6 +59,7 @@ int main()
         Scene::DrawGui(game);
         EndDrawing();
     }
+    UnloadRenderer(game.renderer);
     Scene::Unload(game);
 
     AppUnload();

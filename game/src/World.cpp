@@ -44,6 +44,7 @@ void LoadWorld(World& world)
 	world.mechs.reserve(MAX_MECHS);
 	world.buildings.reserve(MAX_BUILDINGS);
 	world.projectiles.reserve(MAX_PROJECTILES);
+    world.lights.reserve(MAX_LIGHTS);
 
     for (int i = 0; i < 4; i++)
     {
@@ -54,10 +55,8 @@ void LoadWorld(World& world)
 
     LoadMap(MAP_TEST_1, world);
 
-    // Successful uniform test
-    Vector4 col = { 1.0f, 0.2f, 1.0f, 1.0f };
-    int loc = GetShaderLocation(g_shaders.lighting, "test");
-    SetShaderValue(g_shaders.lighting, loc, (float*)&col.x, SHADER_UNIFORM_VEC4);
+    Light sun = CreateLight(LIGHT_DIRECTIONAL, { WORLD_MAX_X, WORLD_MAX_Y, 50.0f }, { WORLD_MIN_X, WORLD_MIN_Y, 0.0f }, SKYBLUE, g_shaders.lighting);
+    world.lights.push_back(sun);
 }
 
 void UnloadWorld(World& world)
@@ -133,6 +132,9 @@ void DrawWorldDebug(const World& world, const Renderer& renderer)
 
 void DrawEntities(const World& world, const Renderer& renderer)
 {
+    Vector3 cam_pos = GetCamera()->position;
+    SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam_pos, SHADER_UNIFORM_VEC3);
+
     for (const Mech& mech : world.mechs)
         DrawMech(mech, renderer);
 
@@ -186,6 +188,9 @@ void UpdateEntities(World& world)
 
     for (Projectile& projectile : world.projectiles)
         UpdateProjectile(projectile, world);
+
+    for (Light& light : world.lights)
+        UpdateLight(light, g_shaders.lighting);
 }
 
 void UpdateParticles(World& world)

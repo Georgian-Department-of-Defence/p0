@@ -122,6 +122,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Gear.cpp" />
     <ClCompile Include="src\GearScene.cpp" />
+    <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\LoadoutSelectScene.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\MapScene.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GearScene.h" />
+    <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\LoadoutSelectScene.h" />
     <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\MapScene.h" />

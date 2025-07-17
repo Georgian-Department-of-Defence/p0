@@ -146,6 +146,9 @@
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -264,5 +267,8 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Light.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
