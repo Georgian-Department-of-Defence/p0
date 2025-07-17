@@ -12,7 +12,7 @@
 using Mechs = std::vector<Mech>;
 using Buildings = std::vector<Building>;
 using Projectiles = std::vector<Projectile>;
-using Lights = std::vector<Light>;
+using Lights = std::vector<Light2>;
 
 struct World
 {

@@ -55,8 +55,25 @@ void LoadWorld(World& world)
 
     LoadMap(MAP_TEST_1, world);
 
-    Light sun = CreateLight(LIGHT_DIRECTIONAL, { 25.0f, 25.0f, 100.0f }, Vector3Zeros, SKYBLUE, g_shaders.lighting);
-    world.lights.push_back(sun);
+    //Light sun = CreateLight(LIGHT_DIRECTIONAL, { 25.0f, 25.0f, 100.0f }, Vector3Zeros, SKYBLUE, g_shaders.lighting);
+    //world.lights.push_back(sun);
+
+    float s = 0.75f;
+    world.lights.resize(4);
+    world.lights[0].direction = Vector3Normalize({ -s,  0.0f, -1.0f});
+    world.lights[1].direction = Vector3Normalize({  s,  0.0f, -1.0f});
+    world.lights[2].direction = Vector3Normalize({  0.0f, -s, -1.0f});
+    world.lights[3].direction = Vector3Normalize({  0.0f,  s, -1.0f});
+    for (size_t i = 0; i < world.lights.size(); i++)
+    {
+        Light2& light = world.lights[i];
+        GetLightUniforms(light, i, g_shaders.lighting);
+        light.color = { 1.0f, 0.0f, 1.0f };
+        light.ambient = 0.0f;
+        light.diffuse = 0.1f;
+        light.specular = 1.0f;
+        light.specular_exponent = 16.0f;
+    }
 }
 
 void UnloadWorld(World& world)
@@ -189,8 +206,8 @@ void UpdateEntities(World& world)
     for (Projectile& projectile : world.projectiles)
         UpdateProjectile(projectile, world);
 
-    for (Light& light : world.lights)
-        UpdateLight(light, g_shaders.lighting);
+    for (Light2& light : world.lights)
+        UpdateLight2(light, g_shaders.lighting);
 }
 
 void UpdateParticles(World& world)
