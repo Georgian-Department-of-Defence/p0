@@ -1,5 +1,5 @@
 #pragma once
-#include "Constants.h"
+#include "Game.h"
 
 enum SceneType : size_t
 {

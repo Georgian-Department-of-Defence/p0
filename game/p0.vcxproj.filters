@@ -142,6 +142,10 @@
     <ClCompile Include="src\Map.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -256,5 +260,9 @@
     <ClInclude Include="src\Map.h">
       <Filter>World</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game.h" />
   </ItemGroup>
 </Project>

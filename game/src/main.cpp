@@ -8,6 +8,7 @@
 #include "Audio.h"
 
 #include "Scene.h"
+#include "Game.h"
 
 void AppLoad()
 {
