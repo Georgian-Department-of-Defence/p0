@@ -99,6 +99,7 @@ void DrawMech(const Mech& mech, const Renderer& renderer)
 
 void DrawMechDebug(const Mech& mech, const Renderer& renderer)
 {
+#if DEBUG
     Color color = mech.debug_collion ? SKYBLUE : mech.color;
     color.a = 128;
 
@@ -107,6 +108,7 @@ void DrawMechDebug(const Mech& mech, const Renderer& renderer)
         DrawSphere(mech.gear_positions[i], 0.5f, DARKGREEN);
 
     //DrawSphere(mech.pos, 25.0f, DARKBLUE);
+#endif
 }
 
 void UpdateInputAim(Mech& mech)

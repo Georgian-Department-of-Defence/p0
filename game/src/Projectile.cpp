@@ -177,6 +177,7 @@ void DrawProjectile(const Projectile& p, const Renderer& renderer)
 
 void DrawProjectileDebug(const Projectile& p, const Renderer& renderer)
 {
+#if DEBUG
 	Vector3 dir = Vector3Normalize(p.vel);
 	Vector3 top = p.pos + dir * p.length;
 	Vector3 bot = p.pos - dir * p.length;
@@ -196,6 +197,7 @@ void DrawProjectileDebug(const Projectile& p, const Renderer& renderer)
 
 	//DrawLineDebug(p.pos, p.pos + dir * 20.0f, YELLOW, 4.0f);
 	DrawAxesDebug(p.pos, MatrixLookRotation(dir), 10.0f, 2.0f);
+#endif
 }
 
 void UpdateProjectileMissile(Projectile& p, World& world)

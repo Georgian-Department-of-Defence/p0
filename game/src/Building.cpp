@@ -126,6 +126,7 @@ void DrawBuilding(const Building& building, const Renderer& renderer)
 
 void DrawBuildingDebug(const Building& building, const Renderer& renderer)
 {
+#if DEBUG
     Color color = building.debug_collion ? RED : building.color;
     color.a = 128;
     
@@ -146,4 +147,5 @@ void DrawBuildingDebug(const Building& building, const Renderer& renderer)
     //DrawCapsule(bot, top, building.radius, 8, 4, { 200, 122, 255, 128 });
     //DrawSphere(top, building.radius, { 0, 82, 172, 128 });
     //DrawSphere(bot, building.radius, { 0, 82, 172, 128 });
+#endif
 }
