@@ -164,7 +164,7 @@ void UpdateProjectile(Projectile& p, World& world)
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
 }
 
-void DrawProjectile(const Projectile& p)
+void DrawProjectile(const Projectile& p, const Renderer& renderer)
 {
 	Matrix t = MatrixTranslate(p.pos.x, p.pos.y, p.pos.z);
 	Matrix r = MatrixLookRotation(Vector3Normalize(p.vel));
@@ -175,7 +175,7 @@ void DrawProjectile(const Projectile& p)
 	DrawMesh(*p.mesh, material, r * t);
 }
 
-void DrawProjectileDebug(const Projectile& p)
+void DrawProjectileDebug(const Projectile& p, const Renderer& renderer)
 {
 	Vector3 dir = Vector3Normalize(p.vel);
 	Vector3 top = p.pos + dir * p.length;

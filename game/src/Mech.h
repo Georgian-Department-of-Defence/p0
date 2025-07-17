@@ -2,6 +2,7 @@
 #include "WorldDef.h"
 #include "Gear.h"
 #include "ParticleEmitter.h"
+#include "Renderer.h"
 
 constexpr size_t GEAR_COUNT = 4;
 
@@ -55,8 +56,8 @@ void DestroyMech(Mech* mech);
 
 void UpdateMech(Mech& mech, World& world);
 
-void DrawMech(const Mech& mech);
-void DrawMechDebug(const Mech& mech);
+void DrawMech(const Mech& mech, const Renderer& renderer);
+void DrawMechDebug(const Mech& mech, const Renderer& renderer);
 
 inline Vector3 TorsoDirection(const Mech& mech)
 {

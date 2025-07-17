@@ -1,6 +1,7 @@
 #pragma once
 #include "WorldDef.h"
 #include "ParticleEmitter.h"
+#include "Renderer.h"
 
 struct ProjectileStraight
 {
@@ -84,5 +85,5 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos);
 
 void UpdateProjectile(Projectile& p, World& world);
-void DrawProjectile(const Projectile& p);
-void DrawProjectileDebug(const Projectile& p);
+void DrawProjectile(const Projectile& p, const Renderer& renderer);
+void DrawProjectileDebug(const Projectile& p, const Renderer& renderer);

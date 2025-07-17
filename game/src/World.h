@@ -1,8 +1,7 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
-
 #include "Constants.h"
+#include "Renderer.h"
+
 #include "Mech.h"
 #include "Building.h"
 #include "Projectile.h"
@@ -25,8 +24,8 @@ void LoadWorld(World& world);
 void UnloadWorld(World& world);
 
 void UpdateWorld(World& world);
-void DrawWorld(const World& world);
-void DrawWorldDebug(const World& world);
+void DrawWorld(const World& world, const Renderer& renderer);
+void DrawWorldDebug(const World& world, const Renderer& renderer);
 
 inline Mech* GetMechById(uint32_t id, World& world)
 {

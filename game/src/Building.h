@@ -1,5 +1,6 @@
 #pragma once
 #include "WorldDef.h"
+#include "Renderer.h"
 
 struct Building
 {
@@ -31,7 +32,7 @@ void CreateBuilding(Building* building, BuildingType type);
 void DestroyBuilding(Building* building);
 
 void UpdateBuilding(Building& building);
-void DrawBuilding(const Building& building);
-void DrawBuildingDebug(const Building& building);
+void DrawBuilding(const Building& building, const Renderer& renderer);
+void DrawBuildingDebug(const Building& building, const Renderer& renderer);
 
 Mesh* BuildingMesh(BuildingType type);

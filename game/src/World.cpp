@@ -20,8 +20,8 @@ void UpdateDebug(World& world);
 void UpdateEntities(World& world);
 void UpdateParticles(World& world);
 
-void DrawEntities(const World& world);
-void DrawParticles(const World& world);
+void DrawEntities(const World& world, const Renderer& renderer);
+void DrawParticles(const World& world, const Renderer& renderer);
 
 void UpdateCollisionsMechMech(Mechs& mechs);
 void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings);
@@ -92,7 +92,7 @@ void UpdateWorld(World& world)
     DestroyEntities(world);
 }
 
-void DrawWorld(const World& world)
+void DrawWorld(const World& world, const Renderer& renderer)
 {
     BeginMode3D(*GetCamera());
 
@@ -108,42 +108,42 @@ void DrawWorld(const World& world)
         DrawGrid(100, 1.0f);
         rlPopMatrix();
         
-        DrawEntities(world);
-        DrawParticles(world);
+        DrawEntities(world, renderer);
+        DrawParticles(world, renderer);
 
     EndMode3D();
 }
 
-void DrawWorldDebug(const World& world)
+void DrawWorldDebug(const World& world, const Renderer& renderer)
 {
     // TODO - 2D vs 3D debug draw for lines vs text
     BeginMode3D(*GetCamera());
 
         for (const Mech& mech : world.mechs)
-            DrawMechDebug(mech);
+            DrawMechDebug(mech, renderer);
 
         for (const Building& building : world.buildings)
-            DrawBuildingDebug(building);
+            DrawBuildingDebug(building, renderer);
 
         for (const Projectile& projectile : world.projectiles)
-            DrawProjectileDebug(projectile);
+            DrawProjectileDebug(projectile, renderer);
 
     EndMode3D();
 }
 
-void DrawEntities(const World& world)
+void DrawEntities(const World& world, const Renderer& renderer)
 {
     for (const Mech& mech : world.mechs)
-        DrawMech(mech);
+        DrawMech(mech, renderer);
 
     for (const Building& building : world.buildings)
-        DrawBuilding(building);
+        DrawBuilding(building, renderer);
 
     for (const Projectile& projectile : world.projectiles)
-        DrawProjectile(projectile);
+        DrawProjectile(projectile, renderer);
 }
 
-void DrawParticles(const World& world)
+void DrawParticles(const World& world, const Renderer& renderer)
 {
     for (const Mech& mech : world.mechs)
         DrawParticleEmitter(mech.trail, *GetCamera());

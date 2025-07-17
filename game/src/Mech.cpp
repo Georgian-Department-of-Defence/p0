@@ -80,7 +80,7 @@ void UpdateMech(Mech& mech, World& world)
     UpdateMotion(mech);
 }
 
-void DrawMech(const Mech& mech)
+void DrawMech(const Mech& mech, const Renderer& renderer)
 {
     Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
 
@@ -97,7 +97,7 @@ void DrawMech(const Mech& mech)
     DrawMesh(*g_meshes.mech_legs, material, legs_world);
 }
 
-void DrawMechDebug(const Mech& mech)
+void DrawMechDebug(const Mech& mech, const Renderer& renderer)
 {
     Color color = mech.debug_collion ? SKYBLUE : mech.color;
     color.a = 128;

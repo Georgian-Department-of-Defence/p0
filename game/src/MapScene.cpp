@@ -1,17 +1,14 @@
 #include "MapScene.h"
 #include "Camera.h"
-#include "World.h"
-
-static World f_world;
 
 void MapScene::OnLoad(Game& game)
 {
-	LoadWorld(f_world);
+	LoadWorld(game.world);
 }
 
 void MapScene::OnUnload(Game& game)
 {
-	UnloadWorld(f_world);
+	UnloadWorld(game.world);
 }
 
 void MapScene::OnStart(Game& game)
@@ -25,17 +22,17 @@ void MapScene::OnStop(Game& game)
 void MapScene::OnUpdate(Game& game)
 {
 	UpdateCamera();
-	UpdateWorld(f_world);
+	UpdateWorld(game.world);
 }
 
 void MapScene::OnDraw(Game& game)
 {
-	DrawWorld(f_world);
+	DrawWorld(game.world, game.renderer);
 }
 
 void MapScene::OnDrawDebug(Game& game)
 {
-	DrawWorldDebug(f_world);
+	DrawWorldDebug(game.world, game.renderer);
 }
 
 void MapScene::OnDrawGui(Game& game)

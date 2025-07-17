@@ -117,14 +117,14 @@ void UpdateBuilding(Building& building)
     building.destroy = building.death_timer <= 0.0f;
 }
 
-void DrawBuilding(const Building& building)
+void DrawBuilding(const Building& building, const Renderer& renderer)
 {
     Material& mat = g_materials.building;
     mat.maps[MATERIAL_MAP_DIFFUSE].color = building.color;
     DrawMesh(*building.mesh, mat, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
 
-void DrawBuildingDebug(const Building& building)
+void DrawBuildingDebug(const Building& building, const Renderer& renderer)
 {
     Color color = building.debug_collion ? RED : building.color;
     color.a = 128;
