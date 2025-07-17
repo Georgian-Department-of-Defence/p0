@@ -17,7 +17,7 @@ static void OnClickTest(void* data)
 
 static void RayguiExample();
 
-void WidgetsScene::OnLoad()
+void WidgetsScene::OnLoad(Game& game)
 {
     button.rec = RecFromCenter(GetScreenWidth() / 2, GetScreenHeight() / 2, 80, 40);
     button.color_out = RED;
@@ -31,34 +31,34 @@ void WidgetsScene::OnLoad()
     button.on_click_data = &click_test_data;
 }
 
-void WidgetsScene::OnUnload()
+void WidgetsScene::OnUnload(Game& game)
 {
 }
 
-void WidgetsScene::OnStart()
+void WidgetsScene::OnStart(Game& game)
 {
 }
 
-void WidgetsScene::OnStop()
+void WidgetsScene::OnStop(Game& game)
 {
 }
 
-void WidgetsScene::OnUpdate()
+void WidgetsScene::OnUpdate(Game& game)
 {
     UpdateButton(button, GetMousePosition());
 }
 
-void WidgetsScene::OnDraw()
+void WidgetsScene::OnDraw(Game& game)
 {
 }
 
-void WidgetsScene::OnDrawDebug()
+void WidgetsScene::OnDrawDebug(Game& game)
 {
 }
 
 // The manual button has less setup, and not casting void* is nice, but its technically incorrect since it updates within draw
 // Let's try and use automatic buttons where possible for clear separation between update vs draw
-void WidgetsScene::OnDrawGui()
+void WidgetsScene::OnDrawGui(Game& game)
 {
     // Manual button:
     Rectangle btnTest = RecFromCenter(GetScreenWidth() / 2, GetScreenHeight() / 4, 80, 40);

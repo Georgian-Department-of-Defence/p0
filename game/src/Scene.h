@@ -22,28 +22,28 @@ enum SceneType : size_t
 class Scene
 {
 public:
-	virtual void OnLoad() {}
-	virtual void OnUnload() {}
+	virtual void OnLoad(Game& game) {}
+	virtual void OnUnload(Game& game) {}
 
-	virtual void OnStart() {}
-	virtual void OnStop() {}
+	virtual void OnStart(Game& game) {}
+	virtual void OnStop(Game& game) {}
 
-	virtual void OnUpdate() {}
-	virtual void OnDraw() {}
+	virtual void OnUpdate(Game& game) {}
+	virtual void OnDraw(Game& game) {}
 
-	virtual void OnDrawDebug() {}
-	virtual void OnDrawGui() {}
+	virtual void OnDrawDebug(Game& game) {}
+	virtual void OnDrawGui(Game& game) {}
 
-	static void Change(SceneType scene);
+	static void Change(Game& game, SceneType scene);
 	static SceneType Current();
 
-	static void Load(SceneType scene);
-	static void Unload();
+	static void Load(Game& game, SceneType scene);
+	static void Unload(Game& game);
 
-	static void Update();
-	static void Draw();
-	static void DrawDebug();
-	static void DrawGui();
+	static void Update(Game& game);
+	static void Draw(Game& game);
+	static void DrawDebug(Game& game);
+	static void DrawGui(Game& game);
 
 private:
 	static Scene* s_scenes[SCENE_TYPE_COUNT];

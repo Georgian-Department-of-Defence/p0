@@ -35,8 +35,9 @@ int main()
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
     AppLoad();
-    Scene::Load(SCENE_DEV_MAP);
 
+    Game game;
+    Scene::Load(game, SCENE_DEV_MAP);
     while (!WindowShouldClose())
     {
 #ifdef DEBUG
@@ -47,18 +48,18 @@ int main()
         }
 #endif
 
-        Scene::Update();
+        Scene::Update(game);
         BeginDrawing();
         ClearBackground(BLACK);
-        Scene::Draw();
+        Scene::Draw(game);
 #ifdef DEBUG
-        Scene::DrawDebug();
+        Scene::DrawDebug(game);
 #endif
-        Scene::DrawGui();
+        Scene::DrawGui(game);
         EndDrawing();
     }
+    Scene::Unload(game);
 
-    Scene::Unload();
     AppUnload();
     CloseAudioDevice();
     CloseWindow();

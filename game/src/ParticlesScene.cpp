@@ -1,19 +1,11 @@
 #include "ParticlesScene.h"
 #include "ParticleEmitter.h"
 #include "Camera.h"
-#include "rlgl.h"
-#include "Textures.h"
-
-// Lowkey this looks ugly as hell with f_ in front of everything
-// Feel free to prototype without following the rules.
-// Just be sure to follow convention before finalizing systems!
-//static Camera3D f_camera = { 0 };
-//static ParticleEmitter f_emitter;
 
 static Camera3D camera = { 0 };
 static ParticleEmitter emitter;
 
-void ParticlesScene::OnLoad()
+void ParticlesScene::OnLoad(Game& game)
 {
     camera.position = { 0.0f, 0.0f, 10.0f };
     camera.target = { 0.0f, -4.0f, 0.0f };
@@ -46,34 +38,34 @@ void ParticlesScene::OnLoad()
     }
 }
 
-void ParticlesScene::OnUnload()
+void ParticlesScene::OnUnload(Game& game)
 {
 }
 
-void ParticlesScene::OnStart()
+void ParticlesScene::OnStart(Game& game)
 {
 }
 
-void ParticlesScene::OnStop()
+void ParticlesScene::OnStop(Game& game)
 {
 }
 
-void ParticlesScene::OnUpdate()
+void ParticlesScene::OnUpdate(Game& game)
 {
     UpdateParticleEmitter(emitter);
 }
 
-void ParticlesScene::OnDraw()
+void ParticlesScene::OnDraw(Game& game)
 {
     BeginMode3D(camera);
     DrawParticleEmitter(emitter, camera);
     EndMode3D();
 }
 
-void ParticlesScene::OnDrawDebug()
+void ParticlesScene::OnDrawDebug(Game& game)
 {
 }
 
-void ParticlesScene::OnDrawGui()
+void ParticlesScene::OnDrawGui(Game& game)
 {
 }

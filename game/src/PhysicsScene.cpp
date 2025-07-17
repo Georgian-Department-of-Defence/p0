@@ -13,7 +13,7 @@ static float height = 5.0f;
 static float length = 5.0f;
 static Camera camera;
 
-void PhysicsScene::OnLoad()
+void PhysicsScene::OnLoad(Game& game)
 {
 	// fovy is screen top / bot when orthographic
 	// (yMin = -50, yMax = 50, xMin = -50 * aspect, xMax = 50 * aspect)
@@ -24,19 +24,19 @@ void PhysicsScene::OnLoad()
 	camera.projection = CAMERA_ORTHOGRAPHIC;
 }
 
-void PhysicsScene::OnUnload()
+void PhysicsScene::OnUnload(Game& game)
 {
 }
 
-void PhysicsScene::OnStart()
+void PhysicsScene::OnStart(Game& game)
 {
 }
 
-void PhysicsScene::OnStop()
+void PhysicsScene::OnStop(Game& game)
 {
 }
 
-void PhysicsScene::OnUpdate()
+void PhysicsScene::OnUpdate(Game& game)
 {
 	p0 = Vector3UnitY * sinf(GetTime()) * 20.0f;
 	p1 = Vector3UnitY * cosf(GetTime()) * 20.0f;
@@ -52,7 +52,7 @@ void PhysicsScene::OnUpdate()
 	collision = SphereCapsule(v0, radius, v1, Vector3Zero(), radius, p2.y - p1.y);
 }
 
-void PhysicsScene::OnDraw()
+void PhysicsScene::OnDraw(Game& game)
 {
 	Color color = collision ? RED : GREEN;
 	BeginMode3D(camera);
@@ -62,11 +62,11 @@ void PhysicsScene::OnDraw()
 	EndMode3D();
 }
 
-void PhysicsScene::OnDrawDebug()
+void PhysicsScene::OnDrawDebug(Game& game)
 {
 }
 
-void PhysicsScene::OnDrawGui()
+void PhysicsScene::OnDrawGui(Game& game)
 {
 
 }

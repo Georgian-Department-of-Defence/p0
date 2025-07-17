@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
-class AnimationsScene :
-    public Scene
+
+class AnimationsScene : public Scene
 {
 };
 

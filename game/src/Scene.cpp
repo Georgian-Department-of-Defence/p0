@@ -18,7 +18,7 @@
 Scene* Scene::s_scenes[SCENE_TYPE_COUNT]{};
 SceneType Scene::s_current = SCENE_TYPE_COUNT;
 
-void Scene::Load(SceneType scene)
+void Scene::Load(Game& game, SceneType scene)
 {
 	s_scenes[SCENE_SPLASH_SCREEN] = new SplashScreenScene;
 	s_scenes[SCENE_TEAM_SELECT] = new TeamSelectScene;
@@ -34,30 +34,30 @@ void Scene::Load(SceneType scene)
 	s_scenes[SCENE_DEV_EDITOR] = new EditorScene;
 
 	for (size_t i = 0; i < SCENE_TYPE_COUNT; i++)
-		s_scenes[i]->OnLoad();
+		s_scenes[i]->OnLoad(game);
 
 	s_current = scene;
-	s_scenes[s_current]->OnStart();
+	s_scenes[s_current]->OnStart(game);
 }
 
-void Scene::Unload()
+void Scene::Unload(Game& game)
 {
-	s_scenes[s_current]->OnStop();
+	s_scenes[s_current]->OnStop(game);
 	for (size_t i = 0; i < SCENE_TYPE_COUNT; i++)
 	{
-		s_scenes[i]->OnUnload();
+		s_scenes[i]->OnUnload(game);
 		delete s_scenes[i];
 		s_scenes[i] = nullptr;
 	}
 	s_current = SCENE_TYPE_COUNT;
 }
 
-void Scene::Change(SceneType scene)
+void Scene::Change(Game& game, SceneType scene)
 {
 	// TODO - Add transitions (ie draw fading TV static for 1 second)
-	s_scenes[s_current]->OnStop();
+	s_scenes[s_current]->OnStop(game);
 	s_current = scene;
-	s_scenes[s_current]->OnStart();
+	s_scenes[s_current]->OnStart(game);
 }
 
 SceneType Scene::Current()
@@ -65,22 +65,22 @@ SceneType Scene::Current()
 	return s_current;
 }
 
-void Scene::Update()
+void Scene::Update(Game& game)
 {
-	s_scenes[s_current]->OnUpdate();
+	s_scenes[s_current]->OnUpdate(game);
 }
 
-void Scene::Draw()
+void Scene::Draw(Game& game)
 {
-	s_scenes[s_current]->OnDraw();
+	s_scenes[s_current]->OnDraw(game);
 }
 
-void Scene::DrawDebug()
+void Scene::DrawDebug(Game& game)
 {
-	s_scenes[s_current]->OnDrawDebug();
+	s_scenes[s_current]->OnDrawDebug(game);
 }
 
-void Scene::DrawGui()
+void Scene::DrawGui(Game& game)
 {
-	s_scenes[s_current]->OnDrawGui();
+	s_scenes[s_current]->OnDrawGui(game);
 }

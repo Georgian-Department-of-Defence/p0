@@ -4,41 +4,41 @@
 
 static World f_world;
 
-void MapScene::OnLoad()
+void MapScene::OnLoad(Game& game)
 {
 	LoadWorld(f_world);
 }
 
-void MapScene::OnUnload()
+void MapScene::OnUnload(Game& game)
 {
 	UnloadWorld(f_world);
 }
 
-void MapScene::OnStart()
+void MapScene::OnStart(Game& game)
 {
 }
 
-void MapScene::OnStop()
+void MapScene::OnStop(Game& game)
 {
 }
 
-void MapScene::OnUpdate()
+void MapScene::OnUpdate(Game& game)
 {
 	UpdateCamera();
 	UpdateWorld(f_world);
 }
 
-void MapScene::OnDraw()
+void MapScene::OnDraw(Game& game)
 {
 	DrawWorld(f_world);
 }
 
-void MapScene::OnDrawDebug()
+void MapScene::OnDrawDebug(Game& game)
 {
 	DrawWorldDebug(f_world);
 }
 
-void MapScene::OnDrawGui()
+void MapScene::OnDrawGui(Game& game)
 {
 	// TODO - Add global 2d camera for UI
 	DrawFPS(10, 10);

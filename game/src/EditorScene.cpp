@@ -26,17 +26,17 @@ void RemoveSelected()
     f_selected = nullptr;
 }
 
-void EditorScene::OnLoad()
+void EditorScene::OnLoad(Game& game)
 {
     ::Load(f_map_path, f_buildings);
 }
 
-void EditorScene::OnUnload()
+void EditorScene::OnUnload(Game& game)
 {
     ::Save(f_map_path, f_buildings);
 }
 
-void EditorScene::OnUpdate()
+void EditorScene::OnUpdate(Game& game)
 {
 	UpdateCamera();
     Ray ray = GetScreenToWorldRay(GetMousePosition(), *GetCamera());
@@ -103,7 +103,7 @@ void EditorScene::OnUpdate()
     }
 }
 
-void EditorScene::OnDraw()
+void EditorScene::OnDraw(Game& game)
 {
     BeginMode3D(*GetCamera());
 
@@ -132,10 +132,10 @@ void EditorScene::OnDraw()
     EndMode3D();
 }
 
-void EditorScene::OnDrawDebug()
+void EditorScene::OnDrawDebug(Game& game)
 {
 }
 
-void EditorScene::OnDrawGui()
+void EditorScene::OnDrawGui(Game& game)
 {
 }
