@@ -10,9 +10,8 @@ struct Shaders
 
 struct Materials
 {
-    Material mech;
-    Material building;
-    Material projectile;
+    Material flat;
+    Material lighting;
 };
 
 extern Shaders g_shaders;

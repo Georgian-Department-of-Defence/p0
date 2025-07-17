@@ -90,7 +90,7 @@ void DrawMech(const Mech& mech, const Renderer& renderer)
     Matrix torso_world = torso_rotation * translation;
     Matrix legs_world = legs_rotation * translation;
 
-    Material& material = g_materials.mech;
+    Material& material = g_materials.lighting;
     material.maps[MATERIAL_MAP_DIFFUSE].color = mech.color;
 
     DrawMesh(*g_meshes.mech_torso, material, torso_world);

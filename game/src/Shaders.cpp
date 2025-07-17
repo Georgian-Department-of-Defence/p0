@@ -10,11 +10,9 @@ void LoadShaders()
 	g_shaders.lighting = LoadShader("./assets/shaders/lighting.vs", "./assets/shaders/lighting.fs");
 	g_shaders.shadow = LoadShader("./assets/shaders/shadowmap.vs", "./assets/shaders/shadowmap.fs");
 
-	g_materials.mech = LoadMaterialDefault();
-	g_materials.building = LoadMaterialDefault();
-	g_materials.projectile = LoadMaterialDefault();
-
-	g_materials.building.shader = g_shaders.lighting;
+	g_materials.flat = LoadMaterialDefault();
+	g_materials.lighting = LoadMaterialDefault();
+	g_materials.lighting.shader = g_shaders.lighting;
 }
 
 void UnloadShaders()
@@ -24,11 +22,8 @@ void UnloadShaders()
 	UnloadShader(g_shaders.skinning);
 
 	// Prevent material unload from trying to unload associated shader
-	g_materials.mech.shader.id = rlGetShaderIdDefault();
-	g_materials.building.shader.id = rlGetShaderIdDefault();
-	g_materials.projectile.shader.id = rlGetShaderIdDefault();
-
-	UnloadMaterial(g_materials.mech);
-	UnloadMaterial(g_materials.building);
-	UnloadMaterial(g_materials.projectile);
+	g_materials.lighting.shader.id = rlGetShaderIdDefault();
+	
+	UnloadMaterial(g_materials.lighting);
+	UnloadMaterial(g_materials.flat);
 }

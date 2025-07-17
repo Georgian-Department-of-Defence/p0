@@ -169,7 +169,7 @@ void DrawProjectile(const Projectile& p, const Renderer& renderer)
 	Matrix t = MatrixTranslate(p.pos.x, p.pos.y, p.pos.z);
 	Matrix r = MatrixLookRotation(Vector3Normalize(p.vel));
 
-	Material& material = g_materials.projectile;
+	Material& material = g_materials.flat;
 	material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
 
 	DrawMesh(*p.mesh, material, r * t);

@@ -119,7 +119,7 @@ void UpdateBuilding(Building& building)
 
 void DrawBuilding(const Building& building, const Renderer& renderer)
 {
-    Material& mat = g_materials.building;
+    Material& mat = g_materials.lighting;
     mat.maps[MATERIAL_MAP_DIFFUSE].color = building.color;
     DrawMesh(*building.mesh, mat, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }

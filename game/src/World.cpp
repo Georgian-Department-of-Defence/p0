@@ -55,7 +55,7 @@ void LoadWorld(World& world)
 
     LoadMap(MAP_TEST_1, world);
 
-    Light sun = CreateLight(LIGHT_DIRECTIONAL, { WORLD_MAX_X, WORLD_MAX_Y, 50.0f }, { WORLD_MIN_X, WORLD_MIN_Y, 0.0f }, SKYBLUE, g_shaders.lighting);
+    Light sun = CreateLight(LIGHT_DIRECTIONAL, { WORLD_MAX_X, WORLD_MAX_Y, 100.0f }, Vector3Zeros, SKYBLUE, g_shaders.lighting);
     world.lights.push_back(sun);
 }
 
