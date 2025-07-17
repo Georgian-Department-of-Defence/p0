@@ -15,9 +15,14 @@ void LoadTextures()
         unsigned int id = rlLoadTexture(pixels, tex.width, tex.height, tex.format, tex.mipmaps);
         tex.id = id;
 	}
+
+    //g_textures.mech_red = LoadTexture("./assets/textures/mech_tex_red.png");
+    //g_textures.mech_blue = LoadTexture("./assets/textures/mech_tex_blue.png");
 }
 
 void UnloadTextures()
 {
     rlUnloadTexture(g_textures.white.id);
+    //UnloadTexture(g_textures.mech_blue);
+    //UnloadTexture(g_textures.mech_red);
 }

@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Meshes.h"
 #include "Shaders.h"
+#include "Textures.h"
 #include "Audio.h"
 
 #include "World.h"
@@ -91,7 +92,10 @@ void DrawMech(const Mech& mech, const Renderer& renderer)
     Matrix legs_world = legs_rotation * translation;
 
     Material& material = g_materials.lighting;
-    material.maps[MATERIAL_MAP_DIFFUSE].color = mech.color;
+    MaterialMap& map = material.maps[MATERIAL_MAP_DIFFUSE];
+    map.color = mech.color;
+    //map.color = WHITE;//mech.color;
+    //map.texture = mech.team == TEAM_RED ? g_textures.mech_red : g_textures.mech_blue;
 
     DrawMesh(*g_meshes.mech_torso, material, torso_world);
     DrawMesh(*g_meshes.mech_legs, material, legs_world);
