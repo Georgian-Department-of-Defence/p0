@@ -149,6 +149,7 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 	PlaySound(g_audio.fire_rifle);
 }
 
+
 void UpdateProjectile(Projectile& p, World& world)
 {
 	assert(p.type != PROJECTILE_TYPE_COUNT);

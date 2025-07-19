@@ -32,6 +32,12 @@ struct ProjectileMachineGun
 	float lifetime;
 };
 
+struct ProjectileChainGun
+{
+	float speed;
+	float lifetime;
+};
+
 struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
@@ -74,6 +80,8 @@ struct Projectile
 		ProjectileGrenade grenade;
 		ProjectileMissile missile;
 		ProjectileMachineGun machineGun;
+		ProjectileChainGun chainGun;
+
 	};
 };
 

@@ -36,7 +36,7 @@ void CreateMech(Mech* mech, int player)
     mech->torso_rotation_goal = rotation;
 
     // Default loadout / testing
-    mech->gear[0] = CreateGearMachineGun();
+    mech->gear[0] = CreateGearChainGun();
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
@@ -234,6 +234,17 @@ void FireGear(Mech& mech, World& world, int slot)
             CreateProjectileMachineGun(mech, world, gear_position);
             break;
 
+        case GEAR_CHAINGUN:
+            if (gear.chain_gun.ramp_up >= 10) 
+            {
+                CreateProjectileRifle(mech, world, gear_position);
+            }
+            else {
+                gear.chain_gun.ramp_up += 2;
+                mech.heat -= gear.heat;
+            }
+            break;
+
         case GEAR_TYPE_COUNT:
             assert(false, "Invalid gear type!");
             break;
@@ -272,6 +283,14 @@ void UpdateGear(Mech& mech, World& world, int slot)
             g.missiles--;
         }
     }
+
+    else if (gear.type == GEAR_CHAINGUN)
+    {
+        if (gear.chain_gun.ramp_up != 0)
+            gear.chain_gun.ramp_up -= 1.0f;
+        Clamp(gear.chain_gun.ramp_up, 0.0f, 10.0f);
+    }
+
 }
 
 void UpdateHeat(Mech& mech)

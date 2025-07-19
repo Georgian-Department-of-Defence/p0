@@ -32,6 +32,11 @@ struct GearMachineGun
 
 };
 
+struct GearChainGun
+{
+	float ramp_up;
+};
+
 struct Gear
 {
 	GearType type = GEAR_TYPE_COUNT;
@@ -47,6 +52,7 @@ struct Gear
 		GearGrenadeLauncher grenade_launcher;
 		GearMissileLauncher missile_launcher;
 		GearMachineGun machine_gun;
+		GearChainGun chain_gun;
 	};
 };
 
@@ -104,5 +110,16 @@ inline Gear CreateGearMachineGun()
 	g.cooldown_max = 0.12f;
 	g.cooldown = 0.0f;
 	g.heat = 10;
+	return g;
+}
+
+inline Gear CreateGearChainGun()
+{
+	Gear g;
+	g.type = GEAR_CHAINGUN;
+	g.cooldown_max = 0.05f;
+	g.cooldown = 0.0f;
+	g.heat = 5;
+	g.chain_gun.ramp_up = 0;
 	return g;
 }
