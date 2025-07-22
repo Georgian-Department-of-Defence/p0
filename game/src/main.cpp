@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "raymathext.h"
 #include "rlgl.h"
+#include "glad.h"
 
 #include "Camera.h"
 #include "Meshes.h"
@@ -31,7 +32,7 @@ void AppUnload()
 
 int main()
 {
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));

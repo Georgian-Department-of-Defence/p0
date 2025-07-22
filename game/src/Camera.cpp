@@ -14,15 +14,16 @@ void SetCursor(bool enabled)
 void LoadCamera()
 {
     Camera td_camera;
-    //td_camera.position = { 0.0f, -45.0f, 230.0f };
-    //td_camera.target = { 0.0f, 5.0f, 0.0f };
-    td_camera.position = { -15.0f, 12.0f, 92.5 };
-    td_camera.target = { -8.25f, 77.5f, -132.5f };
+    td_camera.position = { 0.0f, -45.0f, 230.0f };
+    td_camera.target = { 0.0f, 5.0f, 0.0f };
     td_camera.up = Vector3UnitY;
     td_camera.fovy = 30.0f;
     td_camera.projection = CAMERA_PERSPECTIVE;
     //CameraPitch(&td_camera, 10.0f * DEG2RAD, false, false, true);
     // Original FoV was 28.5 degrees
+    //td_camera.position = { -15.0f, 12.0f, 92.5 };
+    //td_camera.target = { -8.25f, 77.5f, -132.5f };
+    // MSAA test ^
 
     Camera fp_camera;
     fp_camera.position = { 0.0f, 25.0f, 2.0f };

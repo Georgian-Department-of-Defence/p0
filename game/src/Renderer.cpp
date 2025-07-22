@@ -1,6 +1,7 @@
 #include "Renderer.h"
-#include "rlgl.h"
 #include "raymathext.h"
+#include "rlgl.h"
+#include "glad.h"
 #include "Shaders.h"
 #include <cassert>
 
@@ -12,6 +13,12 @@ void LoadRenderer(Renderer& r)
 	rlFramebufferAttach(r.fbo, r.tex_color, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
 	rlFramebufferAttach(r.fbo, r.tex_depth, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_RENDERBUFFER, 0);
 	assert(rlFramebufferComplete(r.fbo));
+
+	// Verify MSAA is enabled
+	int sample_buffers, samples;
+	glGetIntegerv(GL_SAMPLE_BUFFERS, &sample_buffers);
+	glGetIntegerv(GL_SAMPLES, &samples);
+	assert(sample_buffers > 0 && samples == 4);
 }
 
 void UnloadRenderer(Renderer& r)
