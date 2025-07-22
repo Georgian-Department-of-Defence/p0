@@ -175,8 +175,8 @@ void DrawEntities(const World& world, const Renderer& renderer)
 
 void DrawParticles(const World& world, const Renderer& renderer)
 {
-    for (const Mech& mech : world.mechs)
-        DrawParticleEmitter(mech.trail, *GetCamera());
+    //for (const Mech& mech : world.mechs)
+    //    DrawParticleEmitter(mech.trail, *GetCamera());
 
     for (const Building& building : world.buildings)
     {

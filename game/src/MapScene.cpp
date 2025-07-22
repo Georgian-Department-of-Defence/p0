@@ -37,6 +37,4 @@ void MapScene::OnDrawDebug(Game& game)
 
 void MapScene::OnDrawGui(Game& game)
 {
-	// TODO - Add global 2d camera for UI
-	DrawFPS(10, 10);
 }

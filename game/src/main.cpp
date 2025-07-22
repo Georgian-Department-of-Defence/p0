@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "raymathext.h"
+#include "rlgl.h"
 
 #include "Camera.h"
 #include "Meshes.h"
@@ -35,6 +36,7 @@ int main()
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
     AppLoad();
+    rlClearColor(255, 0, 255, 255);
 
     Game game;
     LoadRenderer(game.renderer);
@@ -52,11 +54,32 @@ int main()
         Scene::Update(game);
         BeginDrawing();
         ClearBackground(BLACK);
+        
+        rlActiveDrawBuffers(1);
+        rlEnableFramebuffer(game.renderer.fbo);
+        rlClearScreenBuffers();
+
         Scene::Draw(game);
 #ifdef DEBUG
         Scene::DrawDebug(game);
 #endif
         Scene::DrawGui(game);
+
+        rlDisableFramebuffer();
+
+        Texture2D screen_tex;
+        screen_tex.id = game.renderer.tex_color;
+        screen_tex.width = RENDER_WIDTH;
+        screen_tex.height = RENDER_HEIGHT;
+
+        Rectangle screen_rec;
+        screen_rec.x = 0;
+        screen_rec.y = 0;
+        screen_rec.width = GetScreenWidth();
+        screen_rec.height = -GetScreenHeight();
+
+        DrawTextureRec(screen_tex, screen_rec, Vector2Zeros, WHITE);
+        DrawFPS(10, 10);
         EndDrawing();
     }
     UnloadRenderer(game.renderer);
