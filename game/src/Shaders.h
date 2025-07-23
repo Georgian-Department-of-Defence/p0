@@ -6,6 +6,7 @@ struct Shaders
     Shader skinning;
     Shader lighting;
     Shader shadow;
+    Shader depth;
 };
 
 struct Materials
