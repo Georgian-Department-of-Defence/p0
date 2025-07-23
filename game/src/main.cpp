@@ -58,37 +58,30 @@ int main()
         ClearBackground(MAGENTA);
         // Anything not sampled from custom fbo will have a magenta background
         
-        rlEnableFramebuffer(game.renderer.fbo);
-        rlViewport(0, 0, FramebufferWidth(), FramebufferHeight());
-            rlActiveDrawBuffers(1);
+        BeginTextureMode(game.renderer.rt_downsample);
             ClearBackground(BLACK);
             Scene::Draw(game);
 #ifdef DEBUG
             Scene::DrawDebug(game);
 #endif
             Scene::DrawGui(game);
-        rlDisableFramebuffer();
-        rlViewport(0, 0, GetScreenWidth(), GetScreenHeight());
-
-        Texture2D screen_tex;
-        screen_tex.id = game.renderer.tex_color;
-        screen_tex.width = FramebufferWidth();
-        screen_tex.height = FramebufferHeight();
+        EndTextureMode();
+        
+        Texture rt = game.renderer.rt_downsample.texture;
 
         Rectangle src_rec;
         src_rec.x = 0;
         src_rec.y = 0;
-        src_rec.width = FramebufferWidth();
-        src_rec.height = -FramebufferHeight();
-
+        src_rec.width = rt.width;
+        src_rec.height = -rt.height;
+        
         Rectangle dst_rec;
         dst_rec.x = 0;
         dst_rec.y = 0;
         dst_rec.width = GetScreenWidth();
         dst_rec.height = GetScreenHeight();
-
-        DrawTexturePro(screen_tex, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
-        //DrawTextureRec(screen_tex, screen_rec, Vector2Zeros, WHITE);
+        
+        DrawTexturePro(rt, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
         DrawFPS(10, 10);
         EndDrawing();
     }
