@@ -57,8 +57,8 @@ void LoadWorld(World& world)
     LoadLightUniforms(sun, 0, g_shaders.lighting);
     sun.direction = Vector3Normalize(sun_target - sun_position);
     sun.color = Vector3Ones;
-    sun.ambient = 0.4f;
-    sun.diffuse = 1.0f;
+    sun.ambient = 0.2f;
+    sun.diffuse = 0.75f;
     sun.specular = 1.0f;
     sun.specular_exponent = 64.0f;
     world.lights.push_back(sun);

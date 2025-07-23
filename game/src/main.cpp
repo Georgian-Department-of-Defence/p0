@@ -12,7 +12,7 @@
 #include "Scene.h"
 #include "Game.h"
 
-void AppLoad()
+void LoadAssets()
 {
     LoadCamera();
     LoadMeshes();
@@ -21,7 +21,7 @@ void AppLoad()
     LoadAudio();
 }
 
-void AppUnload()
+void UnloadAssets()
 {
     UnloadAudio();
     UnloadTextures();
@@ -32,14 +32,15 @@ void AppUnload()
 
 int main()
 {
-    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
+    Game game;
+    game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT;
+
+    SetConfigFlags(game.renderer.flags);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
-    AppLoad();
-    rlClearColor(255, 0, 255, 255);
 
-    Game game;
+    LoadAssets();
     LoadRenderer(game.renderer);
     Scene::Load(game, SCENE_DEV_MAP);
     while (!WindowShouldClose())
@@ -51,42 +52,50 @@ int main()
                 TraceLog(LOG_INFO, "Gamepad %i %s", i, IsGamepadAvailable(i) ? "connected" : "disconnected");
         }
 #endif
-
         Scene::Update(game);
+
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(MAGENTA);
+        // Anything not sampled from custom fbo will have a magenta background
         
-        rlActiveDrawBuffers(1);
         rlEnableFramebuffer(game.renderer.fbo);
-        rlClearScreenBuffers();
-
-        Scene::Draw(game);
+        rlViewport(0, 0, FramebufferWidth(), FramebufferHeight());
+            rlActiveDrawBuffers(1);
+            ClearBackground(BLACK);
+            Scene::Draw(game);
 #ifdef DEBUG
-        Scene::DrawDebug(game);
+            Scene::DrawDebug(game);
 #endif
-        Scene::DrawGui(game);
-
+            Scene::DrawGui(game);
         rlDisableFramebuffer();
+        rlViewport(0, 0, GetScreenWidth(), GetScreenHeight());
 
         Texture2D screen_tex;
         screen_tex.id = game.renderer.tex_color;
-        screen_tex.width = RENDER_WIDTH;
-        screen_tex.height = RENDER_HEIGHT;
+        screen_tex.width = FramebufferWidth();
+        screen_tex.height = FramebufferHeight();
 
-        Rectangle screen_rec;
-        screen_rec.x = 0;
-        screen_rec.y = 0;
-        screen_rec.width = GetScreenWidth();
-        screen_rec.height = -GetScreenHeight();
+        Rectangle src_rec;
+        src_rec.x = 0;
+        src_rec.y = 0;
+        src_rec.width = FramebufferWidth();
+        src_rec.height = -FramebufferHeight();
 
-        DrawTextureRec(screen_tex, screen_rec, Vector2Zeros, WHITE);
+        Rectangle dst_rec;
+        dst_rec.x = 0;
+        dst_rec.y = 0;
+        dst_rec.width = GetScreenWidth();
+        dst_rec.height = GetScreenHeight();
+
+        DrawTexturePro(screen_tex, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+        //DrawTextureRec(screen_tex, screen_rec, Vector2Zeros, WHITE);
         DrawFPS(10, 10);
         EndDrawing();
     }
     UnloadRenderer(game.renderer);
     Scene::Unload(game);
+    UnloadAssets();
 
-    AppUnload();
     CloseAudioDevice();
     CloseWindow();
     return 0;
