@@ -123,16 +123,21 @@ void DrawWorld(const World& world, const Renderer& renderer)
 {
     BeginMode3D(*GetCamera());
 
+    float grid_extents = 100.0f;
+    float grid_spacing = 4.0f;
+    int grid_slices = grid_extents / grid_spacing;
+    float x = grid_extents * 0.5f - grid_spacing * 0.5f;
+
         rlPushMatrix();
         rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        rlTranslatef(50.0f, 0.0f, 0.0f);
-        DrawGrid(100, 1.0f);
+        rlTranslatef(x, 0.0f, 0.0f);
+        DrawGrid(grid_slices, grid_spacing);
         rlPopMatrix();
 
         rlPushMatrix();
         rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        rlTranslatef(-50.0f, 0.0f, 0.0f);
-        DrawGrid(100, 1.0f);
+        rlTranslatef(-x, 0.0f, 0.0f);
+        DrawGrid(grid_slices, grid_spacing);
         rlPopMatrix();
         
         DrawEntities(world, renderer);
