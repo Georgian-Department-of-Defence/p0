@@ -107,7 +107,7 @@ void DrawMechDebug(const Mech& mech, const Renderer& renderer)
     Color color = mech.debug_collion ? SKYBLUE : mech.color;
     color.a = 128;
 
-    //DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
+    DrawAxesDebug(mech.pos, QuaternionToMatrix(mech.torso_rotation), 25.0f, 10.0f);
     for (int i = 0; i < 4; i++)
         DrawSphere(mech.gear_positions[i], 0.5f, DARKGREEN);
 

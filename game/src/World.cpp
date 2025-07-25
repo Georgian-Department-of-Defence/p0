@@ -51,11 +51,16 @@ void LoadWorld(World& world)
 
     LoadMap(MAP_TEST_1, world);
 
-    Vector3 sun_position = { WORLD_MAX_X, WORLD_MAX_Y, 100.0f };
-    Vector3 sun_target = Vector3Zeros;
+    Camera& cam = world.shadow_map_camera;
+    cam.position = { WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 2.0f, 100.0f * 2.0f };
+    cam.target = Vector3Zeros;
+    cam.up = Vector3UnitZ;
+    cam.fovy = 150.0f;
+    cam.projection = CAMERA_ORTHOGRAPHIC;
+
     Light sun;
     LoadLightUniforms(sun, 0, g_shaders.lighting);
-    sun.direction = Vector3Normalize(sun_target - sun_position);
+    sun.direction = Vector3Normalize(cam.target - cam.position);
     sun.color = Vector3Ones;
     sun.ambient = 0.2f;
     sun.diffuse = 0.75f;
@@ -121,7 +126,12 @@ void UpdateWorld(World& world)
 
 void DrawWorld(const World& world, const Renderer& renderer)
 {
-    BeginMode3D(*GetCamera());
+    //BeginMode3D(g_camera_system.shadow_map_camera);
+    //
+    //EndMode3D();
+
+    BeginMode3D(world.shadow_map_camera);
+    //BeginMode3D(*GetCamera());
 
     float grid_extents = 100.0f;
     float grid_spacing = 4.0f;
@@ -142,6 +152,8 @@ void DrawWorld(const World& world, const Renderer& renderer)
         
         DrawEntities(world, renderer);
         DrawParticles(world, renderer);
+
+        //DrawSphere(Vector3UnitX * 200.0f + Vector3UnitY * 100.0f + Vector3UnitZ * 200.0f, 10.0f, YELLOW);
 
     EndMode3D();
 }
