@@ -43,6 +43,11 @@ int main()
     LoadAssets();
     LoadRenderer(game.renderer);
     Scene::Load(game, SCENE_DEV_MAP);
+
+    int loc_depth_tex = GetShaderLocation(g_shaders.depth, "tex_depth");
+    int loc_z_near = GetShaderLocation(g_shaders.depth, "z_near");
+    int loc_z_far = GetShaderLocation(g_shaders.depth, "z_far");
+
     while (!WindowShouldClose())
     {
 #ifdef DEBUG
@@ -67,13 +72,13 @@ int main()
             Scene::DrawGui(game);
         EndTextureMode();
         
-        Texture rt = game.renderer.rt_downsample.texture;
+        RenderTexture& rt = game.renderer.rt_downsample;
 
         Rectangle src_rec;
         src_rec.x = 0;
         src_rec.y = 0;
-        src_rec.width = rt.width;
-        src_rec.height = -rt.height;
+        src_rec.width = rt.texture.width;
+        src_rec.height = -rt.texture.height;
         
         Rectangle dst_rec;
         dst_rec.x = 0;
@@ -81,7 +86,17 @@ int main()
         dst_rec.width = GetScreenWidth();
         dst_rec.height = GetScreenHeight();
         
-        DrawTexturePro(rt, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+        DrawTexturePro(rt.texture, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+
+        BeginShaderMode(g_shaders.depth);
+            float z_near = rlGetCullDistanceNear();
+            float z_far = rlGetCullDistanceFar();
+            SetShaderValue(g_shaders.depth, loc_z_near, &z_near, RL_SHADER_UNIFORM_FLOAT);
+            SetShaderValue(g_shaders.depth, loc_z_far, &z_far, RL_SHADER_UNIFORM_FLOAT);
+            SetShaderValueTexture(g_shaders.depth, loc_depth_tex, rt.depth);
+            DrawTexturePro(rt.depth, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+        EndShaderMode();
+
         DrawFPS(10, 10);
         EndDrawing();
     }
