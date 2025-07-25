@@ -164,14 +164,12 @@ void UpdateProjectile(Projectile& p, World& world)
 	p.destroy |= !CheckCollisionBoxSphere(WorldBox(), p.pos, 1.0f);
 }
 
-void DrawProjectile(const Projectile& p, const Renderer& renderer)
+void DrawProjectile(const Projectile& p, Material material, const Renderer& renderer)
 {
 	Matrix t = MatrixTranslate(p.pos.x, p.pos.y, p.pos.z);
 	Matrix r = MatrixLookRotation(Vector3Normalize(p.vel));
 
-	Material& material = g_materials.flat;
 	material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
-
 	DrawMesh(*p.mesh, material, r * t);
 }
 

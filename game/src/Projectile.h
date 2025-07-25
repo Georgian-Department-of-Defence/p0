@@ -85,5 +85,5 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos);
 
 void UpdateProjectile(Projectile& p, World& world);
-void DrawProjectile(const Projectile& p, const Renderer& renderer);
+void DrawProjectile(const Projectile& p, Material material, const Renderer& renderer);
 void DrawProjectileDebug(const Projectile& p, const Renderer& renderer);

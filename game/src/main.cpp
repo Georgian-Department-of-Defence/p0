@@ -57,20 +57,12 @@ int main()
 
         BeginDrawing();
         ClearBackground(MAGENTA);
-        // Anything not sampled from custom fbo will have a magenta background
-        // Note: MSAA doesn't work for RT's becuase raylib doesn't use glRenderbufferStorageMultisample 
         
-        BeginTextureMode(game.renderer.rt_downsample);
-            ClearBackground(BLACK);
             Scene::Draw(game);
 //#ifdef DEBUG
 //            Scene::DrawDebug(game);
 //#endif
-            Scene::DrawGui(game);
-        EndTextureMode();
-
-        //DrawColor(game.renderer.rt_downsample.texture);
-        DrawDepth(game.renderer.rt_downsample.depth);
+//            Scene::DrawGui(game);
 
         DrawFPS(10, 10);
         EndDrawing();

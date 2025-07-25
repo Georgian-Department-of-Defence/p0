@@ -16,7 +16,7 @@ void UpdateDebug(World& world);
 void UpdateEntities(World& world);
 void UpdateParticles(World& world);
 
-void DrawEntities(const World& world, const Renderer& renderer);
+void DrawWorldGrid();
 void DrawParticles(const World& world, const Renderer& renderer);
 
 void UpdateCollisionsMechMech(Mechs& mechs);
@@ -126,36 +126,47 @@ void UpdateWorld(World& world)
 
 void DrawWorld(const World& world, const Renderer& renderer)
 {
-    //BeginMode3D(g_camera_system.shadow_map_camera);
-    //
-    //EndMode3D();
+    Material material = g_materials.flat;
+    Camera cam = world.shadow_map_camera;
 
-    BeginMode3D(world.shadow_map_camera);
-    //BeginMode3D(*GetCamera());
+    // Must call texture mode before 3d mode because texture mode sets an ortho projection against my will (which 3d mode overwrites)!
+    BeginTextureMode(renderer.rt_shadowmap);
+    ClearBackground(ORANGE);
+        BeginMode3D(cam);
+        for (const Mech& mech : world.mechs)
+            DrawMech(mech, material, renderer);
+        for (const Building& building : world.buildings)
+            DrawBuilding(building, material, renderer);
+        for (const Projectile& projectile : world.projectiles)
+            DrawProjectile(projectile, material, renderer);
+        EndMode3D();
+    EndTextureMode();
 
-    float grid_extents = 100.0f;
-    float grid_spacing = 4.0f;
-    int grid_slices = grid_extents / grid_spacing;
-    float x = grid_extents * 0.5f - grid_spacing * 0.5f;
-
-        rlPushMatrix();
-        rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        rlTranslatef(x, 0.0f, 0.0f);
-        DrawGrid(grid_slices, grid_spacing);
-        rlPopMatrix();
-
-        rlPushMatrix();
-        rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        rlTranslatef(-x, 0.0f, 0.0f);
-        DrawGrid(grid_slices, grid_spacing);
-        rlPopMatrix();
+    BeginTextureMode(renderer.rt_downsample);
+    ClearBackground(BLACK);
+        cam = *GetCamera();
+        BeginMode3D(cam);
+        DrawWorldGrid(); // <-- Uses hardcoded vertex colour, should implement manually if we go with grid lines for background
         
-        DrawEntities(world, renderer);
+        material = g_materials.lighting;
+        SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
+    
+        for (const Mech& mech : world.mechs)
+            DrawMech(mech, material, renderer);
+    
+        for (const Building& building : world.buildings)
+            DrawBuilding(building, material, renderer);
+    
+        material = g_materials.flat;
+        for (const Projectile& projectile : world.projectiles)
+            DrawProjectile(projectile, material, renderer);
+    
         DrawParticles(world, renderer);
+        EndMode3D();
+    EndTextureMode();
 
-        //DrawSphere(Vector3UnitX * 200.0f + Vector3UnitY * 100.0f + Vector3UnitZ * 200.0f, 10.0f, YELLOW);
-
-    EndMode3D();
+    //DrawDepth(renderer.rt_shadowmap);
+    DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)
@@ -175,19 +186,24 @@ void DrawWorldDebug(const World& world, const Renderer& renderer)
     EndMode3D();
 }
 
-void DrawEntities(const World& world, const Renderer& renderer)
+void DrawWorldGrid()
 {
-    Vector3 cam_pos = GetCamera()->position;
-    SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam_pos, SHADER_UNIFORM_VEC3);
+    float grid_extents = 100.0f;
+    float grid_spacing = 4.0f;
+    int grid_slices = grid_extents / grid_spacing;
+    float x = grid_extents * 0.5f - grid_spacing * 0.5f;
 
-    for (const Mech& mech : world.mechs)
-        DrawMech(mech, renderer);
+    rlPushMatrix();
+    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    rlTranslatef(x, 0.0f, 0.0f);
+    DrawGrid(grid_slices, grid_spacing);
+    rlPopMatrix();
 
-    for (const Building& building : world.buildings)
-        DrawBuilding(building, renderer);
-
-    for (const Projectile& projectile : world.projectiles)
-        DrawProjectile(projectile, renderer);
+    rlPushMatrix();
+    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    rlTranslatef(-x, 0.0f, 0.0f);
+    DrawGrid(grid_slices, grid_spacing);
+    rlPopMatrix();
 }
 
 void DrawParticles(const World& world, const Renderer& renderer)

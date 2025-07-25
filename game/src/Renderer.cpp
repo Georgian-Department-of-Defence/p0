@@ -35,10 +35,10 @@ void LoadRenderer(Renderer& r)
         assert(rlFramebufferComplete(rt.id));
     }
 
-    // Shadowmap, 4k
+    // Shadowmap, same resolution as above buffer for no monkey business till we get shadowmapping first draft working
     {
-        int rt_width = 3840;
-        int rt_height = 2160;
+        int rt_width = 640;//3840;
+        int rt_height = 360;//2160;
 
         RenderTexture& rt = r.rt_shadowmap;
         rt.texture.width = rt_width;
@@ -56,13 +56,13 @@ void UnloadRenderer(Renderer& r)
 	UnloadRenderTexture(r.rt_downsample);
 }
 
-void DrawColor(Texture tex)
+void DrawColor(RenderTexture rt)
 {
     Rectangle src_rec;
     src_rec.x = 0;
     src_rec.y = 0;
-    src_rec.width = tex.width;
-    src_rec.height = -tex.height;
+    src_rec.width = rt.texture.width;
+    src_rec.height = -rt.texture.height;
 
     Rectangle dst_rec;
     dst_rec.x = 0;
@@ -70,16 +70,16 @@ void DrawColor(Texture tex)
     dst_rec.width = GetScreenWidth();
     dst_rec.height = GetScreenHeight();
 
-    DrawTexturePro(tex, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+    DrawTexturePro(rt.texture, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
 }
 
-void DrawDepth(Texture tex)
+void DrawDepth(RenderTexture rt)
 {
     Rectangle src_rec;
     src_rec.x = 0;
     src_rec.y = 0;
-    src_rec.width = tex.width;
-    src_rec.height = -tex.height;
+    src_rec.width = rt.depth.width;
+    src_rec.height = -rt.depth.height;
 
     Rectangle dst_rec;
     dst_rec.x = 0;
@@ -95,8 +95,8 @@ void DrawDepth(Texture tex)
         float z_far = rlGetCullDistanceFar();
         SetShaderValue(g_shaders.depth, loc_z_near, &z_near, RL_SHADER_UNIFORM_FLOAT);
         SetShaderValue(g_shaders.depth, loc_z_far, &z_far, RL_SHADER_UNIFORM_FLOAT);
-        SetShaderValueTexture(g_shaders.depth, loc_depth_tex, tex);
-        DrawTexturePro(tex, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+        SetShaderValueTexture(g_shaders.depth, loc_depth_tex, rt.depth);
+        DrawTexturePro(rt.depth, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
     EndShaderMode();
 }
 

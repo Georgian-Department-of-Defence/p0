@@ -81,7 +81,7 @@ void UpdateMech(Mech& mech, World& world)
     UpdateMotion(mech);
 }
 
-void DrawMech(const Mech& mech, const Renderer& renderer)
+void DrawMech(const Mech& mech, Material material, const Renderer& renderer)
 {
     Matrix translation = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
 
@@ -91,9 +91,7 @@ void DrawMech(const Mech& mech, const Renderer& renderer)
     Matrix torso_world = torso_rotation * translation;
     Matrix legs_world = legs_rotation * translation;
 
-    Material& material = g_materials.lighting;
-    MaterialMap& map = material.maps[MATERIAL_MAP_DIFFUSE];
-    map.color = mech.color;
+    material.maps[MATERIAL_MAP_DIFFUSE].color = mech.color;
     //map.color = WHITE;//mech.color;
     //map.texture = mech.team == TEAM_RED ? g_textures.mech_red : g_textures.mech_blue;
 

@@ -118,12 +118,10 @@ void UpdateBuilding(Building& building)
     building.destroy = building.death_timer <= 0.0f;
 }
 
-void DrawBuilding(const Building& building, const Renderer& renderer)
+void DrawBuilding(const Building& building, Material material, const Renderer& renderer)
 {
-    Material& material = g_materials.lighting;
-    MaterialMap& map = material.maps[MATERIAL_MAP_DIFFUSE];
-    map.color = building.color;
-    map.texture = g_textures.white;
+    material.maps[MATERIAL_MAP_DIFFUSE].color = building.color;
+    material.maps[MATERIAL_MAP_DIFFUSE].texture = g_textures.white;
     DrawMesh(*building.mesh, material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
 

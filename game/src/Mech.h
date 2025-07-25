@@ -56,7 +56,7 @@ void DestroyMech(Mech* mech);
 
 void UpdateMech(Mech& mech, World& world);
 
-void DrawMech(const Mech& mech, const Renderer& renderer);
+void DrawMech(const Mech& mech, Material material, const Renderer& renderer);
 void DrawMechDebug(const Mech& mech, const Renderer& renderer);
 
 inline Vector3 TorsoDirection(const Mech& mech)
