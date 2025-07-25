@@ -10,3 +10,6 @@ struct Renderer
 
 void LoadRenderer(Renderer& renderer);
 void UnloadRenderer(Renderer& renderer);
+
+void DrawColor(Texture color);
+void DrawDepth(Texture depth);

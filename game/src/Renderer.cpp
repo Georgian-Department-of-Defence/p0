@@ -1,6 +1,8 @@
 #include "Renderer.h"
+#include "raymathext.h"
 #include "rlgl.h"
 #include "glad.h"
+#include "Shaders.h"
 #include <cassert>
 
 Texture LoadColorBuffer(int width, int height, int format);
@@ -19,8 +21,9 @@ void LoadRenderer(Renderer& r)
 
     // Downsample, 360p
     {
-        int rt_width = 640;
-        int rt_height = 360;
+        int rt_scale = 1;
+        int rt_width = 640 * rt_scale;
+        int rt_height = 360 * rt_scale;
 
         RenderTexture& rt = r.rt_downsample;
         rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
@@ -51,6 +54,50 @@ void UnloadRenderer(Renderer& r)
 {
     UnloadRenderTexture(r.rt_shadowmap);
 	UnloadRenderTexture(r.rt_downsample);
+}
+
+void DrawColor(Texture tex)
+{
+    Rectangle src_rec;
+    src_rec.x = 0;
+    src_rec.y = 0;
+    src_rec.width = tex.width;
+    src_rec.height = -tex.height;
+
+    Rectangle dst_rec;
+    dst_rec.x = 0;
+    dst_rec.y = 0;
+    dst_rec.width = GetScreenWidth();
+    dst_rec.height = GetScreenHeight();
+
+    DrawTexturePro(tex, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+}
+
+void DrawDepth(Texture tex)
+{
+    Rectangle src_rec;
+    src_rec.x = 0;
+    src_rec.y = 0;
+    src_rec.width = tex.width;
+    src_rec.height = -tex.height;
+
+    Rectangle dst_rec;
+    dst_rec.x = 0;
+    dst_rec.y = 0;
+    dst_rec.width = GetScreenWidth();
+    dst_rec.height = GetScreenHeight();
+
+    BeginShaderMode(g_shaders.depth);
+        int loc_depth_tex = GetShaderLocation(g_shaders.depth, "tex_depth");
+        int loc_z_near = GetShaderLocation(g_shaders.depth, "z_near");
+        int loc_z_far = GetShaderLocation(g_shaders.depth, "z_far");
+        float z_near = rlGetCullDistanceNear();
+        float z_far = rlGetCullDistanceFar();
+        SetShaderValue(g_shaders.depth, loc_z_near, &z_near, RL_SHADER_UNIFORM_FLOAT);
+        SetShaderValue(g_shaders.depth, loc_z_far, &z_far, RL_SHADER_UNIFORM_FLOAT);
+        SetShaderValueTexture(g_shaders.depth, loc_depth_tex, tex);
+        DrawTexturePro(tex, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+    EndShaderMode();
 }
 
 Texture LoadColorBuffer(int width, int height, int format)
