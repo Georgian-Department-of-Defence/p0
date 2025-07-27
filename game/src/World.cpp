@@ -139,7 +139,8 @@ void DrawWorld(const World& world, const Renderer& renderer)
         material = g_materials.lighting;
         SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
         SetShaderValueMatrix(g_shaders.lighting, world.lights.back().loc_light_view_proj, lightView * lightProj);
-        
+
+        material.maps[MATERIAL_MAP_DIFFUSE].color = WHITE;
         DrawMesh(world.ground, material, MatrixRotateX(PI * 0.5f));
 
         for (const Mech& mech : world.mechs)
@@ -147,8 +148,9 @@ void DrawWorld(const World& world, const Renderer& renderer)
     
         for (const Building& building : world.buildings)
             DrawBuilding(building, material, renderer);
-    
-        material = g_materials.flat;
+        
+        // TODO -- Refine projectile shading. Light + shadow looks good on 3d projectiles, but not 2d projectiles
+        //material = g_materials.flat;
         for (const Projectile& projectile : world.projectiles)
             DrawProjectile(projectile, material, renderer);
     
@@ -164,6 +166,7 @@ void DrawWorld(const World& world, const Renderer& renderer)
         GL_COLOR_BUFFER_BIT);
     rlDisableFramebuffer();
 
+    //DrawColor(renderer.rt_main);
     DrawColor(renderer.rt_downsample);
 }
 
