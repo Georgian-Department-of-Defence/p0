@@ -98,23 +98,19 @@ void main()
 
     vec4 texelColor = texture(texture0, fragTexCoord);
     vec4 tint = colDiffuse * fragColor;
+    finalColor = texelColor * tint * vec4(lighting, 1.0);
 
-    vec4 objectColor = texelColor * tint;
-    vec4 lightColor = vec4(lighting, 1.0);
+    float bias = 0.003; // <-- 0.0025 is too small, 0.004 is too large
+    bias = max(dot(N, -lights[0].direction) * bias * 2.0, bias);
 
-    float bias = 0.001;//max(0.0002 * (1.0 - dot(N, -lights[0].direction)), 0.00002) + 0.00001;
     vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
     lightSpace.xyz /= lightSpace.w;
     lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;
-    vec2 screenSpace = lightSpace.xy;
-    float lightDepth = lightSpace.z;
-    float shadowDepth = texture(texture1, screenSpace).r;
-    float shadowFactor = (lightDepth - bias) > shadowDepth ? 1.0 : 0.0;
-    // Fragment in-shadow if behind shadow buffer
 
-    finalColor = objectColor * lightColor * shadowFactor;
-    //finalColor = objectColor * lightColor * texture(texture1, screenSpace);
-    //finalColor = vec4(screenSpace, 0.0, 1.0);
+    float shadowDepth = texture(texture1, lightSpace.xy).r;
+    float inLight = (lightSpace.z - bias) < shadowDepth ? 1.0 : 0.0;
+    vec4 shadowColor = vec4(vec3(1.0) * max(inLight, 0.4), 1.0);
 
+    finalColor = finalColor * shadowColor;
     //finalColor = pow(finalColor, vec4(1.0/2.2));
 }
