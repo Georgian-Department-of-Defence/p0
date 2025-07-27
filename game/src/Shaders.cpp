@@ -21,11 +21,7 @@ void LoadShaders()
 	g_materials.lighting = LoadMaterialDefault();
 	g_materials.lighting.shader = g_shaders.lighting;
 
-	Image img = GenImageGradientLinear(512, 512, 0, RED, BLUE);
-	Texture tex = LoadTextureFromImage(img);
-
 	g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(g_shaders.lighting, "viewPos");
-	g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = tex;
 }
 
 void UnloadShaders()

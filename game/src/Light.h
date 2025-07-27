@@ -37,7 +37,6 @@ struct Light
     int loc_direction;
 
     int loc_light_view_proj;
-    int loc_shadow_map;
 };
 
 void LoadLightUniforms(Light& light, int light_index, Shader shader);

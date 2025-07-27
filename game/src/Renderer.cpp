@@ -47,6 +47,12 @@ void LoadRenderer(Renderer& r)
         rt.id = rlLoadFramebuffer();
         rlFramebufferAttach(rt.id, rt.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
         assert(rlFramebufferComplete(rt.id));
+
+        // Proof of concept:
+        //Image img = GenImageGradientLinear(512, 512, 0, RED, BLUE);
+        //Texture tex = LoadTextureFromImage(img);
+        //g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = tex;
+        g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = rt.depth;
     }
 }
 

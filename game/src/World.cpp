@@ -156,9 +156,9 @@ void DrawWorld(const World& world, const Renderer& renderer)
         BeginMode3D(cam);
         DrawWorldGrid(); // <-- Uses hardcoded vertex colour, should implement manually if we go with grid lines for background
         
-        Matrix lightVP = lightView * lightProj;
         material = g_materials.lighting;
         SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
+        SetShaderValueMatrix(g_shaders.lighting, world.lights.back().loc_light_view_proj, lightView * lightProj);
     
         for (const Mech& mech : world.mechs)
             DrawMech(mech, material, renderer);

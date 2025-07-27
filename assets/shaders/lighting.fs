@@ -102,17 +102,19 @@ void main()
     vec4 objectColor = texelColor * tint;
     vec4 lightColor = vec4(lighting, 1.0);
 
-    //vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
-    //lightSpace.xyz /= lightSpace.w;
-    //lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;
-    //vec2 screenSpace = lightSpace.xy;
-    //float lightDepth = lightSpace.z;
-    //float shadowDepth = texture(texture1, fragTexCoord).r;
-    //float shadowFactor = lightDepth > shadowDepth ? 1.0 : 0.0;
+    float bias = 0.001;//max(0.0002 * (1.0 - dot(N, -lights[0].direction)), 0.00002) + 0.00001;
+    vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
+    lightSpace.xyz /= lightSpace.w;
+    lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;
+    vec2 screenSpace = lightSpace.xy;
+    float lightDepth = lightSpace.z;
+    float shadowDepth = texture(texture1, screenSpace).r;
+    float shadowFactor = (lightDepth - bias) > shadowDepth ? 1.0 : 0.0;
     // Fragment in-shadow if behind shadow buffer
 
-    vec4 testCol = texture(texture1, fragTexCoord);
-    
-    finalColor = objectColor * lightColor * testCol;
+    finalColor = objectColor * lightColor * shadowFactor;
+    //finalColor = objectColor * lightColor * texture(texture1, screenSpace);
+    //finalColor = vec4(screenSpace, 0.0, 1.0);
+
     //finalColor = pow(finalColor, vec4(1.0/2.2));
 }
