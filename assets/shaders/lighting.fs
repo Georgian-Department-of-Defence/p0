@@ -100,9 +100,9 @@ void main()
     vec4 tint = colDiffuse * fragColor;
     finalColor = texelColor * tint * vec4(lighting, 1.0);
 
-    float bias = 0.003; // <-- 0.0025 is too small, 0.004 is too large
+    float bias = 0.0025;
     bias = max(dot(N, -lights[0].direction) * bias * 2.0, bias);
-
+    
     vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
     lightSpace.xyz /= lightSpace.w;
     lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;

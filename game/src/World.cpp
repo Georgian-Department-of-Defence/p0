@@ -1,5 +1,6 @@
 #include "World.h"
 #include "rlgl.h"
+#include "glad.h"
 #include "Camera.h"
 #include "Meshes.h"
 #include "Shaders.h"
@@ -150,11 +151,11 @@ void DrawWorld(const World& world, const Renderer& renderer)
         EndMode3D();
     EndTextureMode();
 
-    BeginTextureMode(renderer.rt_downsample);
+    BeginTextureMode(renderer.rt_main);
     ClearBackground(BLACK);
         cam = *GetCamera();
         BeginMode3D(cam);
-        DrawWorldGrid(); // <-- Uses hardcoded vertex colour, should implement manually if we go with grid lines for background
+        DrawWorldGrid();
         
         material = g_materials.lighting;
         SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
@@ -174,7 +175,14 @@ void DrawWorld(const World& world, const Renderer& renderer)
         EndMode3D();
     EndTextureMode();
 
-    //DrawDepth(renderer.rt_shadowmap);
+    rlBindFramebuffer(RL_READ_FRAMEBUFFER, renderer.rt_main.id);
+    rlBindFramebuffer(RL_DRAW_FRAMEBUFFER, renderer.rt_downsample.id);
+    rlBlitFramebuffer(
+        0, 0, renderer.rt_main.texture.width, renderer.rt_main.texture.height,
+        0, 0, renderer.rt_downsample.texture.width, renderer.rt_downsample.texture.height,
+        GL_COLOR_BUFFER_BIT);
+    rlDisableFramebuffer();
+
     DrawColor(renderer.rt_downsample);
 }
 

@@ -3,8 +3,9 @@
 
 struct Renderer
 {
-	RenderTexture rt_downsample;
 	RenderTexture rt_shadowmap;
+	RenderTexture rt_main;
+	RenderTexture rt_downsample;
 	int flags;
 };
 

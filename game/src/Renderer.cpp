@@ -19,26 +19,14 @@ void LoadRenderer(Renderer& r)
 		assert(sample_buffers > 0 && samples == 4);
 	}
 
-    // Downsample, 360p
+    float rt_scale = 1.0f;
+    float rt_base_width = 1920.0f;
+    float rt_base_height = 1080.0f;
+
+    // Shadow-mapping RT
     {
-        int rt_scale = 1;
-        int rt_width = 640 * rt_scale;
-        int rt_height = 360 * rt_scale;
-
-        RenderTexture& rt = r.rt_downsample;
-        rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
-        rt.depth = LoadDepthBuffer(rt_width, rt_height);
-
-        rt.id = rlLoadFramebuffer();
-        rlFramebufferAttach(rt.id, rt.texture.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
-        rlFramebufferAttach(rt.id, rt.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
-        assert(rlFramebufferComplete(rt.id));
-    }
-
-    // Shadowmap, same resolution as above buffer for no monkey business till we get shadowmapping first draft working
-    {
-        int rt_width = 640;//3840;
-        int rt_height = 360;//2160;
+        int rt_width = rt_base_width * rt_scale;
+        int rt_height = rt_base_height * rt_scale;
 
         RenderTexture& rt = r.rt_shadowmap;
         rt.texture.width = rt_width;
@@ -48,18 +36,42 @@ void LoadRenderer(Renderer& r)
         rlFramebufferAttach(rt.id, rt.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
         assert(rlFramebufferComplete(rt.id));
 
-        // Proof of concept:
-        //Image img = GenImageGradientLinear(512, 512, 0, RED, BLUE);
-        //Texture tex = LoadTextureFromImage(img);
-        //g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = tex;
         g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = rt.depth;
+    }
+
+    // Main RT
+    {
+        int rt_width = rt_base_width * rt_scale;
+        int rt_height = rt_base_height * rt_scale;
+
+        RenderTexture& rt = r.rt_main;
+        rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+        rt.depth = LoadDepthBuffer(rt_width, rt_height);
+
+        rt.id = rlLoadFramebuffer();
+        rlFramebufferAttach(rt.id, rt.texture.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
+        rlFramebufferAttach(rt.id, rt.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
+        assert(rlFramebufferComplete(rt.id));
+    }
+
+    // Down-sampling RT
+    {
+        int rt_width = rt_base_width / 3;
+        int rt_height = rt_base_height / 3;
+
+        RenderTexture& rt = r.rt_downsample;
+        rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+
+        rt.id = rlLoadFramebuffer();
+        rlFramebufferAttach(rt.id, rt.texture.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
+        assert(rlFramebufferComplete(rt.id));
     }
 }
 
 void UnloadRenderer(Renderer& r)
 {
     UnloadRenderTexture(r.rt_shadowmap);
-	UnloadRenderTexture(r.rt_downsample);
+	UnloadRenderTexture(r.rt_main);
 }
 
 void DrawColor(RenderTexture rt)
