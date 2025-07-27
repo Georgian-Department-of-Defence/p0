@@ -21,6 +21,7 @@ struct World
 	Projectiles projectiles;
 	Lights lights;
 	Camera shadow_map_camera;
+	Mesh ground;
 };
 
 void LoadWorld(World& world);

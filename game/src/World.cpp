@@ -16,8 +16,6 @@ void UpdateDebug(World& world);
 
 void UpdateEntities(World& world);
 void UpdateParticles(World& world);
-
-void DrawWorldGrid();
 void DrawParticles(const World& world, const Renderer& renderer);
 
 void UpdateCollisionsMechMech(Mechs& mechs);
@@ -53,7 +51,7 @@ void LoadWorld(World& world)
     LoadMap(MAP_TEST_1, world);
 
     Camera& cam = world.shadow_map_camera;
-    cam.position = { WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 2.0f, 100.0f * 2.0f };
+    cam.position = { WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 4.0f, 100.0f * 4.0f };
     cam.target = Vector3Zeros;
     cam.up = Vector3UnitZ;
     cam.fovy = 150.0f;
@@ -70,31 +68,13 @@ void LoadWorld(World& world)
     world.lights.push_back(sun);
     assert(world.lights.size() == MAX_LIGHTS);
 
-    // TODO - play with lighting:
-    // -Put a point light in-front or on-top of each mech?
-    // -Put a spot light in the direction of each mech?
-    // -Will differentiating between lights applied BY mech vs lights applied TO mech make my life miserable!?
-    // 
-    //float s = 0.75f;
-    //world.lights.resize(4);
-    //world.lights[0].direction = Vector3Normalize({ -s,  0.0f, -1.0f});
-    //world.lights[1].direction = Vector3Normalize({  s,  0.0f, -1.0f});
-    //world.lights[2].direction = Vector3Normalize({  0.0f, -s, -1.0f});
-    //world.lights[3].direction = Vector3Normalize({  0.0f,  s, -1.0f});
-    //for (size_t i = 0; i < world.lights.size(); i++)
-    //{
-    //    Light& light = world.lights[i];
-    //    LoadLightUniforms(light, i, g_shaders.lighting);
-    //    light.color = { 1.0f, 0.0f, 1.0f };
-    //    light.ambient = 0.0f;
-    //    light.diffuse = 0.1f;
-    //    light.specular = 1.0f;
-    //    light.specular_exponent = 16.0f;
-    //}
+    world.ground = GenMeshPlane(WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 2.0f, 1, 1);
 }
 
 void UnloadWorld(World& world)
 {
+    UnloadMesh(world.ground);
+
     for (Mech& mech : world.mechs)
         mech.destroy |= true;
 
@@ -155,12 +135,13 @@ void DrawWorld(const World& world, const Renderer& renderer)
     ClearBackground(BLACK);
         cam = *GetCamera();
         BeginMode3D(cam);
-        DrawWorldGrid();
         
         material = g_materials.lighting;
         SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
         SetShaderValueMatrix(g_shaders.lighting, world.lights.back().loc_light_view_proj, lightView * lightProj);
-    
+        
+        DrawMesh(world.ground, material, MatrixRotateX(PI * 0.5f));
+
         for (const Mech& mech : world.mechs)
             DrawMech(mech, material, renderer);
     
@@ -201,26 +182,6 @@ void DrawWorldDebug(const World& world, const Renderer& renderer)
             DrawProjectileDebug(projectile, renderer);
 
     EndMode3D();
-}
-
-void DrawWorldGrid()
-{
-    float grid_extents = 100.0f;
-    float grid_spacing = 4.0f;
-    int grid_slices = grid_extents / grid_spacing;
-    float x = grid_extents * 0.5f - grid_spacing * 0.5f;
-
-    rlPushMatrix();
-    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-    rlTranslatef(x, 0.0f, 0.0f);
-    DrawGrid(grid_slices, grid_spacing);
-    rlPopMatrix();
-
-    rlPushMatrix();
-    rlRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-    rlTranslatef(-x, 0.0f, 0.0f);
-    DrawGrid(grid_slices, grid_spacing);
-    rlPopMatrix();
 }
 
 void DrawParticles(const World& world, const Renderer& renderer)
