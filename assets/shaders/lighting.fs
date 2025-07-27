@@ -5,9 +5,6 @@ in vec2 fragTexCoord;
 in vec4 fragColor;
 in vec3 fragNormal;
 
-uniform sampler2D texture0;
-uniform vec4 colDiffuse;
-
 out vec4 finalColor;
 
 struct Light
@@ -82,7 +79,13 @@ vec3 spotLight(vec3 P, vec3 N, vec3 cameraPosition, Light light)
 
 #define MAX_LIGHTS 1
 uniform Light lights[MAX_LIGHTS];
+
+uniform sampler2D texture0; // Base color (1x1 white by default)
+uniform sampler2D texture1; // Shadow-map
+
 uniform vec3 viewPos;
+uniform vec4 colDiffuse;
+uniform mat4 lightViewProj;
 
 void main()
 {
@@ -98,6 +101,18 @@ void main()
 
     vec4 objectColor = texelColor * tint;
     vec4 lightColor = vec4(lighting, 1.0);
-    finalColor = objectColor * lightColor;
+
+    //vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
+    //lightSpace.xyz /= lightSpace.w;
+    //lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;
+    //vec2 screenSpace = lightSpace.xy;
+    //float lightDepth = lightSpace.z;
+    //float shadowDepth = texture(texture1, fragTexCoord).r;
+    //float shadowFactor = lightDepth > shadowDepth ? 1.0 : 0.0;
+    // Fragment in-shadow if behind shadow buffer
+
+    vec4 testCol = texture(texture1, fragTexCoord);
+    
+    finalColor = objectColor * lightColor * testCol;
     //finalColor = pow(finalColor, vec4(1.0/2.2));
 }

@@ -14,6 +14,8 @@ void LoadLightUniforms(Light& light, int light_index, Shader shader)
     light.loc_radius = GetShaderLocation(shader, TextFormat("lights[%i].radius", light_index));
     light.loc_cutoff = GetShaderLocation(shader, TextFormat("lights[%i].cutoff", light_index));
     light.loc_direction = GetShaderLocation(shader, TextFormat("lights[%i].direction", light_index));
+
+    light.loc_light_view_proj = GetShaderLocation(shader, "lightVP");
 }
 
 void UpdateLightUniforms(Light light, Shader shader)

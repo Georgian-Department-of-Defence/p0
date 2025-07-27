@@ -128,17 +128,25 @@ void DrawWorld(const World& world, const Renderer& renderer)
 {
     Material material = g_materials.flat;
     Camera cam = world.shadow_map_camera;
+    Matrix lightView;
+    Matrix lightProj;
 
     // Must call texture mode before 3d mode because texture mode sets an ortho projection against my will (which 3d mode overwrites)!
     BeginTextureMode(renderer.rt_shadowmap);
     ClearBackground(ORANGE);
         BeginMode3D(cam);
+
+        // Store light camera's matrices for shadow mapping
+        lightView = rlGetMatrixModelview();
+        lightProj = rlGetMatrixProjection();
+
         for (const Mech& mech : world.mechs)
             DrawMech(mech, material, renderer);
         for (const Building& building : world.buildings)
             DrawBuilding(building, material, renderer);
         for (const Projectile& projectile : world.projectiles)
             DrawProjectile(projectile, material, renderer);
+
         EndMode3D();
     EndTextureMode();
 
@@ -148,6 +156,7 @@ void DrawWorld(const World& world, const Renderer& renderer)
         BeginMode3D(cam);
         DrawWorldGrid(); // <-- Uses hardcoded vertex colour, should implement manually if we go with grid lines for background
         
+        Matrix lightVP = lightView * lightProj;
         material = g_materials.lighting;
         SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
     
