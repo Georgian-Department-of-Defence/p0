@@ -1,5 +1,7 @@
 #include "raylib.h"
 #include "raymathext.h"
+#include "rlgl.h"
+#include "glad.h"
 
 #include "Camera.h"
 #include "Meshes.h"
@@ -10,7 +12,7 @@
 #include "Scene.h"
 #include "Game.h"
 
-void AppLoad()
+void LoadAssets()
 {
     LoadCamera();
     LoadMeshes();
@@ -19,7 +21,7 @@ void AppLoad()
     LoadAudio();
 }
 
-void AppUnload()
+void UnloadAssets()
 {
     UnloadAudio();
     UnloadTextures();
@@ -30,13 +32,15 @@ void AppUnload()
 
 int main()
 {
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
+    Game game;
+    game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT;
+
+    SetConfigFlags(game.renderer.flags);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
-    AppLoad();
 
-    Game game;
+    LoadAssets();
     LoadRenderer(game.renderer);
     Scene::Load(game, SCENE_DEV_MAP);
     while (!WindowShouldClose())
@@ -48,21 +52,43 @@ int main()
                 TraceLog(LOG_INFO, "Gamepad %i %s", i, IsGamepadAvailable(i) ? "connected" : "disconnected");
         }
 #endif
-
         Scene::Update(game);
+
         BeginDrawing();
-        ClearBackground(BLACK);
-        Scene::Draw(game);
+        ClearBackground(MAGENTA);
+        // Anything not sampled from custom fbo will have a magenta background
+        
+        BeginTextureMode(game.renderer.rt_downsample);
+            ClearBackground(BLACK);
+            Scene::Draw(game);
 #ifdef DEBUG
-        Scene::DrawDebug(game);
+            Scene::DrawDebug(game);
 #endif
-        Scene::DrawGui(game);
+            Scene::DrawGui(game);
+        EndTextureMode();
+        
+        Texture rt = game.renderer.rt_downsample.texture;
+
+        Rectangle src_rec;
+        src_rec.x = 0;
+        src_rec.y = 0;
+        src_rec.width = rt.width;
+        src_rec.height = -rt.height;
+        
+        Rectangle dst_rec;
+        dst_rec.x = 0;
+        dst_rec.y = 0;
+        dst_rec.width = GetScreenWidth();
+        dst_rec.height = GetScreenHeight();
+        
+        DrawTexturePro(rt, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
+        DrawFPS(10, 10);
         EndDrawing();
     }
     UnloadRenderer(game.renderer);
     Scene::Unload(game);
+    UnloadAssets();
 
-    AppUnload();
     CloseAudioDevice();
     CloseWindow();
     return 0;
