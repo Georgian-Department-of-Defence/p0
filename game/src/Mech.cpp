@@ -235,14 +235,9 @@ void FireGear(Mech& mech, World& world, int slot)
             break;
 
         case GEAR_CHAINGUN:
-            if (gear.chain_gun.ramp_up >= 10) 
-            {
-                CreateProjectileRifle(mech, world, gear_position);
-            }
-            else {
-                gear.chain_gun.ramp_up += 2;
-                mech.heat -= gear.heat;
-            }
+            gear.chain_gun.ramp_up += 0.08f;
+            gear.cooldown -= gear.chain_gun.ramp_up;
+            CreateProjectileChainGun(mech, world, gear_position);
             break;
 
         case GEAR_TYPE_COUNT:
@@ -286,9 +281,12 @@ void UpdateGear(Mech& mech, World& world, int slot)
 
     else if (gear.type == GEAR_CHAINGUN)
     {
-        if (gear.chain_gun.ramp_up != 0)
-            gear.chain_gun.ramp_up -= 1.0f;
-        Clamp(gear.chain_gun.ramp_up, 0.0f, 10.0f);
+        if (gear.chain_gun.ramp_up >= 0) 
+        {
+            gear.chain_gun.ramp_up -= dt;
+            Clamp(gear.chain_gun.ramp_up, 0.0f, 1.0f);
+        }
+        
     }
 
 }

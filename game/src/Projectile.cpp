@@ -149,6 +149,24 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 	PlaySound(g_audio.fire_rifle);
 }
 
+void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos)
+{
+	Projectile p;
+	p.pos = base_pos;
+	p.vel = TorsoDirection(mech) * 75.0f;
+	p.radius = 1.5f;
+	p.team = mech.team;
+	p.type = PROJECTILE_CHAINGUN;
+
+	p.color = RED;
+	p.mesh = g_meshes.prj_straight;
+
+	CreateParticleTrail(&p);
+
+	world.projectiles.push_back(p);
+	PlaySound(g_audio.fire_rifle);
+}
+
 
 void UpdateProjectile(Projectile& p, World& world)
 {

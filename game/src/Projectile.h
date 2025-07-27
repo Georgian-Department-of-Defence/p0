@@ -91,6 +91,7 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll);
 void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos);
+void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos);
 
 void UpdateProjectile(Projectile& p, World& world);
 void DrawProjectile(const Projectile& p, const Renderer& renderer);
