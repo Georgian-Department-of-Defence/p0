@@ -19,14 +19,10 @@ void LoadRenderer(Renderer& r)
 		assert(sample_buffers > 0 && samples == 4);
 	}
 
-    float rt_scale = 1.0f;
-    float rt_base_width = 1920.0f;
-    float rt_base_height = 1080.0f;
-
-    // Shadow-mapping RT
+    // Shadow-mapping RT, high-resolution
     {
-        int rt_width = rt_base_width * rt_scale;
-        int rt_height = rt_base_height * rt_scale;
+        int rt_width = 4096;
+        int rt_height = 4096;
 
         RenderTexture& rt = r.rt_shadowmap;
         rt.texture.width = rt_width;
@@ -39,10 +35,10 @@ void LoadRenderer(Renderer& r)
         g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = rt.depth;
     }
 
-    // Main RT
+    // Main RT, 4k
     {
-        int rt_width = rt_base_width * rt_scale;
-        int rt_height = rt_base_height * rt_scale;
+        int rt_width = 3840;
+        int rt_height = 2160;
 
         RenderTexture& rt = r.rt_main;
         rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
@@ -54,10 +50,10 @@ void LoadRenderer(Renderer& r)
         assert(rlFramebufferComplete(rt.id));
     }
 
-    // Down-sampling RT
+    // Down-sampling RT, 360p
     {
-        int rt_width = rt_base_width / 3;
-        int rt_height = rt_base_height / 3;
+        int rt_width = 640;
+        int rt_height = 360;
 
         RenderTexture& rt = r.rt_downsample;
         rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);

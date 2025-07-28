@@ -54,7 +54,7 @@ void LoadWorld(World& world)
     cam.position = { WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 4.0f, 100.0f * 4.0f };
     cam.target = Vector3Zeros;
     cam.up = Vector3UnitZ;
-    cam.fovy = 150.0f;
+    cam.fovy = 175.0f;
     cam.projection = CAMERA_ORTHOGRAPHIC;
 
     Light sun;
@@ -166,6 +166,7 @@ void DrawWorld(const World& world, const Renderer& renderer)
         GL_COLOR_BUFFER_BIT);
     rlDisableFramebuffer();
 
+    //DrawDepth(renderer.rt_shadowmap);
     //DrawColor(renderer.rt_main);
     DrawColor(renderer.rt_downsample);
 }
