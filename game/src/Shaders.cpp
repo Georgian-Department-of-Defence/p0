@@ -14,7 +14,6 @@ void LoadShaders()
 
 	g_shaders.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
 	g_shaders.lighting = LoadShader("./assets/shaders/base.vs", "./assets/shaders/lighting.fs");
-	g_shaders.shadow = LoadShader("./assets/shaders/base.vs", "./assets/shaders/shadowmap.fs");
 	g_shaders.depth = LoadShader("./assets/shaders/base.vs", "./assets/shaders/depth.fs");
 
 	g_materials.flat = LoadMaterialDefault();
@@ -27,7 +26,6 @@ void LoadShaders()
 void UnloadShaders()
 {
 	UnloadShader(g_shaders.depth);
-	UnloadShader(g_shaders.shadow);
 	UnloadShader(g_shaders.lighting);
 	UnloadShader(g_shaders.skinning);
 

@@ -77,6 +77,7 @@ vec3 spotLight(vec3 P, vec3 N, vec3 cameraPosition, Light light)
     return lighting;
 }
 
+#define SHADOW_MAP_RES 4096
 #define MAX_LIGHTS 1
 uniform Light lights[MAX_LIGHTS];
 
@@ -106,11 +107,23 @@ void main()
     vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
     lightSpace.xyz /= lightSpace.w;
     lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;
+    float currentDepth = lightSpace.z - bias;
 
-    float shadowDepth = texture(texture1, lightSpace.xy).r;
-    float inLight = (lightSpace.z - bias) < shadowDepth ? 1.0 : 0.0;
-    vec4 shadowColor = vec4(vec3(1.0) * max(inLight, 0.4), 1.0);
-
-    finalColor = finalColor * shadowColor;
+    int shadowCount = 0;
+    vec2 texelSize = vec2(1.0 / float(SHADOW_MAP_RES));
+    for (int x = -1; x <= 1; x++)
+    {
+        for (int y = -1; y <= 1; y++)
+        {
+            float shadowDepth = texture(texture1, lightSpace.xy + texelSize * vec2(x, y)).r;
+            if (currentDepth > shadowDepth)
+            {
+                shadowCount++;
+            }
+        }
+    }
+    
+    vec4 shadowColor = vec4(finalColor.xyz * 0.4, 1.0);
+    finalColor = mix(finalColor, shadowColor, float(shadowCount) / 9.0);
     //finalColor = pow(finalColor, vec4(1.0/2.2));
 }
