@@ -165,11 +165,20 @@ void DrawWorld(const World& world, const Renderer& renderer)
         0, 0, renderer.rt_main_resolve.texture.width, renderer.rt_main_resolve.texture.height,
         GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     rlDisableFramebuffer();
+    // Depth blit currently unnecessary, but nice to know its possible to blit from MSAA depth renderbuffer to resolve depth texture
+
+    rlBindFramebuffer(RL_READ_FRAMEBUFFER, renderer.rt_main_resolve.id);
+    rlBindFramebuffer(RL_DRAW_FRAMEBUFFER, renderer.rt_downsample.id);
+    rlBlitFramebuffer(
+        0, 0, renderer.rt_main_resolve.texture.width, renderer.rt_main_resolve.texture.height,
+        0, 0, renderer.rt_downsample.texture.width, renderer.rt_downsample.texture.height,
+        GL_COLOR_BUFFER_BIT);
+    rlDisableFramebuffer();
 
     //DrawDepth(renderer.rt_shadowmap);
     //DrawDepth(renderer.rt_main_resolve);
-    DrawColor(renderer.rt_main_resolve);
-    //DrawColor(renderer.rt_downsample);
+    //DrawColor(renderer.rt_main_resolve);
+    DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)

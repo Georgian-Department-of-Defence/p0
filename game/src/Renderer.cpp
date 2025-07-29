@@ -39,36 +39,27 @@ void LoadRenderer(Renderer& r)
     {
         int rt_width = 1920;
         int rt_height = 1080;
-        RTMS ms;
+        RenderTexture& rt = r.rt_main_multisample;
     
-        glGenTextures(1, &ms.color);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, ms.color);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, rt_width, rt_height, GL_TRUE);
+        glGenTextures(1, &rt.texture.id);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, rt.texture.id);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA, rt_width, rt_height, GL_TRUE);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         
-        glGenRenderbuffers(1, &ms.depth);
-        glBindRenderbuffer(GL_RENDERBUFFER, ms.depth);
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, rt_width, rt_height);
+        glGenRenderbuffers(1, &rt.depth.id);
+        glBindRenderbuffer(GL_RENDERBUFFER, rt.depth.id);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT, rt_width, rt_height);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
         
-        glGenFramebuffers(1, &ms.fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, ms.fbo);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, ms.color, 0);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ms.depth);
+        glGenFramebuffers(1, &rt.id);
+        glBindFramebuffer(GL_FRAMEBUFFER, rt.id);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, rt.texture.id, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rt.depth.id);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        RenderTexture& rt = r.rt_main_multisample;
-        rt.id = ms.fbo;
-        rt.texture.id = ms.color;
-        rt.depth.id = ms.depth;
-        rt.texture.width = rt_width;
-        rt.texture.height = rt_height;
-        
-        // filter and wrap parameters are ignored in multisample textures since the GPU handles them differently
-        //glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        //glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        //glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        //glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        assert(rlFramebufferComplete(rt.id));
+        rt.texture.width = rt.depth.width = rt_width;
+        rt.texture.height = rt.depth.height = rt_height;
     }
 
     // Main RT resolve, 1080p
@@ -104,6 +95,7 @@ void UnloadRenderer(Renderer& r)
 {
     UnloadRenderTexture(r.rt_shadowmap);
 	UnloadRenderTexture(r.rt_main_resolve);
+	UnloadRenderTexture(r.rt_main_multisample);
     UnloadRenderTexture(r.rt_downsample);
 }
 
