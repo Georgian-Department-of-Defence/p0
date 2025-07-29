@@ -131,7 +131,7 @@ void DrawWorld(const World& world, const Renderer& renderer)
         EndMode3D();
     EndTextureMode();
 
-    BeginTextureMode(renderer.rt_main);
+    BeginTextureMode(renderer.rt_main_multisample);
     ClearBackground(BLACK);
         cam = *GetCamera();
         BeginMode3D(cam);
@@ -158,17 +158,18 @@ void DrawWorld(const World& world, const Renderer& renderer)
         EndMode3D();
     EndTextureMode();
 
-    rlBindFramebuffer(RL_READ_FRAMEBUFFER, renderer.rt_main.id);
-    rlBindFramebuffer(RL_DRAW_FRAMEBUFFER, renderer.rt_downsample.id);
+    rlBindFramebuffer(RL_READ_FRAMEBUFFER, renderer.rt_main_multisample.id);
+    rlBindFramebuffer(RL_DRAW_FRAMEBUFFER, renderer.rt_main_resolve.id);
     rlBlitFramebuffer(
-        0, 0, renderer.rt_main.texture.width, renderer.rt_main.texture.height,
-        0, 0, renderer.rt_downsample.texture.width, renderer.rt_downsample.texture.height,
-        GL_COLOR_BUFFER_BIT);
+        0, 0, renderer.rt_main_multisample.texture.width, renderer.rt_main_multisample.texture.height,
+        0, 0, renderer.rt_main_resolve.texture.width, renderer.rt_main_resolve.texture.height,
+        GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     rlDisableFramebuffer();
 
     //DrawDepth(renderer.rt_shadowmap);
-    //DrawColor(renderer.rt_main);
-    DrawColor(renderer.rt_downsample);
+    //DrawDepth(renderer.rt_main_resolve);
+    DrawColor(renderer.rt_main_resolve);
+    //DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)

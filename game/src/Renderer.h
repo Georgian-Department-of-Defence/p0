@@ -1,10 +1,18 @@
 #pragma once
 #include "raylib.h"
 
+struct RTMS
+{
+	unsigned int fbo;
+	unsigned int color;
+	unsigned int depth;
+};
+
 struct Renderer
 {
 	RenderTexture rt_shadowmap;
-	RenderTexture rt_main;
+	RenderTexture rt_main_multisample;
+	RenderTexture rt_main_resolve;
 	RenderTexture rt_downsample;
 	int flags;
 };

@@ -19,7 +19,7 @@ void LoadRenderer(Renderer& r)
 		assert(sample_buffers > 0 && samples == 4);
 	}
 
-    // Shadow-mapping RT, high-resolution
+    // Shadow mapping RT, high-resolution
     {
         int rt_width = 4096;
         int rt_height = 4096;
@@ -35,12 +35,48 @@ void LoadRenderer(Renderer& r)
         g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = rt.depth;
     }
 
-    // Main RT, 4k
+    // Main RT multisampled, 1080p
     {
-        int rt_width = 3840;
-        int rt_height = 2160;
+        int rt_width = 1920;
+        int rt_height = 1080;
+        RTMS ms;
+    
+        glGenTextures(1, &ms.color);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, ms.color);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, rt_width, rt_height, GL_TRUE);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+        
+        glGenRenderbuffers(1, &ms.depth);
+        glBindRenderbuffer(GL_RENDERBUFFER, ms.depth);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, rt_width, rt_height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        
+        glGenFramebuffers(1, &ms.fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, ms.fbo);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, ms.color, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, ms.depth);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        RenderTexture& rt = r.rt_main;
+        RenderTexture& rt = r.rt_main_multisample;
+        rt.id = ms.fbo;
+        rt.texture.id = ms.color;
+        rt.depth.id = ms.depth;
+        rt.texture.width = rt_width;
+        rt.texture.height = rt_height;
+        
+        // filter and wrap parameters are ignored in multisample textures since the GPU handles them differently
+        //glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        //glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+
+    // Main RT resolve, 1080p
+    {
+        int rt_width = 1920;
+        int rt_height = 1080;
+
+        RenderTexture& rt = r.rt_main_resolve;
         rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
         rt.depth = LoadDepthBuffer(rt_width, rt_height);
 
@@ -50,7 +86,7 @@ void LoadRenderer(Renderer& r)
         assert(rlFramebufferComplete(rt.id));
     }
 
-    // Down-sampling RT, 360p
+    // Downsampling RT, 360p
     {
         int rt_width = 640;
         int rt_height = 360;
@@ -67,7 +103,8 @@ void LoadRenderer(Renderer& r)
 void UnloadRenderer(Renderer& r)
 {
     UnloadRenderTexture(r.rt_shadowmap);
-	UnloadRenderTexture(r.rt_main);
+	UnloadRenderTexture(r.rt_main_resolve);
+    UnloadRenderTexture(r.rt_downsample);
 }
 
 void DrawColor(RenderTexture rt)

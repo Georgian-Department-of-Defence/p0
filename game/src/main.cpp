@@ -60,9 +60,9 @@ int main()
         
             Scene::Draw(game);
 //#ifdef DEBUG
-//            Scene::DrawDebug(game);
+//          Scene::DrawDebug(game);
 //#endif
-//            Scene::DrawGui(game);
+//          Scene::DrawGui(game);
 
         DrawFPS(10, 10);
         EndDrawing();
