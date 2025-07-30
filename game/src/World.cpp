@@ -163,10 +163,10 @@ void DrawWorld(const World& world, const Renderer& renderer)
         GL_COLOR_BUFFER_BIT);
     rlDisableFramebuffer();
 
-    DrawDepth(renderer.rt_shadowmap);
+    //DrawDepth(renderer.rt_shadowmap);
     //DrawDepth(renderer.rt_main_resolve);
     //DrawColor(renderer.rt_main_resolve);
-    //DrawColor(renderer.rt_downsample);
+    DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)
