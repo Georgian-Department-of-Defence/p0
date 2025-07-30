@@ -102,9 +102,10 @@ void main()
     finalColor = texelColor * tint * vec4(lighting, 1.0);
 
     // Less bias needed when surfaces point towards the light as depth is most accurate
-    float bias = max(0.002 * (1.0 - dot(N, -lights[0].direction)), 0.001);
+    float idotNL = 1.0 - max(dot(N, -lights[0].direction), 0.0);
+    float bias = max(0.002 * idotNL, 0.001);
     
-    vec4 lightSpace = lightViewProj * vec4(fragPosition, 1.0);
+    vec4 lightSpace = lightViewProj * vec4(fragPosition + N * 0.01, 1.0);
     lightSpace.xyz /= lightSpace.w;
     lightSpace.xyz = (lightSpace.xyz + 1.0) * 0.5;
     float currentDepth = lightSpace.z - bias;
