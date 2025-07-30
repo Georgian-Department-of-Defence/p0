@@ -32,6 +32,12 @@ struct ProjectileMachineGun
 	float lifetime;
 };
 
+struct ProjectileChainGun
+{
+	float speed;
+	float lifetime;
+};
+
 struct Projectile
 {
 	ProjectileType type = PROJECTILE_TYPE_COUNT;
@@ -74,6 +80,8 @@ struct Projectile
 		ProjectileGrenade grenade;
 		ProjectileMissile missile;
 		ProjectileMachineGun machineGun;
+		ProjectileChainGun chainGun;
+
 	};
 };
 
@@ -83,6 +91,7 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll);
 void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos);
+void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos);
 
 void UpdateProjectile(Projectile& p, World& world);
 void DrawProjectile(const Projectile& p, Material material, const Renderer& renderer);

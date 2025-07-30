@@ -134,8 +134,10 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 {
 	Projectile p;
+	Quaternion spread = QuaternionFromEuler(0.0f, 0.0f, Random(-7.5f, 7.5f) * DEG2RAD);
+	Vector3 dir = Vector3RotateByQuaternion(TorsoDirection(mech), spread);
 	p.pos = base_pos;
-	p.vel = TorsoDirection(mech) * 75.0f;
+	p.vel = dir * 75.0f;
 	p.radius = 1.5f;
 	p.team = mech.team;
 	p.type = PROJECTILE_MACHINEGUN;
@@ -148,6 +150,27 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 	world.projectiles.push_back(p);
 	PlaySound(g_audio.fire_rifle);
 }
+
+void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos)
+{
+	Projectile p;
+	Quaternion spread = QuaternionFromEuler(0.0f, 0.0f, Random(-15.0f, 15.0f) * DEG2RAD);
+	Vector3 dir = Vector3RotateByQuaternion(TorsoDirection(mech), spread);
+	p.pos = base_pos;
+	p.vel = dir * 75.0f;
+	p.radius = 1.5f;
+	p.team = mech.team;
+	p.type = PROJECTILE_CHAINGUN;
+
+	p.color = RED;
+	p.mesh = g_meshes.prj_straight;
+
+	CreateParticleTrail(&p);
+
+	world.projectiles.push_back(p);
+	PlaySound(g_audio.fire_rifle);
+}
+
 
 void UpdateProjectile(Projectile& p, World& world)
 {
