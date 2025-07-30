@@ -20,7 +20,6 @@ struct World
 	Buildings buildings;
 	Projectiles projectiles;
 	Lights lights;
-	Camera shadow_map_camera;
 	Mesh ground;
 };
 

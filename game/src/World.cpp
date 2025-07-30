@@ -50,16 +50,9 @@ void LoadWorld(World& world)
 
     LoadMap(MAP_TEST_1, world);
 
-    Camera& cam = world.shadow_map_camera;
-    cam.position = { WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 4.0f, 100.0f * 4.0f };
-    cam.target = Vector3Zeros;
-    cam.up = Vector3UnitZ;
-    cam.fovy = 175.0f;
-    cam.projection = CAMERA_ORTHOGRAPHIC;
-
     Light sun;
     LoadLightUniforms(sun, 0, g_shaders.lighting);
-    sun.direction = Vector3Normalize(cam.target - cam.position);
+    sun.direction = Vector3Normalize(Vector3Zeros - g_camera_system.light_pos);
     sun.color = Vector3Ones;
     sun.ambient = 0.2f;
     sun.diffuse = 0.75f;
@@ -108,18 +101,13 @@ void UpdateWorld(World& world)
 void DrawWorld(const World& world, const Renderer& renderer)
 {
     Material material = g_materials.flat;
-    Camera cam = world.shadow_map_camera;
-    Matrix lightView;
-    Matrix lightProj;
 
     // Must call texture mode before 3d mode because texture mode sets an ortho projection against my will (which 3d mode overwrites)!
     BeginTextureMode(renderer.rt_shadowmap);
     ClearBackground(ORANGE);
-        BeginMode3D(cam);
-
-        // Store light camera's matrices for shadow mapping
-        lightView = rlGetMatrixModelview();
-        lightProj = rlGetMatrixProjection();
+        rlEnableDepthTest();
+        rlSetMatrixModelview(g_camera_system.light_view);
+        rlSetMatrixProjection(g_camera_system.light_proj);
 
         for (const Mech& mech : world.mechs)
             DrawMech(mech, material, renderer);
@@ -133,12 +121,12 @@ void DrawWorld(const World& world, const Renderer& renderer)
 
     BeginTextureMode(renderer.rt_main_multisample);
     ClearBackground(BLACK);
-        cam = *GetCamera();
-        BeginMode3D(cam);
+        rlSetClipPlanes(0.1f, 500.0f);
+        BeginMode3D(*GetCamera());
         
         material = g_materials.lighting;
-        SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &cam.position, SHADER_UNIFORM_VEC3);
-        SetShaderValueMatrix(g_shaders.lighting, world.lights.back().loc_light_view_proj, lightView * lightProj);
+        SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &GetCamera()->position, SHADER_UNIFORM_VEC3);
+        SetShaderValueMatrix(g_shaders.lighting, world.lights.back().loc_light_view_proj, g_camera_system.light_view * g_camera_system.light_proj);
 
         material.maps[MATERIAL_MAP_DIFFUSE].color = WHITE;
         DrawMesh(world.ground, material, MatrixRotateX(PI * 0.5f));
@@ -177,8 +165,8 @@ void DrawWorld(const World& world, const Renderer& renderer)
 
     //DrawDepth(renderer.rt_shadowmap);
     //DrawDepth(renderer.rt_main_resolve);
-    //DrawColor(renderer.rt_main_resolve);
-    DrawColor(renderer.rt_downsample);
+    DrawColor(renderer.rt_main_resolve);
+    //DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)
