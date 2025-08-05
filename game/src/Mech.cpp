@@ -36,7 +36,7 @@ void CreateMech(Mech* mech, int player)
     mech->torso_rotation_goal = rotation;
 
     // Default loadout / testing
-    mech->gear[0] = CreateGearDasher();
+    mech->gear[0] = CreateGearChainGun();
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
@@ -173,6 +173,10 @@ void UpdateInputMove(Mech& mech)
 
         mech.vel += Vector3{ dir.x, dir.y, 0.0f } * mech.move_speed * dt;
        
+        if (!mech.dashing)
+        {
+            mech.vel = Vector3Clamp(mech.vel, { -10.0f, -10.0f, 0.0f }, { 10.0f, 10.0f, 0.0f });
+        }
     }
 }
 
@@ -301,7 +305,7 @@ void UpdateGear(Mech& mech, World& world, int slot)
         }
         else 
         {
-            mech.vel = Vector3Clamp(mech.vel, { -10.0f, -10.0f, 0.0f }, { 10.0f, 10.0f, 0.0f });
+            mech.dashing = false;
         }
 
     }

@@ -173,6 +173,7 @@ void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos)
 
 void ActivateDasher(Mech& mech, World& world)
 {
+	mech.dashing = true;
 	PlaySound(g_audio.fire_rifle);
 	float dash_speed = 50.0f;
 	const float deadzone = 0.1f;

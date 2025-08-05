@@ -20,6 +20,7 @@ struct Mech
     float heat_max = 100.0f;
     float heat_dissipation = 20.0f;
     bool overheated = false;
+    bool dashing = false;
 
     Vector3 pos = Vector3Zeros;
     Vector3 vel = Vector3Zeros;
