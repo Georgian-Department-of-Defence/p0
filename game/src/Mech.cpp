@@ -36,7 +36,7 @@ void CreateMech(Mech* mech, int player)
     mech->torso_rotation_goal = rotation;
 
     // Default loadout / testing
-    mech->gear[0] = CreateGearChainGun();
+    mech->gear[0] = CreateGearDasher();
     mech->gear[1] = CreateGearShotgun();
     mech->gear[2] = CreateGearGrenadeLauncher();
     mech->gear[3] = CreateGearMissileLauncher();
@@ -172,7 +172,7 @@ void UpdateInputMove(Mech& mech)
         mech.legs_rotation = QuaternionRotateTowards(mech.legs_rotation, mech.legs_rotation_goal, 250.0f * DEG2RAD * dt);
 
         mech.vel += Vector3{ dir.x, dir.y, 0.0f } * mech.move_speed * dt;
-        mech.vel = Vector3Clamp(mech.vel, { -10.0f, -10.0f, 0.0f }, { 10.0f, 10.0f, 0.0f });
+       
     }
 }
 
@@ -238,6 +238,11 @@ void FireGear(Mech& mech, World& world, int slot)
             CreateProjectileChainGun(mech, world, gear_position);
             break;
 
+        case GEAR_DASHER:
+            gear.dasher.dashing = 0.5f;
+            ActivateDasher(mech, world);
+            break;
+
         case GEAR_TYPE_COUNT:
             assert(false, "Invalid gear type!");
             break;
@@ -287,6 +292,20 @@ void UpdateGear(Mech& mech, World& world, int slot)
         
     }
 
+    else if (gear.type == GEAR_DASHER)
+    {
+        if (gear.dasher.dashing >= 0) 
+        {
+            gear.dasher.dashing -= dt;
+            Clamp(gear.dasher.dashing, 0.0f, 0.5f);
+        }
+        else 
+        {
+            mech.vel = Vector3Clamp(mech.vel, { -10.0f, -10.0f, 0.0f }, { 10.0f, 10.0f, 0.0f });
+        }
+
+    }
+        
 }
 
 void UpdateHeat(Mech& mech)

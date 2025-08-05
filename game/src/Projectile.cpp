@@ -171,6 +171,24 @@ void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos)
 	PlaySound(g_audio.fire_rifle);
 }
 
+void ActivateDasher(Mech& mech, World& world)
+{
+	PlaySound(g_audio.fire_rifle);
+	float dash_speed = 50.0f;
+	const float deadzone = 0.1f;
+	Vector2 input = Vector2Zeros;
+	input.x = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_X));
+	input.y = (GetGamepadAxisMovement(mech.player, GAMEPAD_AXIS_LEFT_Y));
+	input.x = fabsf(input.x) >= deadzone ? input.x : 0.0f;
+	input.y = fabsf(input.y) >= deadzone ? input.y : 0.0f;
+	input.y *= -1.0f;
+
+	float dt = GetFrameTime();
+	Vector2 dir = Vector2Normalize(input);
+	mech.vel = Vector3{ dir.x, dir.y, 0.0f } * dash_speed;
+
+}
+
 
 void UpdateProjectile(Projectile& p, World& world)
 {
