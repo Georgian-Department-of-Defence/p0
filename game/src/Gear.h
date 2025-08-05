@@ -125,7 +125,7 @@ inline Gear CreateGearChainGun()
 	Gear g;
 	g.type = GEAR_CHAINGUN;
 	g.chain_gun.ramp_up = 0;
-	g.cooldown_max = 0.2f;
+	g.cooldown_max = 0.21f;
 	g.cooldown = 0.0f;
 	g.heat = 6;
 	return g;

@@ -237,8 +237,7 @@ void FireGear(Mech& mech, World& world, int slot)
             break;
 
         case GEAR_CHAINGUN:
-            gear.chain_gun.ramp_up += 0.08f;
-            gear.cooldown -= gear.chain_gun.ramp_up;
+            gear.chain_gun.ramp_up += 0.2f;
             CreateProjectileChainGun(mech, world, gear_position);
             break;
 
@@ -288,10 +287,18 @@ void UpdateGear(Mech& mech, World& world, int slot)
 
     else if (gear.type == GEAR_CHAINGUN)
     {
+        gear.cooldown -= gear.chain_gun.ramp_up * dt;
+
         if (gear.chain_gun.ramp_up >= 0) 
         {
             gear.chain_gun.ramp_up -= dt;
             Clamp(gear.chain_gun.ramp_up, 0.0f, 1.0f);
+        }
+
+        if (mech.overheated)
+        {
+            gear.chain_gun.ramp_up = 0;
+            gear.cooldown = gear.cooldown_max;
         }
         
     }
