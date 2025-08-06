@@ -33,7 +33,7 @@ void UnloadAssets()
 int main()
 {
     Game game;
-    game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT;
+    game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT;// | FLAG_MSAA_4X_HINT;
 
     SetConfigFlags(game.renderer.flags);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
@@ -64,7 +64,8 @@ int main()
 //#endif
 //          Scene::DrawGui(game);
 
-        DrawFPS(10, 10);
+        // TODO - draw this in world-space because this currently depends on screen resolution
+        DrawFPS(10, 30);
         EndDrawing();
     }
     UnloadRenderer(game.renderer);

@@ -155,6 +155,7 @@ void DrawWorld(const World& world, const Renderer& renderer)
     rlDisableFramebuffer();
     // Depth blit currently unnecessary, but nice to know its possible to blit from MSAA depth renderbuffer to resolve depth texture
 
+    // Downsampling will happen right before release -- more intuitive to develop at full resolution since downsampling may hide artifacts!
     rlBindFramebuffer(RL_READ_FRAMEBUFFER, renderer.rt_main_resolve.id);
     rlBindFramebuffer(RL_DRAW_FRAMEBUFFER, renderer.rt_downsample.id);
     rlBlitFramebuffer(
@@ -163,10 +164,9 @@ void DrawWorld(const World& world, const Renderer& renderer)
         GL_COLOR_BUFFER_BIT);
     rlDisableFramebuffer();
 
-    //DrawDepth(renderer.rt_shadowmap);
-    //DrawDepth(renderer.rt_main_resolve);
-    //DrawColor(renderer.rt_main_resolve);
-    DrawColor(renderer.rt_downsample);
+    // Note: blitting requires identical src & dst width & height. Best to render to default fbo as fsq
+    DrawColor(renderer.rt_main_resolve);
+    //DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)

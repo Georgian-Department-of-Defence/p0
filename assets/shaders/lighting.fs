@@ -123,8 +123,13 @@ void main()
             }
         }
     }
+    float shadowAlpha = float(shadowCount) / 9.0;
+
+    // Without PCF (hard shadows look worse due to aliasing)
+    //float shadowDepth = texture(texture1, lightSpace.xy).r;
+    //float shadowAlpha = currentDepth > shadowDepth ? 1.0 : 0.0;
     
     vec4 shadowColor = vec4(finalColor.xyz * 0.4, 1.0);
-    finalColor = mix(finalColor, shadowColor, float(shadowCount) / 9.0);
+    finalColor = mix(finalColor, shadowColor, shadowAlpha);
     //finalColor = pow(finalColor, vec4(1.0/2.2));
 }
