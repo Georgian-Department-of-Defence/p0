@@ -41,12 +41,20 @@ vec3 phong(vec3 P, vec3 N, vec3 cameraPosition, Light light)
     vec3 ambient = light.color;
     vec3 diffuse = light.color * dotNL;
     vec3 specular = light.color * pow(dotVR, light.specularExponent);
-    
+
     vec3 lighting = vec3(0.0);
     lighting += ambient * light.ambient;
     lighting += diffuse * light.diffuse;
     lighting += specular * light.specular;
     
+    // High gradient = sharper edges = more occlusion
+    //float edgeFactor = smoothstep(0.0, 0.05, length(fwidth(N)));
+    //float ao = 1.0 - edgeFactor * (1.0 - dotNL);
+    //return lighting * ao;
+    // My "poor man's AO" is too harsh...
+    // It adds detail to the mechs, but also adds unwanted seams to building bases.
+    // Shadows + low-lighting areas conceal most of the AO artifacts, but I'm still hesitant to apply this AO.
+
     return lighting;
 }
 
@@ -123,13 +131,25 @@ void main()
             }
         }
     }
+
     float shadowAlpha = float(shadowCount) / 9.0;
+    vec4 shadowColor = vec4(finalColor.xyz * 0.4, 1.0);
+    finalColor = mix(finalColor, shadowColor, shadowAlpha);
 
     // Without PCF (hard shadows look worse due to aliasing)
     //float shadowDepth = texture(texture1, lightSpace.xy).r;
     //float shadowAlpha = currentDepth > shadowDepth ? 1.0 : 0.0;
-    
-    vec4 shadowColor = vec4(finalColor.xyz * 0.4, 1.0);
-    finalColor = mix(finalColor, shadowColor, shadowAlpha);
+
+    // Normals rate-of-change heatmap:
+    //finalColor = vec4(vec3(1.0) * length(fwidth(N)), 1.0);
+
+    // Gamma-correction:
     //finalColor = pow(finalColor, vec4(1.0/2.2));
+
+    // (Fake) ambient occlusion visualization
+    //vec3 L = normalize(-lights[0].direction - fragPosition);
+    //float dotNL = max(0.0, dot(N, L));
+    //float edgeFactor = smoothstep(0.0, 0.05, length(fwidth(N)));
+    //float ao = 1.0 - edgeFactor * (1.0 - dotNL);
+    //finalColor = vec4(vec3(1.0) * ao, 1.0);
 }
