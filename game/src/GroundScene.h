@@ -15,6 +15,10 @@ public:
 	float hex_res = 10.0f;
 	float hex_thickness = 0.1f;
 	float time = 0.0f;
+	float rotation_angle;
+	Shader lit_shader;
+	Mesh cube_mesh;
+	Model model_preview;
 	void OnLoad() final;
 	void OnUnload() final;
 
