@@ -18,19 +18,19 @@ void LoadCamera()
     // Original FoV was 28.5 degrees
     //CameraPitch(&td_camera, 10.0f * DEG2RAD, false, false, true);
 
-    Camera top_down_camera;
-    top_down_camera.up = Vector3UnitY;
-    top_down_camera.position = { 0.0f, -45.0f, 230.0f };
-    top_down_camera.target = { 0.0f, 5.0f, 0.0f };
-    top_down_camera.fovy = 30.0f;
-    top_down_camera.projection = CAMERA_PERSPECTIVE;
+    Camera camera_top_down;
+    camera_top_down.up = Vector3UnitY;
+    camera_top_down.position = { 0.0f, -45.0f, 230.0f };
+    camera_top_down.target = { 0.0f, 5.0f, 0.0f };
+    camera_top_down.fovy = 30.0f;
+    camera_top_down.projection = CAMERA_PERSPECTIVE;
 
-    Camera first_person_camera;
-    first_person_camera.position = { 0.0f, 25.0f, 2.0f };
-    first_person_camera.target = { 0.0f, 0.0f, 2.0f };
-    first_person_camera.up = Vector3UnitZ;
-    first_person_camera.fovy = 60.0f;
-    first_person_camera.projection = CAMERA_PERSPECTIVE;
+    Camera camera_first_person;
+    camera_first_person.position = { 0.0f, 25.0f, 2.0f };
+    camera_first_person.target = { 0.0f, 0.0f, 2.0f };
+    camera_first_person.up = Vector3UnitZ;
+    camera_first_person.fovy = 60.0f;
+    camera_first_person.projection = CAMERA_PERSPECTIVE;
 
     double edge = 96.0;
     g_camera_system.light_pos = { WORLD_MAX_X, WORLD_MAX_Y * 2.0f, 250.0f };
@@ -39,8 +39,8 @@ void LoadCamera()
 
     g_camera_system.cursor_enabled = false;
     g_camera_system.mode = CAMERA_MODE_TOP_DOWN;
-    g_camera_system.top_down_camera = top_down_camera;
-    g_camera_system.first_person_camera = first_person_camera;
+    g_camera_system.camera_top_down = camera_top_down;
+    g_camera_system.camera_first_person = camera_first_person;
 
     SetCursor(g_camera_system.cursor_enabled);
 }
