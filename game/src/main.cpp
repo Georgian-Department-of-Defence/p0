@@ -42,7 +42,7 @@ int main()
 
     LoadAssets();
     LoadRenderer(game.renderer);
-    Scene::Load(game, SCENE_DEV_MAP);
+    Scene::Load(game, SCENE_TEAM_SELECT);
 
     while (!WindowShouldClose())
     {

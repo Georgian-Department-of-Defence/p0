@@ -32,6 +32,19 @@ void LoadCamera()
     camera_first_person.fovy = 60.0f;
     camera_first_person.projection = CAMERA_PERSPECTIVE;
 
+    Camera3D camera_ui_3d;
+    camera_ui_3d.position = { 0.0f, 0.0f, 100.0f };
+    camera_ui_3d.target = Vector3Zeros;
+    camera_ui_3d.up = Vector3UnitY;
+    camera_ui_3d.fovy = 50.0f;
+    camera_ui_3d.projection = CAMERA_ORTHOGRAPHIC;
+
+    Camera2D camera_ui_2d;
+    camera_ui_2d.offset = { GetScreenWidth() * 0.5f, GetScreenHeight() * 0.5f };
+    camera_ui_2d.target = { 0.0f, 0.0f };
+    camera_ui_2d.rotation = 0.0f;
+    camera_ui_2d.zoom = 1.0f;
+
     double edge = 96.0;
     g_camera_system.light_pos = { WORLD_MAX_X, WORLD_MAX_Y * 2.0f, 250.0f };
     g_camera_system.light_view = MatrixLookAt(g_camera_system.light_pos, Vector3Zeros, Vector3UnitZ);
@@ -41,6 +54,8 @@ void LoadCamera()
     g_camera_system.mode = CAMERA_MODE_TOP_DOWN;
     g_camera_system.camera_top_down = camera_top_down;
     g_camera_system.camera_first_person = camera_first_person;
+    g_camera_system.camera_ui_3d = camera_ui_3d;
+    g_camera_system.camera_ui_2d = camera_ui_2d;
 
     SetCursor(g_camera_system.cursor_enabled);
 }

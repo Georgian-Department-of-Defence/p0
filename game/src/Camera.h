@@ -16,6 +16,9 @@ struct CameraSystem
     Camera camera_top_down;
     Camera camera_first_person;
 
+    Camera3D camera_ui_3d;
+    Camera2D camera_ui_2d;
+
     // Shadow camera implemented via rlgl
     Vector3 light_pos;
     Matrix light_view;
