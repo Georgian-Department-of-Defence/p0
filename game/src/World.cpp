@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Meshes.h"
 #include "Shaders.h"
+#include "Textures.h"
 #include "Audio.h"
 #include "Map.h"
 
@@ -104,7 +105,7 @@ void DrawWorld(const World& world, const Renderer& renderer)
 
     // Must call texture mode before 3d mode because texture mode sets an ortho projection against my will (which 3d mode overwrites)!
     BeginTextureMode(renderer.rt_shadowmap);
-    ClearBackground(ORANGE);
+        ClearBackground(ORANGE);
         rlEnableDepthTest();
         rlSetMatrixModelview(g_camera_system.light_view);
         rlSetMatrixProjection(g_camera_system.light_proj);
@@ -153,8 +154,20 @@ void DrawWorld(const World& world, const Renderer& renderer)
         0, 0, renderer.rt_main_resolve.texture.width, renderer.rt_main_resolve.texture.height,
         GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     rlDisableFramebuffer();
-    // Depth blit currently unnecessary, but nice to know its possible to blit from MSAA depth renderbuffer to resolve depth texture
 
+    // Billboarding is what we want -- UI follows mechs exactly. Perspective distortion depends on scene camera.
+    BeginTextureMode(renderer.rt_main_resolve);
+    glClear(GL_DEPTH_BUFFER_BIT);
+        BeginMode3D(*GetCamera());
+        for (const Mech& mech : world.mechs)
+        {
+            Rectangle src = { 0.0f, 0.0f, (float)g_textures.gradient.width, (float)g_textures.gradient.height };
+            DrawBillboardRec(*GetCamera(), g_textures.gradient, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
+        }
+        EndMode3D();
+    EndTextureMode();
+
+    // Downsampling will happen right before release -- more intuitive to develop at full resolution since downsampling may hide artifacts!
     rlBindFramebuffer(RL_READ_FRAMEBUFFER, renderer.rt_main_resolve.id);
     rlBindFramebuffer(RL_DRAW_FRAMEBUFFER, renderer.rt_downsample.id);
     rlBlitFramebuffer(
@@ -163,10 +176,9 @@ void DrawWorld(const World& world, const Renderer& renderer)
         GL_COLOR_BUFFER_BIT);
     rlDisableFramebuffer();
 
-    //DrawDepth(renderer.rt_shadowmap);
-    //DrawDepth(renderer.rt_main_resolve);
-    //DrawColor(renderer.rt_main_resolve);
-    DrawColor(renderer.rt_downsample);
+    // Note: blitting requires identical src & dst width & height. Best to render to default fbo as fsq
+    DrawColor(renderer.rt_main_resolve);
+    //DrawColor(renderer.rt_downsample);
 }
 
 void DrawWorldDebug(const World& world, const Renderer& renderer)

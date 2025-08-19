@@ -13,8 +13,11 @@ struct CameraSystem
     CameraSystemMode mode;
     bool cursor_enabled;
 
-    Camera top_down_camera;
-    Camera first_person_camera;
+    Camera camera_top_down;
+    Camera camera_first_person;
+
+    Camera3D camera_ui_3d;
+    Camera2D camera_ui_2d;
 
     // Shadow camera implemented via rlgl
     Vector3 light_pos;
@@ -30,11 +33,11 @@ inline Camera* GetCamera()
     switch (g_camera_system.mode)
     {
     case CAMERA_MODE_TOP_DOWN:
-        camera = &g_camera_system.top_down_camera;
+        camera = &g_camera_system.camera_top_down;
         break;
 
     case CAMERA_MODE_FIRST_PERSON:
-        camera = &g_camera_system.first_person_camera;
+        camera = &g_camera_system.camera_first_person;
         break;
     }
     return camera;

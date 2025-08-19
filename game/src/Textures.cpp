@@ -16,13 +16,18 @@ void LoadTextures()
         tex.id = id;
 	}
 
-    //g_textures.mech_red = LoadTexture("./assets/textures/mech_tex_red.png");
-    //g_textures.mech_blue = LoadTexture("./assets/textures/mech_tex_blue.png");
+    {
+        Color src = RED;
+        Color dst = ORANGE;
+        src.a = dst.a = 128;
+        Image img = GenImageGradientLinear(64, 64, 0, src, dst);
+        g_textures.gradient = LoadTextureFromImage(img);
+        UnloadImage(img);
+    }
 }
 
 void UnloadTextures()
 {
     rlUnloadTexture(g_textures.white.id);
-    //UnloadTexture(g_textures.mech_blue);
-    //UnloadTexture(g_textures.mech_red);
+    UnloadTexture(g_textures.gradient);
 }

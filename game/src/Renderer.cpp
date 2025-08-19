@@ -10,7 +10,7 @@ Texture LoadDepthBuffer(int width, int height, bool use_render_buffer = false);
 
 void LoadRenderer(Renderer& r)
 {
-    // MSAA check
+    // MSAA check (no longer using MSAA on default, rendering to custom MSAA fbo instead)
 	if (r.flags & FLAG_MSAA_4X_HINT)
 	{
 		int sample_buffers, samples;
@@ -35,20 +35,21 @@ void LoadRenderer(Renderer& r)
         g_materials.lighting.maps[MATERIAL_MAP_SPECULAR].texture = rt.depth;
     }
 
-    // Main RT multisampled, 1080p
+    // Main RT multisampled, 4k
     {
-        int rt_width = 1920;
-        int rt_height = 1080;
+        int rt_width = 3840;
+        int rt_height = 2160;
+        int rt_samples = 8;
         RenderTexture& rt = r.rt_main_multisample;
     
         glGenTextures(1, &rt.texture.id);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, rt.texture.id);
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA, rt_width, rt_height, GL_TRUE);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, rt_samples, GL_RGBA, rt_width, rt_height, GL_TRUE);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
         
         glGenRenderbuffers(1, &rt.depth.id);
         glBindRenderbuffer(GL_RENDERBUFFER, rt.depth.id);
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT, rt_width, rt_height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, rt_samples, GL_DEPTH_COMPONENT, rt_width, rt_height);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
         
         glGenFramebuffers(1, &rt.id);
@@ -62,10 +63,10 @@ void LoadRenderer(Renderer& r)
         rt.texture.height = rt.depth.height = rt_height;
     }
 
-    // Main RT resolve, 1080p
+    // Main RT resolve, 4k
     {
-        int rt_width = 1920;
-        int rt_height = 1080;
+        int rt_width = 3840;
+        int rt_height = 2160;
 
         RenderTexture& rt = r.rt_main_resolve;
         rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
