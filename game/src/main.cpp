@@ -4,31 +4,10 @@
 #include "glad.h"
 
 #include "Camera.h"
-#include "Meshes.h"
-#include "Shaders.h"
-#include "Textures.h"
-#include "Audio.h"
+#include "Assets.h"
 
 #include "Scene.h"
 #include "Game.h"
-
-void LoadAssets()
-{
-    LoadCamera();
-    LoadMeshes();
-    LoadShaders();
-    LoadTextures();
-    LoadAudio();
-}
-
-void UnloadAssets()
-{
-    UnloadAudio();
-    UnloadTextures();
-    UnloadShaders();
-    UnloadMeshes();
-    UnloadCamera();
-}
 
 int main()
 {
@@ -39,7 +18,9 @@ int main()
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
-
+    SetMasterVolume(0.25f); // Make audio quiet for testing
+    
+    LoadCamera();
     LoadAssets();
     LoadRenderer(game.renderer);
     Scene::Load(game, SCENE_TEAM_SELECT);
@@ -68,9 +49,10 @@ int main()
         DrawFPS(10, 30);
         EndDrawing();
     }
-    UnloadRenderer(game.renderer);
     Scene::Unload(game);
+    UnloadRenderer(game.renderer);
     UnloadAssets();
+    UnloadCamera();
 
     CloseAudioDevice();
     CloseWindow();

@@ -149,6 +149,9 @@
     <ClCompile Include="src\Light.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Assets.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -269,6 +272,9 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Light.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets.h">
+      <Filter>Assets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
