@@ -6,11 +6,11 @@ Assets assets;
 
 static void LoadAudio();
 static void LoadMeshes();
-static void LoadShaders();
 static void LoadTextures();
+static void LoadMaterials();
 
+static void UnloadMaterials();
 static void UnloadTextures();
-static void UnloadShaders();
 static void UnloadMeshes();
 static void UnloadAudio();
 
@@ -18,46 +18,48 @@ void LoadAssets()
 {
     LoadAudio();
     LoadMeshes();
-    LoadShaders();
     LoadTextures();
+    LoadMaterials();
 }
 
 void UnloadAssets()
 {
+    UnloadMaterials();
     UnloadTextures();
-    UnloadShaders();
     UnloadMeshes();
     UnloadAudio();
 }
 
 void LoadAudio()
 {
-    assets.audio.fire_rifle = LoadSound("./assets/audio/fire_rifle.wav");
-    assets.audio.fire_shotgun = LoadSound("./assets/audio/fire_shotgun.wav");
-    assets.audio.fire_grenade = LoadSound("./assets/audio/fire_grenade.wav");
-    assets.audio.fire_missile = LoadSound("./assets/audio/fire_missile.wav");
-    assets.audio.fire_dasher = LoadSound("./assets/audio/fire_dasher.wav");
+    Audios& audio = assets.audio;
+    audio.fire_rifle = LoadSound("./assets/audio/fire_rifle.wav");
+    audio.fire_shotgun = LoadSound("./assets/audio/fire_shotgun.wav");
+    audio.fire_grenade = LoadSound("./assets/audio/fire_grenade.wav");
+    audio.fire_missile = LoadSound("./assets/audio/fire_missile.wav");
+    audio.fire_dasher = LoadSound("./assets/audio/fire_dasher.wav");
 
-    assets.audio.hit = LoadSound("./assets/audio/hit.wav");
-    assets.audio.hit_mech = LoadSound("./assets/audio/hit_mech.wav");
+    audio.hit = LoadSound("./assets/audio/hit.wav");
+    audio.hit_mech = LoadSound("./assets/audio/hit_mech.wav");
 
-    assets.audio.heat_overheat = LoadSound("./assets/audio/heat_overheat.wav");
-    assets.audio.heat_restore = LoadSound("./assets/audio/heat_restore.wav");
+    audio.heat_overheat = LoadSound("./assets/audio/heat_overheat.wav");
+    audio.heat_restore = LoadSound("./assets/audio/heat_restore.wav");
 }
 
 void UnloadAudio()
 {
-    UnloadSound(assets.audio.heat_restore);
-    UnloadSound(assets.audio.heat_overheat);
+    Audios& audio = assets.audio;
+    UnloadSound(audio.heat_restore);
+    UnloadSound(audio.heat_overheat);
 
-    UnloadSound(assets.audio.hit_mech);
-    UnloadSound(assets.audio.hit);
+    UnloadSound(audio.hit_mech);
+    UnloadSound(audio.hit);
 
-    UnloadSound(assets.audio.fire_dasher);
-    UnloadSound(assets.audio.fire_missile);
-    UnloadSound(assets.audio.fire_grenade);
-    UnloadSound(assets.audio.fire_shotgun);
-    UnloadSound(assets.audio.fire_rifle);
+    UnloadSound(audio.fire_dasher);
+    UnloadSound(audio.fire_missile);
+    UnloadSound(audio.fire_grenade);
+    UnloadSound(audio.fire_shotgun);
+    UnloadSound(audio.fire_rifle);
 }
 
 void LoadMeshes()
@@ -89,33 +91,35 @@ void LoadMeshes()
     //Model gear_shotgun;
     //Model gear_grenade;
 
-    assets.mesh.torso = mesh_from_model(torso);
-    assets.mesh.legs = mesh_from_model(legs);
+    Meshes& mesh = assets.mesh;
+    mesh.torso = mesh_from_model(torso);
+    mesh.legs = mesh_from_model(legs);
 
-    assets.mesh.td = mesh_from_model(td);
-    assets.mesh.bmo = mesh_from_model(bmo);
-    assets.mesh.condo = mesh_from_model(condo);
+    mesh.td = mesh_from_model(td);
+    mesh.bmo = mesh_from_model(bmo);
+    mesh.condo = mesh_from_model(condo);
 
-    assets.mesh.bullet = mesh_from_model(bullet);
-    assets.mesh.grenade = mesh_from_model(grenade);
-    assets.mesh.missile = mesh_from_model(missile);
+    mesh.bullet = mesh_from_model(bullet);
+    mesh.grenade = mesh_from_model(grenade);
+    mesh.missile = mesh_from_model(missile);
 }
 
 void UnloadMeshes()
 {
-    UnloadMesh(assets.mesh.torso);
-    UnloadMesh(assets.mesh.legs);
+    Meshes& mesh = assets.mesh;
+    UnloadMesh(mesh.torso);
+    UnloadMesh(mesh.legs);
 
-    UnloadMesh(assets.mesh.td);
-    UnloadMesh(assets.mesh.bmo);
-    UnloadMesh(assets.mesh.condo);
+    UnloadMesh(mesh.td);
+    UnloadMesh(mesh.bmo);
+    UnloadMesh(mesh.condo);
 
-    UnloadMesh(assets.mesh.bullet);
-    UnloadMesh(assets.mesh.grenade);
-    UnloadMesh(assets.mesh.missile);
+    UnloadMesh(mesh.bullet);
+    UnloadMesh(mesh.grenade);
+    UnloadMesh(mesh.missile);
 }
 
-void LoadShaders()
+void LoadMaterials()
 {
     // "texture0", "texture1", and "texture2" are queried by default on-shader load.
     // ie if I want to sample a texture for shadow-mapping, add a uniform called texture1 and shader.locs[SHADER_LOC_MAP_SPECULAR].texture
@@ -123,28 +127,31 @@ void LoadShaders()
     //shader.locs[SHADER_LOC_MAP_SPECULAR] = rlGetLocationUniform(shader.id, RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE1); // SHADER_LOC_MAP_METALNESS / SPECULAR
     //shader.locs[SHADER_LOC_MAP_NORMAL] = rlGetLocationUniform(shader.id, RL_DEFAULT_SHADER_SAMPLER2D_NAME_TEXTURE2);   // SHADER_LOC_MAP_NORMAL
 
-    assets.shader.skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
-    assets.shader.lighting = LoadShader("./assets/shaders/base.vs", "./assets/shaders/lighting.fs");
-    assets.shader.depth = LoadShader("./assets/shaders/base.vs", "./assets/shaders/depth.fs");
+    Shader skinning = LoadShader("./assets/shaders/skinning.vs", "./assets/shaders/skinning.fs");
+    Shader lighting = LoadShader("./assets/shaders/base.vs", "./assets/shaders/lighting.fs");
+    Shader depth = LoadShader("./assets/shaders/base.vs", "./assets/shaders/depth.fs");
 
-    g_materials.flat = LoadMaterialDefault();
-    g_materials.lighting = LoadMaterialDefault();
-    g_materials.lighting.shader = assets.shader.lighting;
+    Materials& material = assets.material;
+    material.flat = LoadMaterialDefault();
 
-    assets.shader.lighting.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(assets.shader.lighting, "viewPos");
+    material.lighting = LoadMaterialDefault();
+    material.lighting.shader = lighting;
+    material.lighting.shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(material.lighting.shader, "viewPos");
 }
 
-void UnloadShaders()
+void UnloadMaterials()
 {
-    UnloadShader(assets.shader.depth);
-    UnloadShader(assets.shader.lighting);
-    UnloadShader(assets.shader.skinning);
+    // TODO -- Test this (I'm confused about UnloadMaterial passing by-value, and if its valid to double-delete an OpenGL shader)...
+    //auto UnloadMaterialSafe = [](Material material)
+    //{
+    //    if (IsMaterialValid(material))
+    //        UnloadMaterial(material);
+    //};
 
-    // Prevent material unload from trying to unload associated shader
-    g_materials.lighting.shader.id = rlGetShaderIdDefault();
-
-    UnloadMaterial(g_materials.lighting);
-    UnloadMaterial(g_materials.flat);
+    Materials& material = assets.material;
+    UnloadMaterial(material.lighting);
+    UnloadMaterial(material.depth);
+    UnloadMaterial(material.flat);
 }
 
 void LoadTextures()
@@ -175,6 +182,7 @@ void LoadTextures()
 
 void UnloadTextures()
 {
-    UnloadTexture(assets.texture.white);
-    UnloadTexture(assets.texture.gradient);
+    Textures& texture = assets.texture;
+    UnloadTexture(texture.white);
+    UnloadTexture(texture.gradient);
 }

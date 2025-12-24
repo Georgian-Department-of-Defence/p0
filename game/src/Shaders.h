@@ -17,5 +17,5 @@ struct Materials
 extern Shaders g_shaders;
 extern Materials g_materials;
 
-void LoadShaders();
-void UnloadShaders();
+void LoadMaterials();
+void UnloadMaterials();

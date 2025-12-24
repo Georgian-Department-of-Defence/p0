@@ -39,19 +39,12 @@ struct Audios
 	//Music never_gonna_give_you_up_rick_astley;
 };
 
-struct Shaders
+struct Materials
 {
-	Shader skinning;
-	Shader lighting;
-	Shader depth;
+	Material flat;
+	Material depth;
+	Material lighting;
 };
-
-// Move this to renderer, as well as Camera and Framebuffer?
-//struct Materials
-//{
-//	Material flat;
-//	Material lighting;
-//};
 
 struct Textures
 {
@@ -63,11 +56,15 @@ struct Assets
 {
 	Audios audio;
 	Meshes mesh;
-	Shaders shader;
 	Textures texture;
+	Materials material;
 };
 
 extern Assets assets;
 
 void LoadAssets();
 void UnloadAssets();
+
+// Materials are shaders + uniform data such as colours & textures.
+// Easier to work at the material level than the shader level.
+// Just load whichever shaders are reused internally, then make said materials share them!

@@ -4,7 +4,7 @@
 Shaders g_shaders;
 Materials g_materials;
 
-void LoadShaders()
+void LoadMaterials()
 {
 	// "texture0", "texture1", and "texture2" are queried by default on-shader load.
 	// ie if I want to sample a texture for shadow-mapping, add a uniform called texture1 and shader.locs[SHADER_LOC_MAP_SPECULAR].texture!
@@ -23,7 +23,7 @@ void LoadShaders()
 	g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(g_shaders.lighting, "viewPos");
 }
 
-void UnloadShaders()
+void UnloadMaterials()
 {
 	UnloadShader(g_shaders.depth);
 	UnloadShader(g_shaders.lighting);
