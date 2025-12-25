@@ -8,6 +8,7 @@
 #include "Audio.h"
 #include "Map.h"
 
+#include "Assets.h"
 #include "Collision.h"
 #include "Collision3D.h"
 #include <algorithm>
@@ -433,7 +434,7 @@ void OnCollisionProjectileBuildingDefault(Projectile& projectile, Building& buil
 {
     projectile.destroy |= true;
     building.durability -= 25.0f;
-    PlaySound(g_audio.hit);
+    PlaySound(assets.audio.hit);
 }
 
 void OnDestroyMech(Mech& mech, World& world)
@@ -453,11 +454,11 @@ void OnDestroyProjectile(Projectile& projectile, World& world)
     if (hit_mech != nullptr)
     {
         hit_mech->health -= projectile.damage;
-        PlaySound(g_audio.hit_mech);
+        PlaySound(assets.audio.hit_mech);
     }
     else
     {
-        PlaySound(g_audio.hit);
+        PlaySound(assets.audio.hit);
     }
 }
 

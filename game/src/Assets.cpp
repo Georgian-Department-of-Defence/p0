@@ -133,6 +133,9 @@ void LoadMaterials()
 
     Materials& material = assets.material;
     material.flat = LoadMaterialDefault();
+    
+    material.skinning = LoadMaterialDefault();
+    material.skinning.shader = skinning;
 
     material.lighting = LoadMaterialDefault();
     material.lighting.shader = lighting;

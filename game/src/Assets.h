@@ -44,6 +44,7 @@ struct Materials
 	Material flat;
 	Material depth;
 	Material lighting;
+	Material skinning;
 };
 
 struct Textures

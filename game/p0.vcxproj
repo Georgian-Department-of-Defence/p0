@@ -127,16 +127,13 @@
     <ClCompile Include="src\LoadoutSelectScene.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\MapScene.cpp" />
-    <ClCompile Include="src\Meshes.cpp" />
     <ClCompile Include="src\ParticleEmitter.cpp" />
     <ClCompile Include="src\ParticlesScene.cpp" />
     <ClCompile Include="src\PhysicsScene.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\Audio.cpp" />
     <ClCompile Include="src\SplashScreenScene.cpp" />
     <ClCompile Include="src\TeamSelectScene.cpp" />
-    <ClCompile Include="src\Textures.cpp" />
     <ClCompile Include="src\Widgets.cpp" />
     <ClCompile Include="src\WidgetsScene.cpp" />
     <ClCompile Include="src\World.cpp" />
@@ -144,7 +141,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mech.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
-    <ClCompile Include="src\Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico" />
@@ -174,18 +170,15 @@
     <ClInclude Include="src\LoadoutSelectScene.h" />
     <ClInclude Include="src\Map.h" />
     <ClInclude Include="src\MapScene.h" />
-    <ClInclude Include="src\Meshes.h" />
     <ClInclude Include="src\ParticleEmitter.h" />
     <ClInclude Include="src\ParticlesScene.h" />
     <ClInclude Include="src\PhysicsScene.h" />
     <ClInclude Include="src\Gear.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\Audio.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
     <ClInclude Include="src\Steering.h" />
     <ClInclude Include="src\TeamSelectScene.h" />
-    <ClInclude Include="src\Textures.h" />
     <ClInclude Include="src\Types.h" />
     <ClInclude Include="src\Widgets.h" />
     <ClInclude Include="src\WidgetsScene.h" />
@@ -194,7 +187,6 @@
     <ClInclude Include="src\Mech.h" />
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\raymathext.h" />
-    <ClInclude Include="src\Shaders.h" />
     <ClInclude Include="src\WorldDef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

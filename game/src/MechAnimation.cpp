@@ -1,12 +1,12 @@
 #include "MechAnimation.h"
-#include "Shaders.h"
+#include "Assets.h"
 
 void LoadMechAnimation(MechAnimation* ma)
 {
     ma->clips = LoadModelAnimations("./assets/meshes/mech.glb", &ma->count);
     ma->model = LoadModel("./assets/meshes/mech.glb");
     
-    ma->model.materials[1].shader = g_shaders.skinning;
+    ma->model.materials[1].shader = assets.material.skinning.shader;
     ma->model.materials[1].maps[MATERIAL_MAP_DIFFUSE].color = DARKGRAY;
 }
 
