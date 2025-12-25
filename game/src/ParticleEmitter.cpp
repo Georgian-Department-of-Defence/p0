@@ -1,5 +1,5 @@
 #include "ParticleEmitter.h"
-#include "Textures.h"
+#include "Assets.h"
 #include <algorithm>
 #include <cassert>
 
@@ -81,7 +81,7 @@ void DrawParticleEmitter(const ParticleEmitter& emitter, const Camera& camera)
 {
     for (const Particle& p : emitter.particles)
     {
-        DrawBillboard(camera, g_textures.white, p.position, p.size, p.color);
+        DrawBillboard(camera, assets.texture.white, p.position, p.size, p.color);
     }
 }
 
