@@ -1,7 +1,5 @@
 #include "Building.h"
-#include "Meshes.h"
-#include "Shaders.h"
-#include "Textures.h"
+#include "Assets.h"
 #include "rlgl.h"
 #include <cassert>
 
@@ -25,15 +23,15 @@ Mesh* BuildingMesh(BuildingType type)
     switch (type)
     {
     case BUILDING_TD:
-        mesh = g_meshes.bld_td;
+        mesh = &assets.mesh.td;
         break;
 
     case BUILDING_BMO:
-        mesh = g_meshes.bld_bmo;
+        mesh = &assets.mesh.bmo;
         break;
 
     case BUILDING_CONDO:
-        mesh = g_meshes.bld_condo;
+        mesh = &assets.mesh.condo;
         break;
     }
 
@@ -121,7 +119,7 @@ void UpdateBuilding(Building& building)
 void DrawBuilding(const Building& building, Material material, const Renderer& renderer)
 {
     material.maps[MATERIAL_MAP_DIFFUSE].color = building.color;
-    material.maps[MATERIAL_MAP_DIFFUSE].texture = g_textures.white;
+    material.maps[MATERIAL_MAP_DIFFUSE].texture = assets.texture.white;
     DrawMesh(*building.mesh, material, MatrixTranslate(building.pos.x, building.pos.y, building.pos.z));
 }
 
