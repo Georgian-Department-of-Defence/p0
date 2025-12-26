@@ -23,7 +23,7 @@ int main()
     LoadCamera();
     LoadAssets();
     LoadRenderer(game.renderer);
-    Scene::Load(game, SCENE_TEAM_SELECT);
+    Scene::Load(game, SCENE_DEV_MAP);
 
     while (!WindowShouldClose())
     {

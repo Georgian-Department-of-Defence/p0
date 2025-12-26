@@ -1,9 +1,7 @@
 #include "Projectile.h"
 #include "DebugDraw.h"
 #include "Camera.h"
-#include "Meshes.h"
-#include "Shaders.h"
-#include "Audio.h"
+#include "Assets.h"
 
 #include "Mech.h"
 #include "World.h"
@@ -58,10 +56,10 @@ void CreateProjectileRifle(Mech& mech, World& world, Vector3 base_pos)
 	p.type = PROJECTILE_RIFLE;
 
 	p.color = RED;
-	p.mesh = g_meshes.prj_straight;
+	p.mesh = &assets.mesh.bullet;
 
 	CreateProjectileDefault(&p, mech, world);
-	PlaySound(g_audio.fire_rifle);
+	PlaySound(assets.audio.fire_rifle);
 }
 
 void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos)
@@ -79,11 +77,11 @@ void CreateProjectileShotgun(Mech& mech, World& world, Vector3 base_pos)
 		p.type = PROJECTILE_SHOTGUN;
 
 		p.color = GREEN;
-		p.mesh = g_meshes.prj_straight;
+		p.mesh = &assets.mesh.bullet;
 
 		CreateProjectileDefault(&p, mech, world);
 	}
-	PlaySound(g_audio.fire_shotgun);
+	PlaySound(assets.audio.fire_shotgun);
 }
 
 void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
@@ -100,10 +98,10 @@ void CreateProjectileGrenade(Mech& mech, World& world, Vector3 base_pos)
 	p.type = PROJECTILE_GRENADE;
 
 	p.color = BLUE;
-	p.mesh = g_meshes.prj_grenade;
+	p.mesh = &assets.mesh.grenade;
 
 	CreateProjectileDefault(&p, mech, world);
-	PlaySound(g_audio.fire_grenade);
+	PlaySound(assets.audio.fire_grenade);
 }
 
 void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float roll)
@@ -117,7 +115,7 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.type = PROJECTILE_MISSILE;
 
 	p.color = GOLD;
-	p.mesh = g_meshes.prj_missile;
+	p.mesh = &assets.mesh.missile;
 
 	Vector3 mech_dir = TorsoDirection(mech);
 	p.missile.state = MISSILE_RISE;
@@ -128,7 +126,7 @@ void CreateProjectileMissile(Mech& mech, World& world, Vector3 base_pos, float r
 	p.missile.target_position.z = MISSILE_MAX_HEIGHT;
 
 	CreateProjectileDefault(&p, mech, world);
-	PlaySound(g_audio.fire_missile);
+	PlaySound(assets.audio.fire_missile);
 }
 
 void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
@@ -143,12 +141,12 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos)
 	p.type = PROJECTILE_MACHINEGUN;
 
 	p.color = ORANGE;
-	p.mesh = g_meshes.prj_straight;
+	p.mesh = &assets.mesh.bullet;
 
 	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
-	PlaySound(g_audio.fire_rifle);
+	PlaySound(assets.audio.fire_rifle);
 }
 
 void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos)
@@ -163,18 +161,18 @@ void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos)
 	p.type = PROJECTILE_CHAINGUN;
 
 	p.color = RED;
-	p.mesh = g_meshes.prj_straight;
+	p.mesh = &assets.mesh.bullet;
 
 	CreateParticleTrail(&p);
 
 	world.projectiles.push_back(p);
-	PlaySound(g_audio.fire_rifle);
+	PlaySound(assets.audio.fire_rifle);
 }
 
 void ActivateDasher(Mech& mech, World& world)
 {
 	mech.dashing = true;
-	PlaySound(g_audio.fire_rifle);
+	PlaySound(assets.audio.fire_rifle);
 	float dash_speed = 50.0f;
 	const float deadzone = 0.1f;
 	Vector2 input = Vector2Zeros;

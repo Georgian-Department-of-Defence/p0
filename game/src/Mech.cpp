@@ -1,10 +1,7 @@
 #include "Mech.h"
 #include "DebugDraw.h"
 #include "Camera.h"
-#include "Meshes.h"
-#include "Shaders.h"
-#include "Textures.h"
-#include "Audio.h"
+#include "Assets.h"
 
 #include "World.h"
 #include <cassert>
@@ -95,8 +92,8 @@ void DrawMech(const Mech& mech, Material material, const Renderer& renderer)
     //map.color = WHITE;//mech.color;
     //map.texture = mech.team == TEAM_RED ? g_textures.mech_red : g_textures.mech_blue;
 
-    DrawMesh(*g_meshes.mech_torso, material, torso_world);
-    DrawMesh(*g_meshes.mech_legs, material, legs_world);
+    DrawMesh(assets.mesh.torso, material, torso_world);
+    DrawMesh(assets.mesh.legs, material, legs_world);
 }
 
 void DrawMechDebug(const Mech& mech, const Renderer& renderer)
@@ -324,13 +321,13 @@ void UpdateHeat(Mech& mech)
     if (!mech.overheated && mech.heat >= mech.heat_max)
     {
         mech.overheated = true;
-        PlaySound(g_audio.heat_overheat);
+        PlaySound(assets.audio.heat_overheat);
 
     }
     else if (mech.overheated && mech.heat <= 0.0f)
     {
         mech.overheated = false;
-        PlaySound(g_audio.heat_restore);
+        PlaySound(assets.audio.heat_restore);
     }
 
     mech.heat -= mech.heat_dissipation * GetFrameTime();
