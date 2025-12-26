@@ -39,13 +39,13 @@ int main()
         BeginDrawing();
         ClearBackground(MAGENTA);
         
-            Scene::Draw(game);
-//#ifdef DEBUG
-//          Scene::DrawDebug(game);
-//#endif
-//          Scene::DrawGui(game);
-
-        // TODO - draw this in world-space because this currently depends on screen resolution
+        Scene::Draw(game);
+#ifdef DEBUG
+        // Don't wrap other DrawFooDebug functions in #if DEBUG
+        // If you don't want debug to render, either build in Release or comment out the body of Scene::DrawDebug
+        Scene::DrawDebug(game);
+#endif
+        Scene::DrawGui(game);
         DrawFPS(10, 30);
         EndDrawing();
     }

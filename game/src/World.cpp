@@ -10,16 +10,16 @@
 #include <algorithm>
 #include <cassert>
 
-void UpdateDebug(World& world);
-
-void UpdateEntities(World& world);
-void UpdateParticles(World& world);
-void DrawParticles(const World& world, const Renderer& renderer);
-
-void UpdateCollisionsMechMech(Mechs& mechs);
-void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings);
-void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles);
-void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& buildings);
+static void UpdateDebug(World& world);
+ 
+static void UpdateEntities(World& world);
+static void UpdateParticles(World& world);
+static void DrawParticles(const World& world, const Renderer& renderer);
+ 
+static void UpdateCollisionsMechMech(Mechs& mechs);
+static void UpdateCollisionsMechBuilding(Mechs& mechs, Buildings& buildings);
+static void UpdateCollisionsMechProjectile(Mechs& mechs, Projectiles& projectiles);
+static void UpdateCollisionsProjectileBuilding(Projectiles& projectiles, Buildings& buildings);
 
 static void OnCollisionMechMechDefault(Mech& a, Mech& b, HitInfo hi);
 static void OnCollisionMechBuildingDefault(Mech& mech, Building& building, HitInfo hi);

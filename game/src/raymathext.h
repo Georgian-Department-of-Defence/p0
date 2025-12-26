@@ -93,6 +93,8 @@ RMAPI Matrix MatrixLookRotation(Vector3 direction)
     Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, Vector3UnitZ));
     Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
 
+    // Note: frenet-frame algorithm is unchanged (forward x up = right, right x forward = above).
+    // We simply "swap" forward & up because we interpret the Y-axis as our forward-axis and the Z-axis as our up-axis!
     Matrix mat = MatrixIdentity();
     mat.m0 = right.x;
     mat.m1 = right.y;
