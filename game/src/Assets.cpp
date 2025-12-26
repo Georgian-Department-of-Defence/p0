@@ -64,30 +64,31 @@ void UnloadAudio()
 
 void LoadMeshes()
 {
-    auto LoadMesh = [](Mesh* mesh, const char* file)
+    auto LoadMesh = [](const char* file) -> Mesh
     {
         Model model = LoadModel(file);
         assert(model.meshCount == 1);
-        mesh = &model.meshes[0];
+        Mesh mesh = model.meshes[0];
         model.meshCount = 0;
         UnloadModel(model);
+        return mesh;
     };
 
     Meshes& mesh = assets.mesh;
 
     // Mech
-	LoadMesh(&mesh.torso, "./assets/meshes/mech_torso.obj");
-	LoadMesh(&mesh.legs, "./assets/meshes/mech_legs.obj");
+    mesh.torso = LoadMesh("./assets/meshes/mech_torso.obj");
+    mesh.legs = LoadMesh("./assets/meshes/mech_legs.obj");
 
     // Buildings
-	LoadMesh(&mesh.td, "./assets/meshes/bld_td.obj");
-	LoadMesh(&mesh.bmo, "./assets/meshes/bld_bmo.obj");
-	LoadMesh(&mesh.condo, "./assets/meshes/bld_condo.obj");
+    mesh.td = LoadMesh("./assets/meshes/bld_td.obj");
+    mesh.bmo = LoadMesh("./assets/meshes/bld_bmo.obj");
+    mesh.condo = LoadMesh("./assets/meshes/bld_condo.obj");
 
     // Projectiles
-	LoadMesh(&mesh.bullet, "./assets/meshes/prj_straight.obj");
-	LoadMesh(&mesh.grenade, "./assets/meshes/prj_grenade.obj");
-	LoadMesh(&mesh.missile, "./assets/meshes/prj_missile.obj");
+    mesh.bullet = LoadMesh("./assets/meshes/prj_straight.obj");
+    mesh.grenade = LoadMesh("./assets/meshes/prj_grenade.obj");
+    mesh.missile = LoadMesh("./assets/meshes/prj_missile.obj");
 
     // Gear
     //Model gear_rifle;
