@@ -52,10 +52,6 @@ void CreateMech(Mech* mech, int player)
     positions[2] = {  20.0f, -40.0f, 0.0f };
     positions[3] = {  20.0f,  40.0f, 0.0f };
     mech->pos = positions[player];
-
-#ifdef DEBUG
-    mech->debug_poll_input = player == 0;
-#endif
 }
 
 void DestroyMech(Mech* mech)
@@ -129,23 +125,23 @@ void UpdateInputAim(Mech& mech)
 
 void UpdateInput(Mech& mech, World& world)
 {
-    bool poll_input = true;
-#ifdef DEBUG
-    poll_input = mech.debug_poll_input;
-#endif
-    if (poll_input)
+    bool connected = IsGamepadAvailable(mech.player);
+    if (connected)
     {
-        if (IsGamepadAvailable(mech.player))
-        {
-            UpdateInputAim(mech);
-            UpdateInputMove(mech);
-            UpdateInputFire(mech, world);
-        }
-        else
-        {
-            TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
-        }
+        UpdateInputAim(mech);
+        UpdateInputMove(mech);
+        UpdateInputFire(mech, world);
     }
+
+#ifdef DEBUG
+    if (IsKeyPressed(KEY_P))
+        mech.debug_connectivity = !mech.debug_connectivity;
+
+    if (mech.debug_connectivity && !connected)
+    {
+        TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
+    }
+#endif
 }
 
 void UpdateInputMove(Mech& mech)

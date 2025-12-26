@@ -48,7 +48,7 @@ struct Mech
 
 #ifdef DEBUG
     bool debug_collion = false;
-    bool debug_poll_input = false;
+    bool debug_connectivity = false;
 #endif
 };
 
