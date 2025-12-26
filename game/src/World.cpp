@@ -1,14 +1,10 @@
 #include "World.h"
 #include "rlgl.h"
 #include "glad.h"
+#include "Assets.h"
 #include "Camera.h"
-#include "Meshes.h"
-#include "Shaders.h"
-#include "Textures.h"
-#include "Audio.h"
 #include "Map.h"
 
-#include "Assets.h"
 #include "Collision.h"
 #include "Collision3D.h"
 #include <algorithm>
@@ -53,7 +49,7 @@ void LoadWorld(World& world)
     LoadMap(MAP_TEST_1, world);
 
     Light sun;
-    LoadLightUniforms(sun, 0, g_shaders.lighting);
+    LoadLightUniforms(sun, 0, assets.material.lighting.shader);
     sun.direction = Vector3Normalize(Vector3Zeros - g_camera_system.light_pos);
     sun.color = Vector3Ones;
     sun.ambient = 0.2f;
@@ -102,7 +98,7 @@ void UpdateWorld(World& world)
 
 void DrawWorld(const World& world, const Renderer& renderer)
 {
-    Material material = g_materials.flat;
+    Material material = assets.material.flat;
 
     // Must call texture mode before 3d mode because texture mode sets an ortho projection against my will (which 3d mode overwrites)!
     BeginTextureMode(renderer.rt_shadowmap);
@@ -126,9 +122,9 @@ void DrawWorld(const World& world, const Renderer& renderer)
         rlSetClipPlanes(0.1f, 500.0f);
         BeginMode3D(*GetCamera());
         
-        material = g_materials.lighting;
-        SetShaderValue(g_shaders.lighting, g_shaders.lighting.locs[SHADER_LOC_VECTOR_VIEW], &GetCamera()->position, SHADER_UNIFORM_VEC3);
-        SetShaderValueMatrix(g_shaders.lighting, world.lights.back().loc_light_view_proj, g_camera_system.light_view * g_camera_system.light_proj);
+        material = assets.material.lighting;
+        SetShaderValue(material.shader, material.shader.locs[SHADER_LOC_VECTOR_VIEW], &GetCamera()->position, SHADER_UNIFORM_VEC3);
+        SetShaderValueMatrix(material.shader, world.lights.back().loc_light_view_proj, g_camera_system.light_view * g_camera_system.light_proj);
 
         material.maps[MATERIAL_MAP_DIFFUSE].color = WHITE;
         DrawMesh(world.ground, material, MatrixRotateX(PI * 0.5f));
@@ -162,8 +158,9 @@ void DrawWorld(const World& world, const Renderer& renderer)
         BeginMode3D(*GetCamera());
         for (const Mech& mech : world.mechs)
         {
-            Rectangle src = { 0.0f, 0.0f, (float)g_textures.gradient.width, (float)g_textures.gradient.height };
-            DrawBillboardRec(*GetCamera(), g_textures.gradient, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
+            Texture tex = assets.texture.gradient;
+            Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
+            DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
         }
         EndMode3D();
     EndTextureMode();
@@ -244,7 +241,7 @@ void UpdateEntities(World& world)
         UpdateProjectile(projectile, world);
 
     for (Light& light : world.lights)
-        UpdateLightUniforms(light, g_shaders.lighting);
+        UpdateLightUniforms(light, assets.material.lighting.shader);
 }
 
 void UpdateParticles(World& world)

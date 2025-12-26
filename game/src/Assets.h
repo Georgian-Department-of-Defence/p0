@@ -53,6 +53,12 @@ struct Textures
 	Texture2D gradient;
 };
 
+// TODO -- Move Renderer's rt's to here
+//struct RenderTargets
+//{
+//
+//};
+
 struct Assets
 {
 	Audios audio;
