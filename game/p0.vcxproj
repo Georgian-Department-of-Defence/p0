@@ -165,6 +165,7 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\DebugDraw.h" />
     <ClInclude Include="src\EditorScene.h" />
+    <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GearScene.h" />
     <ClInclude Include="src\Light.h" />

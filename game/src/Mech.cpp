@@ -209,10 +209,46 @@ void UpdateInputFire(Mech& mech, World& world)
 
 void UpdateInputMoveDebug(Mech& mech)
 {
+    float dt = GetFrameTime();
+    float speed = mech.move_speed * dt;
+    if (IsKeyDown(KEY_W))
+    {
+        mech.vel += Vector3UnitY * speed;
+    }
+
+    if (IsKeyDown(KEY_S))
+    {
+        mech.vel -= Vector3UnitY * speed;
+    }
+
+    if (IsKeyDown(KEY_A))
+    {
+        mech.vel -= Vector3UnitX * speed;
+    }
+
+    if (IsKeyDown(KEY_D))
+    {
+        mech.vel += Vector3UnitX * speed;
+    }
+
+    if (!mech.dashing)
+    {
+        mech.vel = Vector3Clamp(mech.vel, { -10.0f, -10.0f, 0.0f }, { 10.0f, 10.0f, 0.0f });
+    }
+    // TODO -- Separate legs animation into separate function so both regular & debug update modifies velocity, then legs update based on resultant velocity
 }
 
 void UpdateInputAimDebug(Mech& mech)
 {
+    Vector2 m = GetMousePosition();
+    m.y = GetScreenHeight() - m.y;
+    m.x = Remap(m.x, 0.0f, GetScreenWidth(),  WORLD_MIN_X, WORLD_MAX_X);
+    m.y = Remap(m.y, 0.0f, GetScreenHeight(), WORLD_MIN_Y, WORLD_MAX_Y);
+
+    Vector2 dir = Vector2Normalize(m - Vector2{ mech.pos.x, mech.pos.y });
+    float roll = Vector2Angle(Vector2UnitY, dir);
+    mech.torso_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
+    mech.torso_rotation = QuaternionRotateTowards(mech.torso_rotation, mech.torso_rotation_goal, 100.0f * DEG2RAD * GetFrameTime());
 }
 
 void UpdateInputFireDebug(Mech& mech, World& world)
@@ -351,7 +387,6 @@ void UpdateGear(Mech& mech, World& world, int slot)
         }
 
     }
-        
 }
 
 void UpdateHeat(Mech& mech)

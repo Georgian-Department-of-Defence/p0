@@ -240,5 +240,8 @@
     <ClInclude Include="src\MechAnimation.h">
       <Filter>Animations</Filter>
     </ClInclude>
+    <ClInclude Include="src\Entity.h">
+      <Filter>World</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

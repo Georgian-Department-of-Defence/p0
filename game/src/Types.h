@@ -1,6 +1,14 @@
 #pragma once
 #include <cstdint>
 
+enum EntityType : uint32_t
+{
+	ENTITY_MECH,
+	ENTITY_BUILDING,
+	ENTITY_PROJECTILE,
+	ENTITY_TYPE_COUNT
+};
+
 enum BuildingType : uint32_t
 {
 	BUILDING_TD,

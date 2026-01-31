@@ -94,7 +94,6 @@ void CreateProjectileMachineGun(Mech& mech, World& world, Vector3 base_pos);
 void CreateProjectileChainGun(Mech& mech, World& world, Vector3 base_pos);
 void ActivateDasher(Mech& mech, World& world);
 
-
 void UpdateProjectile(Projectile& p, World& world);
 void DrawProjectile(const Projectile& p, Material material, const Renderer& renderer);
 void DrawProjectileDebug(const Projectile& p, const Renderer& renderer);
