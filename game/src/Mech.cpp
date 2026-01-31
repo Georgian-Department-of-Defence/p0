@@ -6,16 +6,23 @@
 #include "World.h"
 #include <cassert>
 
+void UpdateInput(Mech& mech, World& world);
+
 void UpdateInputMove(Mech& mech);
 void UpdateInputAim(Mech& mech);
 void UpdateInputFire(Mech& mech, World& world);
-void UpdateInput(Mech& mech, World& world);
+
+void UpdateInputMoveDebug(Mech& mech);
+void UpdateInputAimDebug(Mech& mech);
+void UpdateInputFireDebug(Mech& mech, World& world);
 
 void FireGear(Mech& mech, World& world, int slot);
 void UpdateGear(Mech& mech, World& world, int slot);
 
 void UpdateHeat(Mech& mech);
 void UpdateMotion(Mech& mech);
+
+static int f_debug_player_index = 0;
 
 void CreateMech(Mech* mech, int player)
 {
@@ -104,6 +111,33 @@ void DrawMechDebug(const Mech& mech, const Renderer& renderer)
     //DrawSphere(mech.pos, 25.0f, DARKBLUE);
 }
 
+void UpdateInput(Mech& mech, World& world)
+{
+    bool connected = IsGamepadAvailable(mech.player);
+    if (connected)
+    {
+        UpdateInputAim(mech);
+        UpdateInputMove(mech);
+        UpdateInputFire(mech, world);
+    }
+    else if (mech.player == f_debug_player_index)
+    {
+        UpdateInputAimDebug(mech);
+        UpdateInputMoveDebug(mech);
+        UpdateInputFireDebug(mech, world);
+    }
+
+#ifdef DEBUG
+    if (IsKeyPressed(KEY_P))
+        mech.debug_connectivity = !mech.debug_connectivity;
+
+    if (mech.debug_connectivity && !connected)
+    {
+        TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
+    }
+#endif
+}
+
 void UpdateInputAim(Mech& mech)
 {
     const float deadzone = 0.1f;
@@ -121,27 +155,6 @@ void UpdateInputAim(Mech& mech)
         mech.torso_rotation_goal = QuaternionFromEuler(0.0f, 0.0f, roll);
         mech.torso_rotation = QuaternionRotateTowards(mech.torso_rotation, mech.torso_rotation_goal, 100.0f * DEG2RAD * GetFrameTime());
     }
-}
-
-void UpdateInput(Mech& mech, World& world)
-{
-    bool connected = IsGamepadAvailable(mech.player);
-    if (connected)
-    {
-        UpdateInputAim(mech);
-        UpdateInputMove(mech);
-        UpdateInputFire(mech, world);
-    }
-
-#ifdef DEBUG
-    if (IsKeyPressed(KEY_P))
-        mech.debug_connectivity = !mech.debug_connectivity;
-
-    if (mech.debug_connectivity && !connected)
-    {
-        TraceLog(LOG_WARNING, "Player %i gamepad polled but not connected", mech.player);
-    }
-#endif
 }
 
 void UpdateInputMove(Mech& mech)
@@ -189,6 +202,37 @@ void UpdateInputFire(Mech& mech, World& world)
     }
 
     if (IsGamepadButtonDown(mech.player, GAMEPAD_BUTTON_RIGHT_TRIGGER_2))
+    {
+        FireGear(mech, world, 3);
+    }
+}
+
+void UpdateInputMoveDebug(Mech& mech)
+{
+}
+
+void UpdateInputAimDebug(Mech& mech)
+{
+}
+
+void UpdateInputFireDebug(Mech& mech, World& world)
+{
+    if (IsKeyDown(KEY_ONE))
+    {
+        FireGear(mech, world, 0);
+    }
+
+    if (IsKeyDown(KEY_TWO))
+    {
+        FireGear(mech, world, 1);
+    }
+
+    if (IsKeyDown(KEY_THREE))
+    {
+        FireGear(mech, world, 2);
+    }
+
+    if (IsKeyDown(KEY_FOUR))
     {
         FireGear(mech, world, 3);
     }
