@@ -128,6 +128,9 @@
     <ClCompile Include="src\MechAnimation.cpp">
       <Filter>Animations</Filter>
     </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">

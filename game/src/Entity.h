@@ -1,6 +1,45 @@
 #pragma once
-#include "raymathext.h"
+#include "raylib.h"
+#include "Collision.h"
 #include "WorldDef.h"
+
+enum ColliderType
+{
+	COLLIDER_CIRCLE,
+	COLLIDER_CAPSULE,
+	COLLIDER_PLANE,
+	COLLIDER_BOX,
+	COLLIDER_TYPE_COUNT
+};
+
+struct Collider
+{
+	ColliderType type = COLLIDER_TYPE_COUNT;
+
+	union
+	{
+		struct
+		{
+			float radius;
+		} circle;
+
+		struct
+		{
+			float radius;
+			float half_height;
+		} capsule;
+
+		struct
+		{
+			Vector2 extents;
+		} box;
+
+		struct
+		{
+			Vector2 normal;
+		} plane;
+	};
+};
 
 struct Entity
 {
@@ -11,13 +50,18 @@ struct Entity
 	Vector3 vel;
 	Vector3 acc;
 
+	Quaternion rot;
+
+	Collider collider;
+
 	virtual void OnLoad() {};
 	virtual void OnUnload() {};
 	virtual void OnUpdate() = 0;
 	virtual void OnDraw() = 0;
 	virtual void OnCollision(Entity& entity, HitInfo hit_info) = 0;
-	
-	// Simpler to make OnCollision a virtual method instead of a function-pointer
-	// (Mechs, Buildings, and Projectiles can all collide with eachother)
-	//OnCollision on_collision = nullptr;
 };
+
+bool CheckCollision(const Entity& a, const Entity& b, HitInfo* hit_info);
+
+// My collision functions are procedural so stick to unions for colliders.
+// Adding an interface would just make things confusing

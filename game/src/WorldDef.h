@@ -9,7 +9,7 @@ struct Projectile;
 
 struct HitInfo
 {
-	Vector3 mtv = Vector3Zeros;
+	Vector2 mtv = Vector2Zeros;
 };
 
 using OnCollisionMechMech = void(*)(Mech& self, Mech& other, HitInfo hi);
