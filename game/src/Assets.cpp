@@ -1,6 +1,4 @@
 #include "Assets.h"
-#include "rlgl.h"
-#include <cassert>
 
 Assets assets;
 

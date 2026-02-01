@@ -1,5 +1,4 @@
 #pragma once
-#include <raylib.h>
 // An "Asset" is a resource loaded from outside the program.
 // In-memory resources such as Camera, Framebuffer, Material, etc belong in elsewhere
 

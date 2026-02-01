@@ -1,9 +1,4 @@
 #include "Renderer.h"
-#include "raymathext.h"
-#include "rlgl.h"
-#include "glad.h"
-#include "Assets.h"
-#include <cassert>
 
 Texture LoadColorBuffer(int width, int height, int format);
 Texture LoadDepthBuffer(int width, int height, bool use_render_buffer = false);

@@ -1,7 +1,4 @@
 #include "Camera.h"
-#include "rcamera.h"
-#include "rlgl.h"
-#include <cfloat>
 
 CameraSystem g_camera_system;
 

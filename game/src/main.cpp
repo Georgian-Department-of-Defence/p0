@@ -1,13 +1,10 @@
-#include "raylib.h"
-#include "raymathext.h"
-#include "rlgl.h"
-#include "glad.h"
+#include "p0.h"
 
-#include "Camera.h"
-#include "Assets.h"
-
-#include "Scene.h"
-#include "Game.h"
+struct Game
+{
+    //World world;
+    Renderer renderer;
+};
 
 int main()
 {
@@ -23,33 +20,14 @@ int main()
     LoadCamera();
     LoadAssets();
     LoadRenderer(game.renderer);
-    Scene::Load(game, SCENE_DEV_MAP);
-
     while (!WindowShouldClose())
     {
-#ifdef DEBUG
-        if (IsKeyPressed(KEY_G))
-        {
-            for (int i = 0; i < 4; i++)
-                TraceLog(LOG_INFO, "Gamepad %i %s", i, IsGamepadAvailable(i) ? "connected" : "disconnected");
-        }
-#endif
-        Scene::Update(game);
-
         BeginDrawing();
         ClearBackground(MAGENTA);
         
-        Scene::Draw(game);
-#ifdef DEBUG
-        // Don't wrap other DrawFooDebug functions in #if DEBUG
-        // If you don't want debug to render, either build in Release or comment out the body of Scene::DrawDebug
-        Scene::DrawDebug(game);
-#endif
-        Scene::DrawGui(game);
         DrawFPS(10, 30);
         EndDrawing();
     }
-    Scene::Unload(game);
     UnloadRenderer(game.renderer);
     UnloadAssets();
     UnloadCamera();

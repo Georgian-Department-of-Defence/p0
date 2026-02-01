@@ -246,5 +246,6 @@
     <ClInclude Include="src\Entity.h">
       <Filter>World</Filter>
     </ClInclude>
+    <ClInclude Include="src\p0.h" />
   </ItemGroup>
 </Project>

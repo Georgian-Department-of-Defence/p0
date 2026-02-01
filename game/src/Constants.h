@@ -1,7 +1,4 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
-#include <cstdint>
 
 constexpr float WORLD_MIN_X = -100.0f;
 constexpr float WORLD_MAX_X = 100.0f;
