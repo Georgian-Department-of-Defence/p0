@@ -194,9 +194,6 @@
     <ClInclude Include="src\Types.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="src\raymathext.h">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="src\ParticleEmitter.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -247,5 +244,8 @@
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="src\p0.h" />
+    <ClInclude Include="src\MathExt.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

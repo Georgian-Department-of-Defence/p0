@@ -22,8 +22,26 @@ int main()
     LoadRenderer(game.renderer);
     while (!WindowShouldClose())
     {
+        UpdateCamera();
+
+        Matrix rz = MatrixRotateZ(100.0f * GetTime() * DEG2RAD);
+        Matrix rx = MatrixRotateX(100.0f * GetTime() * DEG2RAD);
+        Matrix r = rz * rx;
+        //r = MatrixRotateZ(30.0f * DEG2RAD);
+
+        Vector3 x = MatrixColX(r);
+        Vector3 y = MatrixColY(r);
+        Vector3 z = MatrixColZ(r);
+
         BeginDrawing();
         ClearBackground(MAGENTA);
+
+        BeginMode3D(*GetCamera());
+
+        DrawMesh(assets.mesh.torso, assets.material.flat, r);
+        DrawMesh(assets.mesh.legs, assets.material.flat, r);
+        DrawAxesDebug(Vector3Zeros, r, 25.0f, 5.0f);
+        EndMode3D();
         
         DrawFPS(10, 30);
         EndDrawing();

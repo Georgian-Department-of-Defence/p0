@@ -1,6 +1,4 @@
 #pragma once
-#include "raymath.h"
-#include <cstdlib>
 
 RMAPI float Random(float min, float max)
 {

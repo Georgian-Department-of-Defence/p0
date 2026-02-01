@@ -3,7 +3,7 @@
 #include "Collision.h"
 #include "WorldDef.h"
 
-enum ColliderType
+enum ColliderType : uint32_t
 {
 	COLLIDER_CIRCLE,
 	COLLIDER_CAPSULE,
