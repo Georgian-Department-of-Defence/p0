@@ -15,4 +15,6 @@ struct Mech2 : public Entity
 
 	float move_speed = 0.0f;
 	float turn_speed = 0.0f;
+
+	int player_index = -1;
 };

@@ -2,13 +2,13 @@
 
 struct Entity
 {
-	virtual void OnLoad() {};
-	virtual void OnUnload() {};
+	virtual ~Entity() = default;
 	virtual void OnUpdate() = 0;
 	virtual void OnDraw() const = 0;
 	virtual void OnCollision(const Entity& entity, HitInfo hit_info) = 0;
 
 	EntityType type = ENTITY_TYPE_COUNT;
+	Team team = TEAM_NONE;
 	bool destroy_flag = false;
 
 	Vector3 pos = Vector3Zeros;
