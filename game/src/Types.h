@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 enum EntityType : uint32_t
 {
@@ -7,6 +6,15 @@ enum EntityType : uint32_t
 	ENTITY_BUILDING,
 	ENTITY_PROJECTILE,
 	ENTITY_TYPE_COUNT
+};
+
+enum ColliderType : uint32_t
+{
+	COLLIDER_CIRCLE,
+	COLLIDER_CAPSULE,
+	COLLIDER_PLANE,
+	COLLIDER_BOX,
+	COLLIDER_TYPE_COUNT
 };
 
 enum BuildingType : uint32_t

@@ -2,6 +2,7 @@
 
 struct Game
 {
+    std::vector<Entity*> entities;
     //World world;
     Renderer renderer;
 };
@@ -10,6 +11,7 @@ int main()
 {
     Game game;
     game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT;// | FLAG_MSAA_4X_HINT;
+    game.entities.push_back(new Mech2);
 
     SetConfigFlags(game.renderer.flags);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
@@ -20,32 +22,35 @@ int main()
     LoadCamera();
     LoadAssets();
     LoadRenderer(game.renderer);
+
+    for (Entity* entity : game.entities)
+        entity->OnLoad();
+
     while (!WindowShouldClose())
     {
         UpdateCamera();
-
-        Matrix rz = MatrixRotateZ(100.0f * GetTime() * DEG2RAD);
-        Matrix rx = MatrixRotateX(100.0f * GetTime() * DEG2RAD);
-        Matrix r = rz * rx;
-        //r = MatrixRotateZ(30.0f * DEG2RAD);
-
-        Vector3 x = MatrixColX(r);
-        Vector3 y = MatrixColY(r);
-        Vector3 z = MatrixColZ(r);
+        for (Entity* entity : game.entities)
+            entity->OnUpdate();
 
         BeginDrawing();
         ClearBackground(MAGENTA);
 
         BeginMode3D(*GetCamera());
-
-        DrawMesh(assets.mesh.torso, assets.material.flat, r);
-        DrawMesh(assets.mesh.legs, assets.material.flat, r);
-        DrawAxesDebug(Vector3Zeros, r, 25.0f, 5.0f);
+        for (const Entity* entity : game.entities)
+            entity->OnDraw();
         EndMode3D();
         
         DrawFPS(10, 30);
         EndDrawing();
     }
+
+    for (Entity* entity : game.entities)
+        entity->OnUnload();
+
+    for (size_t i = 0; i < game.entities.size(); i++)
+        delete game.entities[i];
+    game.entities.clear();
+
     UnloadRenderer(game.renderer);
     UnloadAssets();
     UnloadCamera();

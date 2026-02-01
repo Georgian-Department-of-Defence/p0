@@ -131,6 +131,9 @@
     <ClCompile Include="src\Entity.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mech2.cpp">
+      <Filter>World\Mech</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -246,6 +249,12 @@
     <ClInclude Include="src\p0.h" />
     <ClInclude Include="src\MathExt.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collider.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mech2.h">
+      <Filter>World\Mech</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

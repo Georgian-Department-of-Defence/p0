@@ -16,9 +16,16 @@
 #include <vector>
 
 // 4) Include user-defined headers
-#include "MathExt.h"
 #include "Constants.h"
+#include "Types.h"
+#include "MathExt.h"
+#include "Collision.h"
+#include "Collider.h"
+
 #include "Assets.cpp"
 #include "Camera.cpp"
 #include "Renderer.cpp"
 #include "DebugDraw.cpp"
+
+#include "Entity.cpp"
+#include "Mech2.cpp"
