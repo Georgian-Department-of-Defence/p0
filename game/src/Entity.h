@@ -14,10 +14,15 @@ struct Entity
 	Vector3 pos = Vector3Zeros;
 	Vector3 vel = Vector3Zeros;
 	Vector3 acc = Vector3Zeros;
+	Quaternion rot = QuaternionIdentity();
+	// Used to set direction of colliders
 
 	Collider collider;
-	//Quaternion rot;
-	// Mechs/Buildings/Projectiles each handle orientation differently, so don't bother trying to generalize.
 };
+
+inline Vector3 EntityDirection(const Entity& entity)
+{
+	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
+}
 
 bool EntityCheckCollision(const Entity& a, const Entity& b, HitInfo* hit_info);
