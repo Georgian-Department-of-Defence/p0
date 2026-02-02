@@ -52,11 +52,13 @@ struct Textures
 	Texture2D gradient;
 };
 
-// TODO -- Move Renderer's rt's to here
-//struct RenderTargets
-//{
-//
-//};
+struct Framebuffers
+{
+	RenderTexture shadow_map;
+	RenderTexture main_multisample;
+	RenderTexture main_resolve;
+	RenderTexture downsample;
+};
 
 struct Assets
 {
@@ -64,6 +66,7 @@ struct Assets
 	Meshes mesh;
 	Textures texture;
 	Materials material;
+	Framebuffers framebuffer;
 };
 
 extern Assets assets;

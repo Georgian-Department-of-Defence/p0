@@ -2,21 +2,27 @@
 
 Assets assets;
 
-static void LoadAudio();
-static void LoadMeshes();
-static void LoadTextures();
-static void LoadMaterials();
+Texture LoadColorBuffer(int width, int height, int format);
+Texture LoadDepthBuffer(int width, int height, bool use_render_buffer = false);
 
-static void UnloadMaterials();
-static void UnloadTextures();
-static void UnloadMeshes();
-static void UnloadAudio();
+void LoadAudio();
+void LoadMeshes();
+void LoadTextures();
+void LoadMaterials();
+void LoadFramebuffers();
+
+void UnloadFramebuffers();
+void UnloadMaterials();
+void UnloadTextures();
+void UnloadMeshes();
+void UnloadAudio();
 
 void LoadAssets()
 {
     LoadAudio();
     LoadMeshes();
     LoadTextures();
+
     LoadMaterials();
 }
 
@@ -178,4 +184,110 @@ void UnloadTextures()
     Textures& texture = assets.texture;
     UnloadTexture(texture.white);
     UnloadTexture(texture.gradient);
+}
+
+void LoadFramebuffers()
+{
+    // Shadow map
+    {
+        int rt_width = 4096;
+        int rt_height = 4096;
+
+        RenderTexture& rt = assets.framebuffer.shadow_map;
+        rt.texture.width = rt_width;
+        rt.texture.height = rt_height;
+        rt.depth = LoadDepthBuffer(rt_width, rt_height);
+        rt.id = rlLoadFramebuffer();
+        rlFramebufferAttach(rt.id, rt.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
+        assert(rlFramebufferComplete(rt.id));
+
+        assets.material.lighting.maps[MATERIAL_MAP_SPECULAR].texture = rt.depth;
+    }
+
+    // Main multisample
+    {
+        int rt_width = 3840;
+        int rt_height = 2160;
+        int rt_samples = 8;
+        RenderTexture& rt = assets.framebuffer.main_multisample;
+
+        glGenTextures(1, &rt.texture.id);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, rt.texture.id);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, rt_samples, GL_RGBA, rt_width, rt_height, GL_TRUE);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+        glGenRenderbuffers(1, &rt.depth.id);
+        glBindRenderbuffer(GL_RENDERBUFFER, rt.depth.id);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, rt_samples, GL_DEPTH_COMPONENT, rt_width, rt_height);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        glGenFramebuffers(1, &rt.id);
+        glBindFramebuffer(GL_FRAMEBUFFER, rt.id);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, rt.texture.id, 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rt.depth.id);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        assert(rlFramebufferComplete(rt.id));
+        rt.texture.width = rt.depth.width = rt_width;
+        rt.texture.height = rt.depth.height = rt_height;
+    }
+
+    // Main resolve
+    {
+        int rt_width = 3840;
+        int rt_height = 2160;
+
+        RenderTexture& rt = assets.framebuffer.main_resolve;
+        rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+        rt.depth = LoadDepthBuffer(rt_width, rt_height);
+
+        rt.id = rlLoadFramebuffer();
+        rlFramebufferAttach(rt.id, rt.texture.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
+        rlFramebufferAttach(rt.id, rt.depth.id, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_TEXTURE2D, 0);
+        assert(rlFramebufferComplete(rt.id));
+    }
+
+    // Downsample
+    {
+        int rt_width = 640;
+        int rt_height = 360;
+
+        RenderTexture& rt = assets.framebuffer.downsample;
+        rt.texture = LoadColorBuffer(rt_width, rt_height, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+
+        rt.id = rlLoadFramebuffer();
+        rlFramebufferAttach(rt.id, rt.texture.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_TEXTURE2D, 0);
+        assert(rlFramebufferComplete(rt.id));
+    }
+}
+
+void UnloadFramebuffers()
+{
+    Framebuffers& fb = assets.framebuffer;
+    UnloadRenderTexture(fb.shadow_map);
+    UnloadRenderTexture(fb.main_resolve);
+    UnloadRenderTexture(fb.main_multisample);
+    UnloadRenderTexture(fb.downsample);
+}
+
+Texture LoadColorBuffer(int width, int height, int format)
+{
+    Texture texture;
+    texture.width = width;
+    texture.height = height;
+    texture.format = format;
+    texture.mipmaps = 1;
+    texture.id = rlLoadTexture(nullptr, texture.width, texture.height, texture.format, texture.mipmaps);
+    return texture;
+}
+
+Texture LoadDepthBuffer(int width, int height, bool use_render_buffer)
+{
+    Texture texture;
+    texture.width = width;
+    texture.height = height;
+    texture.format = 19;
+    texture.mipmaps = 1;
+    texture.id = rlLoadTextureDepth(texture.width, texture.height, use_render_buffer);
+    return texture;
 }

@@ -40,8 +40,24 @@ void UpdateWorld(World2& world)
 
 void DrawWorld(const World2& world)
 {
-	BeginMode3D(*GetCamera());
-	for (const Entity* entity : world.entities)
-		entity->OnDraw(assets.material.flat);
-	EndMode3D();
+	{
+		BeginTextureMode(assets.framebuffer.shadow_map);
+			ClearBackground(ORANGE);
+			rlEnableDepthTest();
+			rlSetMatrixModelview(g_camera_system.light_view);
+			rlSetMatrixProjection(g_camera_system.light_proj);
+			for (const Entity* entity : world.entities)
+				entity->OnDraw(assets.material.flat);
+			EndMode3D();
+		EndTextureMode();
+	}
+	DrawTextureDepth(assets.framebuffer.shadow_map);
+	// Error 404 -- shadows not found xD xD xD
+
+	//{
+	//	BeginMode3D(*GetCamera());
+	//	for (const Entity* entity : world.entities)
+	//		entity->OnDraw(assets.material.flat);
+	//	EndMode3D();
+	//}
 }

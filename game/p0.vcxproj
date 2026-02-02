@@ -190,10 +190,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\Scene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -273,7 +269,6 @@
     <ClInclude Include="src\ParticlesScene.h" />
     <ClInclude Include="src\PhysicsScene.h" />
     <ClInclude Include="src\Gear.h" />
-    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
     <ClInclude Include="src\Steering.h" />

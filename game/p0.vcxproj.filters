@@ -115,9 +115,6 @@
     <ClCompile Include="src\Map.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Light.cpp">
       <Filter>Rendering</Filter>
@@ -232,9 +229,6 @@
     </ClInclude>
     <ClInclude Include="src\Map.h">
       <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer.h">
-      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Light.h">

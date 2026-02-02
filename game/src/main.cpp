@@ -3,15 +3,11 @@
 struct Game
 {
     World2 world;
-    Renderer renderer;
 };
 
 int main()
 {
-    Game game;
-    game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT;// | FLAG_MSAA_4X_HINT;
-
-    SetConfigFlags(game.renderer.flags);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
     InitAudioDevice();
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
@@ -19,7 +15,8 @@ int main()
     
     LoadCamera();
     LoadAssets();
-    LoadRenderer(game.renderer);
+
+    Game game;
     LoadWorld(game.world);
 
     while (!WindowShouldClose())
@@ -37,7 +34,6 @@ int main()
     }
 
     UnloadWorld(game.world);
-    UnloadRenderer(game.renderer);
     UnloadAssets();
     UnloadCamera();
 
