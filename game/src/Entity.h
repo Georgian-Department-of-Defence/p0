@@ -4,7 +4,7 @@ struct Entity
 {
 	virtual ~Entity() = default;
 	virtual void OnUpdate() = 0;
-	virtual void OnDraw() const = 0;
+	virtual void OnDraw(Material material) const = 0;
 	virtual void OnCollision(const Entity& entity, HitInfo hit_info) = 0;
 
 	EntityType type = ENTITY_TYPE_COUNT;
@@ -17,6 +17,7 @@ struct Entity
 	Quaternion rot = QuaternionIdentity();
 	// Used to set direction of colliders
 
+	Mesh* mesh = nullptr;
 	Collider collider;
 	Color color = WHITE;
 

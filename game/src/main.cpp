@@ -25,16 +25,12 @@ int main()
     while (!WindowShouldClose())
     {
         UpdateCamera();
-        for (Entity* entity : game.world.entities)
-            entity->OnUpdate();
+        UpdateWorld(game.world);
 
         BeginDrawing();
         ClearBackground(MAGENTA);
 
-        BeginMode3D(*GetCamera());
-        for (const Entity* entity : game.world.entities)
-            entity->OnDraw();
-        EndMode3D();
+        DrawWorld(game.world);        
         
         DrawFPS(10, 30);
         EndDrawing();

@@ -7,6 +7,7 @@ struct RTMS
 	unsigned int depth;
 };
 
+// TODO -- move this to assets. This isn't a "Renderer" -- its just a bunch of render textures...
 struct Renderer
 {
 	RenderTexture rt_shadowmap;

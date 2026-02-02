@@ -31,3 +31,17 @@ void UnloadWorld(World2& world)
 		delete world.entities[i];
 	world.entities.clear();
 }
+
+void UpdateWorld(World2& world)
+{
+	for (Entity* entity : world.entities)
+		entity->OnUpdate();
+}
+
+void DrawWorld(const World2& world)
+{
+	BeginMode3D(*GetCamera());
+	for (const Entity* entity : world.entities)
+		entity->OnDraw(assets.material.flat);
+	EndMode3D();
+}

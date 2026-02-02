@@ -2,7 +2,7 @@
 struct Mech2 : public Entity
 {
 	void OnUpdate() final;
-	void OnDraw() const final;
+	void OnDraw(Material material) const final;
 	void OnCollision(const Entity& entity, HitInfo hit_info) final;
 
 	Vector2 dir_torso_curr = Vector2Zeros;

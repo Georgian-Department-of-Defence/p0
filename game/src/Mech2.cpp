@@ -8,13 +8,12 @@ void Mech2::OnUpdate()
 	rot = QuaternionFromMatrix(MatrixRotateZ(Vector2Angle(Vector2UnitY, dir_torso_curr)));
 }
 
-void Mech2::OnDraw() const
+void Mech2::OnDraw(Material material) const
 {
 	Matrix t = MatrixTranslate(pos.x, pos.y, pos.z);
 	Matrix rot_torso = MatrixRotateZ(Vector2Angle(Vector2UnitY, dir_torso_curr));
 	Matrix rot_legs = MatrixRotateZ(Vector2Angle(Vector2UnitY, dir_legs_curr));
 
-	Material material = assets.material.flat;
 	material.maps[MATERIAL_MAP_DIFFUSE].color = color;
 
 	DrawAxesDebug(pos, QuaternionToMatrix(rot), 25.0f, 5.0f);
