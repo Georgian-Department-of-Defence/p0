@@ -15,17 +15,22 @@
 // 3) Include STL headers
 #include <vector>
 
-// 4) Include user-defined headers
+// 4) Include common headers (constants, math, collision, etc)
 #include "Constants.h"
 #include "Types.h"
 #include "MathExt.h"
 #include "Collision.h"
 #include "Collider.h"
 
+// 5) Include assets & tools headers
 #include "Assets.cpp"
 #include "Camera.cpp"
 #include "Renderer.cpp"
 #include "DebugDraw.cpp"
+#include "ParticleEmitter.cpp"
 
+// 6) Include gameplay headers
 #include "Entity.cpp"
 #include "Mech2.cpp"
+
+#include "World2.cpp"

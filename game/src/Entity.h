@@ -18,9 +18,12 @@ struct Entity
 	// Used to set direction of colliders
 
 	Collider collider;
+	Color color = WHITE;
+
+	ParticleEmitter emitter;
 };
 
-inline Vector3 EntityDirection(const Entity& entity)
+inline Vector3 EntityGetDirection(const Entity& entity)
 {
 	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
 }

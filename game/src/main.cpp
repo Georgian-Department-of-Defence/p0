@@ -2,8 +2,7 @@
 
 struct Game
 {
-    std::vector<Entity*> entities;
-    //World world;
+    World2 world;
     Renderer renderer;
 };
 
@@ -11,7 +10,6 @@ int main()
 {
     Game game;
     game.renderer.flags = FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT;// | FLAG_MSAA_4X_HINT;
-    game.entities.push_back(new Mech2);
 
     SetConfigFlags(game.renderer.flags);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "PRIMEOPS ZERO");
@@ -22,21 +20,19 @@ int main()
     LoadCamera();
     LoadAssets();
     LoadRenderer(game.renderer);
-
-    for (Entity* entity : game.entities)
-        entity->OnLoad();
+    LoadWorld(game.world);
 
     while (!WindowShouldClose())
     {
         UpdateCamera();
-        for (Entity* entity : game.entities)
+        for (Entity* entity : game.world.entities)
             entity->OnUpdate();
 
         BeginDrawing();
         ClearBackground(MAGENTA);
 
         BeginMode3D(*GetCamera());
-        for (const Entity* entity : game.entities)
+        for (const Entity* entity : game.world.entities)
             entity->OnDraw();
         EndMode3D();
         
@@ -44,13 +40,7 @@ int main()
         EndDrawing();
     }
 
-    for (Entity* entity : game.entities)
-        entity->OnUnload();
-
-    for (size_t i = 0; i < game.entities.size(); i++)
-        delete game.entities[i];
-    game.entities.clear();
-
+    UnloadWorld(game.world);
     UnloadRenderer(game.renderer);
     UnloadAssets();
     UnloadCamera();

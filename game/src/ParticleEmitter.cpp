@@ -1,7 +1,4 @@
 #include "ParticleEmitter.h"
-#include "Assets.h"
-#include <algorithm>
-#include <cassert>
 
 inline Vector3 RandomParticlePosition(ParticleShape shape, ParticleShapeType type)
 {

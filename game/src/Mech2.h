@@ -1,8 +1,6 @@
 #pragma once
 struct Mech2 : public Entity
 {
-	void OnLoad() final;
-	void OnUnload() final;
 	void OnUpdate() final;
 	void OnDraw() const final;
 	void OnCollision(const Entity& entity, HitInfo hit_info) final;

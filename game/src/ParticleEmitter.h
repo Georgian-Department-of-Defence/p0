@@ -1,7 +1,4 @@
 #pragma once
-#include "raylib.h"
-#include "raymathext.h"
-#include <vector>
 
 enum ParticleShapeType
 {
@@ -37,7 +34,6 @@ struct Particle
     float size;
     float life;
     float life_max;
-	// like mayflies, but less buggy (cmon that was funny)
 };
 
 struct ParticleEmitter
@@ -65,7 +61,3 @@ void DestroyParticleEmitter(ParticleEmitter* emitter);
 
 void UpdateParticleEmitter(ParticleEmitter& emitter);
 void DrawParticleEmitter(const ParticleEmitter& emitter, const Camera& camera);
-
-// TODO - Particle management? -- Something like a ParticleSystem to handle rendering particles for given durations?
-// Probably not worth adding the idea of "particle systems" until we've established visual effects like smoke/fire/electricity, etc
-// Should also think of how to attach particles to entities, but that's more of a Connor problem
