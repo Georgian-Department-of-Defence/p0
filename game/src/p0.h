@@ -28,6 +28,7 @@
 #include "Renderer.cpp"
 #include "DebugDraw.cpp"
 #include "ParticleEmitter.cpp"
+#include "Light.cpp"
 
 // 6) Include gameplay headers
 #include "Entity.cpp"

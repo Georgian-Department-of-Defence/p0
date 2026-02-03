@@ -2,6 +2,7 @@
 struct World2
 {
 	std::vector<Entity*> entities;
+	std::vector<Light> lights;
 };
 
 void LoadWorld(World2& world);

@@ -7,6 +7,7 @@ struct Meshes
 	Mesh torso;
 	Mesh legs;
 
+	Mesh ground;
 	Mesh td;
 	Mesh bmo;
 	Mesh condo;
