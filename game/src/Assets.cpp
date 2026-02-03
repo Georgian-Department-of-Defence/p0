@@ -22,12 +22,13 @@ void LoadAssets()
     LoadAudio();
     LoadMeshes();
     LoadTextures();
-
     LoadMaterials();
+    LoadFramebuffers();
 }
 
 void UnloadAssets()
 {
+    UnloadFramebuffers();
     UnloadMaterials();
     UnloadTextures();
     UnloadMeshes();
@@ -129,6 +130,9 @@ void LoadMaterials()
 
     Materials& material = assets.material;
     material.flat = LoadMaterialDefault();
+
+    material.depth = LoadMaterialDefault();
+    material.depth.shader = depth;
     
     material.skinning = LoadMaterialDefault();
     material.skinning.shader = skinning;
