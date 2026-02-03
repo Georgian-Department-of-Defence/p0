@@ -14,6 +14,7 @@
 
 // 3) Include STL headers
 #include <vector>
+#include <algorithm>
 
 // 4) Include common headers (constants, math, collision, etc)
 #include "Constants.h"

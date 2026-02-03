@@ -43,6 +43,48 @@ void UnloadWorld(World2& world)
 	world.entities.clear();
 }
 
+void UpdateWorldFrame(World2& world)
+{
+	// This will fail the moment an object is created mid-frame...
+	// Best to just partition world.entities
+
+	auto remove_start = std::remove_if(world.entities.begin(), world.entities.end(), [](Entity* entity)
+	{
+		return entity->destroy_flag;
+	});
+
+	for (size_t i = std::distance(world.entities.begin(), remove_start); i < world.entities.size(); i++)
+	{
+		delete world.entities[i];
+		world.entities[i] = nullptr;
+	}
+
+	world.entities.erase(remove_start, world.entities.end());
+
+	world.frame.mechs.clear();
+	//world.frame.buildings.clear();
+	//world.frame.projectiles.clear();
+
+	for (Entity* entity : world.entities)
+	{
+		switch (entity->type)
+		{
+		case ENTITY_MECH:
+			world.frame.mechs.push_back((Mech2*)entity);
+			break;
+		case ENTITY_BUILDING:
+			//world.frame.buildings.push_back((Building2*)entity);
+			break;
+		case ENTITY_PROJECTILE:
+			//world.frame.projectiles.push_back((Projectile2*)entity);
+			break;
+		case ENTITY_TYPE_COUNT:
+			assert(false);
+			break;
+		}
+	}
+}
+
 void UpdateWorld(World2& world)
 {
 	for (Entity* entity : world.entities)
@@ -97,6 +139,13 @@ void DrawWorld(const World2& world)
 	}
 
 	// UI pass
+	std::vector<const Mech2*> mechs;
+	mechs.reserve(4);
+	for (const Entity* entity : world.entities)
+	{
+		if (entity->type == ENTITY_MECH)
+			mechs.push_back((const Mech2*)entity);
+	}
 	//BeginTextureMode(assets.framebuffer.main_resolve);
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//BeginMode3D(*GetCamera());
