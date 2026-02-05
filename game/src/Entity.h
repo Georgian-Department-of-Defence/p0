@@ -1,5 +1,6 @@
 #pragma once
 
+using Id = uint32_t;
 struct Entity
 {
 	virtual ~Entity() = default;
@@ -7,6 +8,7 @@ struct Entity
 	virtual void OnDraw(Material material) const = 0;
 	virtual void OnCollision(const Entity& entity, HitInfo hit_info) = 0;
 
+	Id id = 0;
 	EntityType type = ENTITY_TYPE_COUNT;
 	Team team = TEAM_NONE;
 	bool destroy_flag = false;
@@ -23,6 +25,12 @@ struct Entity
 
 	ParticleEmitter emitter;
 };
+
+inline Id EntityGenId()
+{
+	static Id id = 0;
+	return ++id;
+}
 
 inline Vector3 EntityGetDirection(const Entity& entity)
 {

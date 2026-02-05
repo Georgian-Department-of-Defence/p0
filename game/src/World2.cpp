@@ -2,7 +2,9 @@
 
 void LoadWorld(World2& world)
 {
-	for (int i = 0; i < 4; i++)
+	world.entities.reserve(1024);
+
+	for (size_t i = 0; i < ENTITY_COUNT_MECHS; i++)
 	{
 		Mech2* mech = new Mech2;
 		mech->type = ENTITY_MECH;
@@ -41,48 +43,6 @@ void UnloadWorld(World2& world)
 	for (size_t i = 0; i < world.entities.size(); i++)
 		delete world.entities[i];
 	world.entities.clear();
-}
-
-void UpdateWorldFrame(World2& world)
-{
-	// This will fail the moment an object is created mid-frame...
-	// Best to just partition world.entities
-
-	auto remove_start = std::remove_if(world.entities.begin(), world.entities.end(), [](Entity* entity)
-	{
-		return entity->destroy_flag;
-	});
-
-	for (size_t i = std::distance(world.entities.begin(), remove_start); i < world.entities.size(); i++)
-	{
-		delete world.entities[i];
-		world.entities[i] = nullptr;
-	}
-
-	world.entities.erase(remove_start, world.entities.end());
-
-	world.frame.mechs.clear();
-	//world.frame.buildings.clear();
-	//world.frame.projectiles.clear();
-
-	for (Entity* entity : world.entities)
-	{
-		switch (entity->type)
-		{
-		case ENTITY_MECH:
-			world.frame.mechs.push_back((Mech2*)entity);
-			break;
-		case ENTITY_BUILDING:
-			//world.frame.buildings.push_back((Building2*)entity);
-			break;
-		case ENTITY_PROJECTILE:
-			//world.frame.projectiles.push_back((Projectile2*)entity);
-			break;
-		case ENTITY_TYPE_COUNT:
-			assert(false);
-			break;
-		}
-	}
 }
 
 void UpdateWorld(World2& world)
@@ -138,25 +98,20 @@ void DrawWorld(const World2& world)
 		rlDisableFramebuffer();
 	}
 
-	// UI pass
-	std::vector<const Mech2*> mechs;
-	mechs.reserve(4);
-	for (const Entity* entity : world.entities)
+	// UI pass (billboards & debug)
+	BeginTextureMode(assets.framebuffer.main_resolve);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	BeginMode3D(*GetCamera());
+	for (const Mech2* mech : WorldGetMechsConst(world))
 	{
-		if (entity->type == ENTITY_MECH)
-			mechs.push_back((const Mech2*)entity);
+		DrawAxesDebug(mech->pos + Vector3UnitZ, QuaternionToMatrix(mech->rot), 25.0f, 4.0f);
+
+		Texture tex = assets.texture.gradient;
+		Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
+		DrawBillboardRec(*GetCamera(), tex, src, mech->pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
 	}
-	//BeginTextureMode(assets.framebuffer.main_resolve);
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//BeginMode3D(*GetCamera());
-	//for (const Mech& mech : world.mechs)
-	//{
-	//	Texture tex = assets.texture.gradient;
-	//	Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
-	//	DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
-	//}
-	//EndMode3D();
-	//EndTextureMode();
+	EndMode3D();
+	EndTextureMode();
 
 	// Downsample
 	{
@@ -176,3 +131,74 @@ void DrawWorld(const World2& world)
 	DrawTextureColor(assets.framebuffer.main_resolve);
 	//DrawTextureColor(assets.framebuffer.downsample);
 }
+
+std::vector<Mech2*> WorldGetMechs(World2& world)
+{
+	std::vector<Mech2*> mechs;
+	mechs.reserve(4);
+	for (size_t i = 0; i < ENTITY_COUNT_MECHS; i++)
+	{
+		if (world.entities[i] != nullptr && world.entities[i]->type == ENTITY_MECH)
+			mechs.push_back((Mech2*)world.entities[i]);
+	}
+	return mechs;
+}
+
+std::vector<const Mech2*> WorldGetMechsConst(const World2& world)
+{
+	std::vector<const Mech2*> mechs;
+	mechs.reserve(4);
+	for (size_t i = 0; i < ENTITY_COUNT_MECHS; i++)
+	{
+		if (world.entities[i] != nullptr && world.entities[i]->type == ENTITY_MECH)
+			mechs.push_back((const Mech2*)world.entities[i]);
+	}
+	return mechs;
+}
+
+// Better to query objects by-category on a case-by-case basis.
+// Performing n if-statements where n < 1000 is insignificant.
+// Optimize this by switching to a borderline relational database as an ECS if necessary!
+/*
+void UpdateWorldFrame(World2& world)
+{
+	// This will fail the moment an object is created mid-frame...
+	// Best to just partition world.entities
+
+	auto remove_start = std::remove_if(world.entities.begin(), world.entities.end(), [](Entity* entity)
+	{
+		return entity->destroy_flag;
+	});
+
+	for (size_t i = std::distance(world.entities.begin(), remove_start); i < world.entities.size(); i++)
+	{
+		delete world.entities[i];
+		world.entities[i] = nullptr;
+	}
+
+	world.entities.erase(remove_start, world.entities.end());
+
+	world.frame.mechs.clear();
+	//world.frame.buildings.clear();
+	//world.frame.projectiles.clear();
+
+	for (Entity* entity : world.entities)
+	{
+		switch (entity->type)
+		{
+		case ENTITY_MECH:
+			world.frame.mechs.push_back((Mech2*)entity);
+			break;
+		case ENTITY_BUILDING:
+			//world.frame.buildings.push_back((Building2*)entity);
+			break;
+		case ENTITY_PROJECTILE:
+			//world.frame.projectiles.push_back((Projectile2*)entity);
+			break;
+		case ENTITY_TYPE_COUNT:
+			assert(false);
+			break;
+		}
+	}
+}
+*/

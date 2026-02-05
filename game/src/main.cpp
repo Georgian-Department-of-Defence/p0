@@ -28,7 +28,6 @@ int main()
         }
 
         UpdateCamera();
-        UpdateWorldFrame(game.world);
         UpdateWorld(game.world);
 
         BeginDrawing();

@@ -15,9 +15,4 @@ constexpr size_t MAX_BUILDINGS = 64;
 constexpr size_t MAX_PROJECTILES = 256;
 constexpr int MAX_LIGHTS = 1;
 
-using Id = uint32_t;
-inline Id GenId()
-{
-	static Id id = 0;
-	return ++id;
-}
+constexpr size_t ENTITY_COUNT_MECHS = 4;

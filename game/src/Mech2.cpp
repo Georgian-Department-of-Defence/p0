@@ -16,7 +16,6 @@ void Mech2::OnDraw(Material material) const
 
 	material.maps[MATERIAL_MAP_DIFFUSE].color = color;
 
-	DrawAxesDebug(pos, QuaternionToMatrix(rot), 25.0f, 5.0f);
 	DrawMesh(assets.mesh.torso, material, rot_torso * t);
 	DrawMesh(assets.mesh.legs, material, rot_legs * t);
 
