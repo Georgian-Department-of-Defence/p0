@@ -23,7 +23,7 @@
 #include "Collision.h"
 #include "Collider.h"
 
-// 5) Include assets & tools headers
+// 5) Include assets & tools
 #include "Assets.cpp"
 #include "Camera.cpp"
 #include "Renderer.cpp"
@@ -31,8 +31,9 @@
 #include "ParticleEmitter.cpp"
 #include "Light.cpp"
 
-// 6) Include gameplay headers
+// 6) Include entities
 #include "Entity.cpp"
-#include "Mech2.cpp"
+#include "Mech2.h"
 
+// 7) Include world
 #include "World2.cpp"

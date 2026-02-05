@@ -1,13 +1,11 @@
 #pragma once
 
+struct Entity;
 using Id = uint32_t;
+using OnCollision = void(*)(Entity* a, Entity* b, HitInfo hit_info);
+
 struct Entity
 {
-	virtual ~Entity() = default;
-	virtual void OnUpdate() = 0;
-	virtual void OnDraw(Material material) const = 0;
-	virtual void OnCollision(const Entity& entity, HitInfo hit_info) = 0;
-
 	Id id = 0;
 	EntityType type = ENTITY_TYPE_COUNT;
 	Team team = TEAM_NONE;
@@ -17,12 +15,12 @@ struct Entity
 	Vector3 vel = Vector3Zeros;
 	Vector3 acc = Vector3Zeros;
 	Quaternion rot = QuaternionIdentity();
-	// Used to set direction of colliders
+
+	Collider collider;
+	OnCollision on_collision = nullptr;
 
 	Mesh* mesh = nullptr;
-	Collider collider;
 	Color color = WHITE;
-
 	ParticleEmitter emitter;
 };
 
@@ -37,4 +35,4 @@ inline Vector3 EntityGetDirection(const Entity& entity)
 	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
 }
 
-bool EntityCheckCollision(const Entity& a, const Entity& b, HitInfo* hit_info);
+bool EntityCheckCollision(Entity* a, Entity* b, HitInfo* hit_info);

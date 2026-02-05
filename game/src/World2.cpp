@@ -2,29 +2,9 @@
 
 void LoadWorld(World2& world)
 {
-	world.entities.reserve(1024);
-
-	for (size_t i = 0; i < ENTITY_COUNT_MECHS; i++)
-	{
-		Mech2* mech = new Mech2;
-		mech->type = ENTITY_MECH;
-		mech->player_index = i;
-		mech->team = mech->player_index < 2 ? TEAM_RED : TEAM_BLUE;
-		mech->color = mech->team == TEAM_RED ? RED : BLUE;
-
-		Vector3 positions[4];
-		positions[0] = { -20.0f, -40.0f, 0.0f };
-		positions[1] = { -20.0f,  40.0f, 0.0f };
-		positions[2] = { 20.0f, -40.0f, 0.0f };
-		positions[3] = { 20.0f,  40.0f, 0.0f };
-		mech->pos = positions[mech->player_index];
-
-		Vector2 dir = mech->player_index % 2 == 0 ? Vector2UnitY : Vector2UnitY * -1.0f;
-		mech->dir_torso_curr = mech->dir_torso_goal = dir;
-		mech->dir_legs_curr = mech->dir_legs_goal = dir;
-
-		world.entities.push_back(mech);
-	}
+	world.mechs.resize(4);
+	for (size_t i = 0; i < world.mechs.size(); i++)
+		MechLoad(i, world);
 
 	Light sun;
 	LoadLightUniforms(sun, 0, assets.material.lighting.shader);
@@ -40,15 +20,14 @@ void LoadWorld(World2& world)
 
 void UnloadWorld(World2& world)
 {
-	for (size_t i = 0; i < world.entities.size(); i++)
-		delete world.entities[i];
-	world.entities.clear();
+	for (size_t i = 0; i < world.mechs.size(); i++)
+		MechUnload(i, world);
 }
 
 void UpdateWorld(World2& world)
 {
-	for (Entity* entity : world.entities)
-		entity->OnUpdate();
+	for (size_t i = 0; i < world.mechs.size(); i++)
+		MechUpdate(i, world);
 
 	for (Light& light : world.lights)
 		UpdateLightUniforms(light, assets.material.lighting.shader);
@@ -62,8 +41,10 @@ void DrawWorld(const World2& world)
 		rlEnableDepthTest();
 		rlSetMatrixModelview(g_camera_system.light_view);
 		rlSetMatrixProjection(g_camera_system.light_proj);
-		for (const Entity* entity : world.entities)
-			entity->OnDraw(assets.material.flat);
+
+		for (size_t i = 0; i < world.mechs.size(); i++)
+			MechDraw(i, assets.material.flat, world);
+
 		EndMode3D();
 	EndTextureMode();
 
@@ -78,8 +59,9 @@ void DrawWorld(const World2& world)
 		SetShaderValueMatrix(material.shader, world.lights.back().loc_light_view_proj, g_camera_system.light_view * g_camera_system.light_proj);
 
 		DrawMesh(assets.mesh.ground, material, MatrixRotateX(PI * 0.5f));
-		for (const Entity* entity : world.entities)
-			entity->OnDraw(material);
+
+		for (size_t i = 0; i < world.mechs.size(); i++)
+			MechDraw(i, material, world);
 
 		//DrawParticles(world, renderer);
 		EndMode3D();
@@ -102,13 +84,13 @@ void DrawWorld(const World2& world)
 	BeginTextureMode(assets.framebuffer.main_resolve);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	BeginMode3D(*GetCamera());
-	for (const Mech2* mech : WorldGetMechsConst(world))
+	for (const Mech2& mech : world.mechs)
 	{
-		DrawAxesDebug(mech->pos + Vector3UnitZ, QuaternionToMatrix(mech->rot), 25.0f, 4.0f);
-
+		DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
+	
 		Texture tex = assets.texture.gradient;
 		Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
-		DrawBillboardRec(*GetCamera(), tex, src, mech->pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
+		DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
 	}
 	EndMode3D();
 	EndTextureMode();
@@ -132,73 +114,56 @@ void DrawWorld(const World2& world)
 	//DrawTextureColor(assets.framebuffer.downsample);
 }
 
-std::vector<Mech2*> WorldGetMechs(World2& world)
+void MechLoad(size_t index, World2& world)
 {
-	std::vector<Mech2*> mechs;
-	mechs.reserve(4);
-	for (size_t i = 0; i < ENTITY_COUNT_MECHS; i++)
-	{
-		if (world.entities[i] != nullptr && world.entities[i]->type == ENTITY_MECH)
-			mechs.push_back((Mech2*)world.entities[i]);
-	}
-	return mechs;
+	Mech2& mech = world.mechs[index];
+
+	mech.id = EntityGenId();
+	mech.type = ENTITY_MECH;
+	mech.player_number = index + 1;
+	mech.team = index < 2 ? TEAM_RED : TEAM_BLUE;
+	mech.color = mech.team == TEAM_RED ? RED : BLUE;
+
+	Vector3 spawn_positions[4];
+	spawn_positions[0] = { -20.0f, -40.0f, 0.0f };
+	spawn_positions[1] = { -20.0f,  40.0f, 0.0f };
+	spawn_positions[2] = { 20.0f, -40.0f, 0.0f };
+	spawn_positions[3] = { 20.0f,  40.0f, 0.0f };
+	mech.pos = spawn_positions[index];
+
+	Vector2 dir = index % 2 == 0 ? Vector2UnitY : Vector2UnitY * -1.0f;
+	mech.dir_torso_curr = mech.dir_torso_goal = dir;
+	mech.dir_legs_curr = mech.dir_legs_goal = dir;
 }
 
-std::vector<const Mech2*> WorldGetMechsConst(const World2& world)
+void MechUnload(size_t index, World2& world)
 {
-	std::vector<const Mech2*> mechs;
-	mechs.reserve(4);
-	for (size_t i = 0; i < ENTITY_COUNT_MECHS; i++)
-	{
-		if (world.entities[i] != nullptr && world.entities[i]->type == ENTITY_MECH)
-			mechs.push_back((const Mech2*)world.entities[i]);
-	}
-	return mechs;
+	// Structure data such that 0 is a reasonable default value for all fields
+	// ie player_number is 1-4 suggesting that 0 is incorrect (and therefore a reasonable default state)
+	// ***NOTE*** type enums will require restructuring such that ENUM_TYPE_COUNT at the end is replaced with ENUM_NONE always has the value 0!
+	memset(&world.mechs[index], 0, sizeof(Mech2));
 }
 
-// Better to query objects by-category on a case-by-case basis.
-// Performing n if-statements where n < 1000 is insignificant.
-// Optimize this by switching to a borderline relational database as an ECS if necessary!
-/*
-void UpdateWorldFrame(World2& world)
+void MechUpdate(size_t index, World2& world)
 {
-	// This will fail the moment an object is created mid-frame...
-	// Best to just partition world.entities
+	Mech2& mech = world.mechs[index];
 
-	auto remove_start = std::remove_if(world.entities.begin(), world.entities.end(), [](Entity* entity)
-	{
-		return entity->destroy_flag;
-	});
+	mech.dir_torso_curr = Vector2RotateTowards(mech.dir_torso_curr, mech.dir_torso_goal, mech.turn_speed * GetFrameTime());
+	mech.dir_legs_curr = Vector2RotateTowards(mech.dir_legs_curr, mech.dir_legs_goal, mech.turn_speed * GetFrameTime());
 
-	for (size_t i = std::distance(world.entities.begin(), remove_start); i < world.entities.size(); i++)
-	{
-		delete world.entities[i];
-		world.entities[i] = nullptr;
-	}
-
-	world.entities.erase(remove_start, world.entities.end());
-
-	world.frame.mechs.clear();
-	//world.frame.buildings.clear();
-	//world.frame.projectiles.clear();
-
-	for (Entity* entity : world.entities)
-	{
-		switch (entity->type)
-		{
-		case ENTITY_MECH:
-			world.frame.mechs.push_back((Mech2*)entity);
-			break;
-		case ENTITY_BUILDING:
-			//world.frame.buildings.push_back((Building2*)entity);
-			break;
-		case ENTITY_PROJECTILE:
-			//world.frame.projectiles.push_back((Projectile2*)entity);
-			break;
-		case ENTITY_TYPE_COUNT:
-			assert(false);
-			break;
-		}
-	}
+	mech.rot = QuaternionFromMatrix(MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr)));
 }
-*/
+
+void MechDraw(size_t index, Material material, const World2& world)
+{
+	const Mech2& mech = world.mechs[index];
+
+	Matrix t = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
+	Matrix rot_torso = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr));
+	Matrix rot_legs = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_legs_curr));
+
+	material.maps[MATERIAL_MAP_DIFFUSE].color = mech.color;
+
+	DrawMesh(assets.mesh.torso, material, rot_torso * t);
+	DrawMesh(assets.mesh.legs, material, rot_legs * t);
+}

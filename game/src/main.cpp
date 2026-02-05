@@ -21,21 +21,13 @@ int main()
 
     while (!WindowShouldClose())
     {
-        if (IsKeyPressed(KEY_SPACE))
-        {
-            if (!game.world.entities.empty())
-                game.world.entities.back()->destroy_flag = true;
-        }
-
         UpdateCamera();
         UpdateWorld(game.world);
 
         BeginDrawing();
-        ClearBackground(MAGENTA);
-
-        DrawWorld(game.world);        
-        
-        DrawFPS(10, 30);
+            ClearBackground(MAGENTA);
+            DrawWorld(game.world);        
+            DrawFPS(10, 30);
         EndDrawing();
     }
 

@@ -2,7 +2,7 @@
 
 struct World2
 {
-	std::vector<Entity*> entities;	// All entities
+	std::vector<Mech2> mechs;
 	std::vector<Light> lights;
 };
 
@@ -11,5 +11,7 @@ void UnloadWorld(World2& world);
 void UpdateWorld(World2& world);
 void DrawWorld(const World2& world);
 
-std::vector<Mech2*> WorldGetMechs(World2& world);
-std::vector<const Mech2*> WorldGetMechsConst(const World2& world);
+void MechLoad(size_t index, World2& world);
+void MechUnload(size_t index, World2& world);
+void MechUpdate(size_t index, World2& world);
+void MechDraw(size_t index, Material material, const World2& world);

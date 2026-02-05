@@ -128,9 +128,6 @@
     <ClCompile Include="src\Entity.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mech2.cpp">
-      <Filter>World\Mech</Filter>
-    </ClCompile>
     <ClCompile Include="src\World2.cpp">
       <Filter>World</Filter>
     </ClCompile>
