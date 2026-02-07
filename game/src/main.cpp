@@ -17,21 +17,21 @@ int main()
     LoadAssets();
 
     Game game;
-    LoadWorld(game.world);
+    WorldLoad(game.world);
 
     while (!WindowShouldClose())
     {
         UpdateCamera();
-        UpdateWorld(game.world);
+        WorldUpdate(game.world);
 
         BeginDrawing();
             ClearBackground(MAGENTA);
-            DrawWorld(game.world);        
+            WorldDraw(game.world);
             DrawFPS(10, 30);
         EndDrawing();
     }
 
-    UnloadWorld(game.world);
+    WorldUnload(game.world);
     UnloadAssets();
     UnloadCamera();
 

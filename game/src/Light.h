@@ -39,5 +39,5 @@ struct Light
     int loc_light_view_proj;
 };
 
-void LoadLightUniforms(Light& light, int light_index, Shader shader);
-void UpdateLightUniforms(Light light, Shader shader);
+void LightLoadUniforms(Light& light, int light_index, Shader shader);
+void LightUpdateUniforms(Light light, Shader shader);

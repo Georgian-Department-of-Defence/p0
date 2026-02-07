@@ -19,7 +19,7 @@ inline Vector3 RandomParticlePosition(ParticleShape shape, ParticleShapeType typ
         break;
 
     case PARTICLE_SHAPE_TYPE_COUNT:
-        assert(false, "Invalid particle shape type!");
+        assert(false);
         break;
     }
     return position;

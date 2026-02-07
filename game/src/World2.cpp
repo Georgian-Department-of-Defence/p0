@@ -1,13 +1,13 @@
 #include "World2.h"
 
-void LoadWorld(World2& world)
+void WorldLoad(World2& world)
 {
 	world.mechs.resize(4);
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechLoad(i, world);
 
 	Light sun;
-	LoadLightUniforms(sun, 0, assets.material.lighting.shader);
+	LightLoadUniforms(sun, 0, assets.material.lighting.shader);
 	sun.direction = Vector3Normalize(Vector3Zeros - g_camera_system.light_pos);
 	sun.color = Vector3Ones;
 	sun.ambient = 0.2f;
@@ -18,22 +18,26 @@ void LoadWorld(World2& world)
 	assert(world.lights.size() == MAX_LIGHTS);
 }
 
-void UnloadWorld(World2& world)
+void WorldUnload(World2& world)
 {
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUnload(i, world);
 }
 
-void UpdateWorld(World2& world)
+void WorldUpdate(World2& world)
 {
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUpdate(i, world);
 
 	for (Light& light : world.lights)
-		UpdateLightUniforms(light, assets.material.lighting.shader);
+		LightUpdateUniforms(light, assets.material.lighting.shader);
+
+	std::vector<EntityHit> hits;
+	WorldCheckCollisions(world, &hits);
+	WorldResolveCollisions(world, hits);
 }
 
-void DrawWorld(const World2& world)
+void WorldDraw(const World2& world)
 {
 	// Shadow pass
 	BeginTextureMode(assets.framebuffer.shadow_map);
@@ -114,56 +118,84 @@ void DrawWorld(const World2& world)
 	//DrawTextureColor(assets.framebuffer.downsample);
 }
 
-void MechLoad(size_t index, World2& world)
+std::vector<Entity*> WorldGetEntities(const World2& world)
 {
-	Mech2& mech = world.mechs[index];
+	size_t i = 0;
+	std::vector<Entity*> entities;
+	entities.resize(world.mechs.size() + world.buildings.size() + world.projectiles.size());
 
-	mech.id = EntityGenId();
-	mech.type = ENTITY_MECH;
-	mech.player_number = index + 1;
-	mech.team = index < 2 ? TEAM_RED : TEAM_BLUE;
-	mech.color = mech.team == TEAM_RED ? RED : BLUE;
+	for (const Mech2& mech : world.mechs)
+	{
+		entities[i] = (Entity*)&mech;
+		i++;
+	}
 
-	Vector3 spawn_positions[4];
-	spawn_positions[0] = { -20.0f, -40.0f, 0.0f };
-	spawn_positions[1] = { -20.0f,  40.0f, 0.0f };
-	spawn_positions[2] = { 20.0f, -40.0f, 0.0f };
-	spawn_positions[3] = { 20.0f,  40.0f, 0.0f };
-	mech.pos = spawn_positions[index];
+	for (const Building2& building : world.buildings)
+	{
+		entities[i] = (Entity*)&building;
+		i++;
+	}
 
-	Vector2 dir = index % 2 == 0 ? Vector2UnitY : Vector2UnitY * -1.0f;
-	mech.dir_torso_curr = mech.dir_torso_goal = dir;
-	mech.dir_legs_curr = mech.dir_legs_goal = dir;
+	for (const Projectile2& projectile : world.projectiles)
+	{
+		entities[i] = (Entity*)&projectile;
+		i++;
+	}
+
+	return entities;
 }
 
-void MechUnload(size_t index, World2& world)
+void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 {
-	// Structure data such that 0 is a reasonable default value for all fields
-	// ie player_number is 1-4 suggesting that 0 is incorrect (and therefore a reasonable default state)
-	// ***NOTE*** type enums will require restructuring such that ENUM_TYPE_COUNT at the end is replaced with ENUM_NONE always has the value 0!
-	memset(&world.mechs[index], 0, sizeof(Mech2));
+	std::vector<Entity*> entities = WorldGetEntities(world);
+	for (size_t i = 0; i < entities.size(); i++)
+	{
+		for (size_t j = i + 1; j < entities.size(); j++)
+		{
+			Vector2 mtv = Vector2Zeros;
+			Entity* a = entities[i];
+			Entity* b = entities[j];
+			if (EntityCheckCollision(*a, *b, &mtv))
+			{
+				EntityHit hit;
+				hit.a = a;
+				hit.b = b;
+				hit.mtv = mtv;
+				hits->push_back(hit);
+			}
+		}
+	}
 }
 
-void MechUpdate(size_t index, World2& world)
+void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 {
-	Mech2& mech = world.mechs[index];
+	// Pre-pass to ensure mtvs resolve A from B
+	//for (EntityHit& hit : hits)
+	//{
+	//	Vector2 pA = { hit.a->pos.x, hit.a->pos.y };
+	//	Vector2 pB = { hit.b->pos.x, hit.b->pos.y };
+	//	Vector2 BA = pA - pB;
+	//	if (Vector2DotProduct(BA, hit.mtv) < 0.0f)
+	//		hit.mtv *= -1.0f;
+	//}
+	// Update: easier to swap the direction of MTV in the case of B??
 
-	mech.dir_torso_curr = Vector2RotateTowards(mech.dir_torso_curr, mech.dir_torso_goal, mech.turn_speed * GetFrameTime());
-	mech.dir_legs_curr = Vector2RotateTowards(mech.dir_legs_curr, mech.dir_legs_goal, mech.turn_speed * GetFrameTime());
+	for (const EntityHit& hit : hits)
+	{
+		Vector2 mtv_a = hit.mtv *  1.0f;
+		Vector2 mtv_b = hit.mtv * -1.0f;
+		hit.a->OnCollisionPre(hit.b);
+		hit.b->OnCollisionPre(hit.a);
+	}
 
-	mech.rot = QuaternionFromMatrix(MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr)));
-}
+	// *Insert impulse & friction code here*
+	// *Insert position code here*
 
-void MechDraw(size_t index, Material material, const World2& world)
-{
-	const Mech2& mech = world.mechs[index];
-
-	Matrix t = MatrixTranslate(mech.pos.x, mech.pos.y, mech.pos.z);
-	Matrix rot_torso = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr));
-	Matrix rot_legs = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_legs_curr));
-
-	material.maps[MATERIAL_MAP_DIFFUSE].color = mech.color;
-
-	DrawMesh(assets.mesh.torso, material, rot_torso * t);
-	DrawMesh(assets.mesh.legs, material, rot_legs * t);
+	for (const EntityHit& hit : hits)
+	{
+		Vector2 mtv_a = hit.mtv *  1.0f;
+		Vector2 mtv_b = hit.mtv * -1.0f;
+		hit.a->OnCollisionPost(hit.b);
+		hit.b->OnCollisionPost(hit.a);
+	}
 }

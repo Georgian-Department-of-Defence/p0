@@ -131,6 +131,15 @@
     <ClCompile Include="src\World2.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mech2.cpp">
+      <Filter>World\Mech</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Projectile2.cpp">
+      <Filter>World\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Building2.cpp">
+      <Filter>World\Buildings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -244,14 +253,20 @@
     <ClInclude Include="src\MathExt.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collider.h">
-      <Filter>World</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mech2.h">
       <Filter>World\Mech</Filter>
     </ClInclude>
     <ClInclude Include="src\World2.h">
       <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Building2.h">
+      <Filter>World\Buildings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Projectile2.h">
+      <Filter>World\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collider.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

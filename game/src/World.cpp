@@ -49,7 +49,7 @@ void LoadWorld(World& world)
     LoadMap(MAP_TEST_1, world);
 
     Light sun;
-    LoadLightUniforms(sun, 0, assets.material.lighting.shader);
+    LightLoadUniforms(sun, 0, assets.material.lighting.shader);
     sun.direction = Vector3Normalize(Vector3Zeros - g_camera_system.light_pos);
     sun.color = Vector3Ones;
     sun.ambient = 0.2f;
@@ -241,7 +241,7 @@ void UpdateEntities(World& world)
         UpdateProjectile(projectile, world);
 
     for (Light& light : world.lights)
-        UpdateLightUniforms(light, assets.material.lighting.shader);
+        LightUpdateUniforms(light, assets.material.lighting.shader);
 }
 
 void UpdateParticles(World& world)

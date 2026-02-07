@@ -1,7 +1,7 @@
 #include "Light.h"
 #include <cassert>
 
-void LoadLightUniforms(Light& light, int light_index, Shader shader)
+void LightLoadUniforms(Light& light, int light_index, Shader shader)
 {
     light.loc_position = GetShaderLocation(shader, TextFormat("lights[%i].position", light_index));
     light.loc_color = GetShaderLocation(shader, TextFormat("lights[%i].color", light_index));
@@ -18,7 +18,7 @@ void LoadLightUniforms(Light& light, int light_index, Shader shader)
     light.loc_light_view_proj = GetShaderLocation(shader, "lightViewProj");
 }
 
-void UpdateLightUniforms(Light light, Shader shader)
+void LightUpdateUniforms(Light light, Shader shader)
 {
     SetShaderValue(shader, light.loc_position, &light.position, SHADER_UNIFORM_VEC3);
     SetShaderValue(shader, light.loc_color, &light.color, SHADER_UNIFORM_VEC3);

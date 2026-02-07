@@ -31,9 +31,17 @@
 #include "ParticleEmitter.cpp"
 #include "Light.cpp"
 
-// 6) Include entities
-#include "Entity.cpp"
+// 6) Include entity declarations
+#include "Entity.h"
 #include "Mech2.h"
+#include "Building2.h"
+#include "Projectile2.h"
 
 // 7) Include world
 #include "World2.cpp"
+
+// 8) Include entity definitions (now that world exists)
+#include "Entity.cpp"
+#include "Mech2.cpp"
+#include "Building2.cpp"
+#include "Projectile2.cpp"

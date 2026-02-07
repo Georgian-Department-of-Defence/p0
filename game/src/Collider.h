@@ -1,10 +1,4 @@
 #pragma once
-
-struct HitInfo
-{
-	Vector2 mtv = Vector2Zeros;
-};
-
 struct Collider
 {
 	ColliderType type = COLLIDER_TYPE_COUNT;
@@ -20,6 +14,7 @@ struct Collider
 		{
 			float radius;
 			float half_height;
+			Vector2 direction; // Each entity must update capsule directions accordingly!
 		} capsule;
 
 		struct

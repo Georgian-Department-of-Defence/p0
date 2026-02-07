@@ -20,9 +20,6 @@ struct Building
 	Mesh* mesh = nullptr;
 	Color color = WHITE;
 
-	OnCollisionMechBuilding on_collision_mech = nullptr;
-	OnCollisionProjectileBuilding on_collision_projectile = nullptr;
-
 #ifdef DEBUG
 	bool debug_collion = false;
 #endif

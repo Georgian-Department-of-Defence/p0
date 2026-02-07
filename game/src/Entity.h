@@ -1,9 +1,7 @@
 #pragma once
 
-struct Entity;
 using Id = uint32_t;
-using OnCollision = void(*)(Entity* a, Entity* b, HitInfo hit_info);
-
+struct World2;
 struct Entity
 {
 	Id id = 0;
@@ -16,12 +14,24 @@ struct Entity
 	Vector3 acc = Vector3Zeros;
 	Quaternion rot = QuaternionIdentity();
 
+	float gravity_scale = 0.0f;
+	float mass_inverse = 0.0f;
+	float restitution = 0.0f;
+	float friction = 0.0f;
 	Collider collider;
-	OnCollision on_collision = nullptr;
+	virtual void OnCollisionPre(Entity* entity) { }
+	virtual void OnCollisionPost(Entity* entity) { }
 
 	Mesh* mesh = nullptr;
 	Color color = WHITE;
 	ParticleEmitter emitter;
+};
+
+struct EntityHit
+{
+	Entity* a = nullptr;
+	Entity* b = nullptr;
+	Vector2 mtv = Vector2Zeros;
 };
 
 inline Id EntityGenId()
@@ -35,4 +45,10 @@ inline Vector3 EntityGetDirection(const Entity& entity)
 	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
 }
 
-bool EntityCheckCollision(Entity* a, Entity* b, HitInfo* hit_info);
+bool EntityCheckCollision(const Entity& a, const Entity& b, Vector2* mtv);
+
+// Collision notes:
+// 1) mtv not necessary. Easier if mtv is used during physics resolution between on_pre & on_post.
+// 2) world not necessary unless we need to spawn entities on-collision (currently nothing, but particles in the future)?
+// 3) using virtual methods instead of function pointers because v-table will resolve entity_self
+// (otherwise, A LOT of if-statements needed to figure out who is colliding with who, and potentially swapping A & B)

@@ -27,14 +27,14 @@ void DrawTextureColor(RenderTexture rt)
     Rectangle src_rec;
     src_rec.x = 0;
     src_rec.y = 0;
-    src_rec.width = rt.texture.width;
-    src_rec.height = -rt.texture.height;
+    src_rec.width = (float)rt.texture.width;
+    src_rec.height = (float)-rt.texture.height;
 
     Rectangle dst_rec;
     dst_rec.x = 0;
     dst_rec.y = 0;
-    dst_rec.width = GetScreenWidth();
-    dst_rec.height = GetScreenHeight();
+    dst_rec.width = (float)GetScreenWidth();
+    dst_rec.height = (float)GetScreenHeight();
 
     DrawTexturePro(rt.texture, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
 }
@@ -44,22 +44,22 @@ void DrawTextureDepth(RenderTexture rt)
     Rectangle src_rec;
     src_rec.x = 0;
     src_rec.y = 0;
-    src_rec.width = rt.depth.width;
-    src_rec.height = -rt.depth.height;
+    src_rec.width = (float)rt.depth.width;
+    src_rec.height = (float)-rt.depth.height;
 
     Rectangle dst_rec;
     dst_rec.x = 0;
     dst_rec.y = 0;
-    dst_rec.width = GetScreenWidth();
-    dst_rec.height = GetScreenHeight();
+    dst_rec.width = (float)GetScreenWidth();
+    dst_rec.height = (float)GetScreenHeight();
 
     Shader shader = assets.material.depth.shader;
     BeginShaderMode(shader);
     int loc_depth_tex = GetShaderLocation(shader, "tex_depth");
     int loc_z_near = GetShaderLocation(shader, "z_near");
     int loc_z_far = GetShaderLocation(shader, "z_far");
-    float z_near = rlGetCullDistanceNear();
-    float z_far = rlGetCullDistanceFar();
+    float z_near = (float)rlGetCullDistanceNear();
+    float z_far = (float)rlGetCullDistanceFar();
     SetShaderValue(shader, loc_z_near, &z_near, RL_SHADER_UNIFORM_FLOAT);
     SetShaderValue(shader, loc_z_far, &z_far, RL_SHADER_UNIFORM_FLOAT);
     SetShaderValueTexture(shader, loc_depth_tex, rt.depth);
