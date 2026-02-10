@@ -43,7 +43,7 @@ void LoadCamera()
     camera_ui_2d.zoom = 1.0f;
 
     double edge = 96.0;
-    g_camera_system.light_pos = { WORLD_MAX_X, WORLD_MAX_Y * 2.0f, 250.0f };
+    g_camera_system.light_pos = { WORLD_MAX.x, WORLD_MAX.y * 2.0f, 250.0f };
     g_camera_system.light_view = MatrixLookAt(g_camera_system.light_pos, Vector3Zeros, Vector3UnitZ);
     g_camera_system.light_proj = MatrixOrtho(-edge, edge, -edge, edge, 0.1, 512.0);
 

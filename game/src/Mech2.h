@@ -12,6 +12,8 @@ struct Mech2 : public Entity
 
 	uint8_t player_number = 0; // [1..4], 0 is invalid.
 
+	bool debug_enabled = false;
+
 	void OnCollisionPost(Entity* entity) final;
 };
 

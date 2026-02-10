@@ -4,6 +4,8 @@ void MechLoad(size_t index, World2& world)
 {
 	Mech2& mech = world.mechs[index];
 
+	if (index == 0) mech.debug_enabled = true;
+
 	mech.id = EntityGenId();
 	mech.type = ENTITY_MECH;
 	mech.player_number = uint8_t(index + 1);
@@ -26,7 +28,7 @@ void MechLoad(size_t index, World2& world)
 	mech.collider_offset = Vector3UnitZ * 8.0f;
 
 	mech.move_speed = 100.0f;
-	mech.turn_speed = 250.0f * DEG2RAD;
+	mech.turn_speed = 100.0f * DEG2RAD;
 }
 
 void MechUnload(size_t index, World2& world)
@@ -41,31 +43,54 @@ void MechUpdate(size_t index, World2& world)
 {
 	Mech2& mech = world.mechs[index];
 
-	float dt = GetFrameTime();
-	const float deadzone = 0.5f;
-	Vector2 input = Vector2Zeros;
-	input.x = (GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_LEFT_X));
-	input.y = (GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_LEFT_Y));
-	input.x = fabsf(input.x) >= deadzone ? input.x : 0.0f;
-	input.y = fabsf(input.y) >= deadzone ? input.y : 0.0f;
-	input.y *= -1.0f;
+	const float dt = GetFrameTime();
+	const float deadzone = 0.75f;
 
-	if (Vector2Length(input) >= deadzone)
+	Vector2 input_move = Vector2Zeros;
+	input_move.x =  (GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_LEFT_X));
+	input_move.y = -(GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_LEFT_Y));
+
+	Vector2 input_turn = Vector2Zeros;
+	input_turn.x =  (GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_RIGHT_X));
+	input_turn.y = -(GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_RIGHT_Y));
+
+	if (mech.debug_enabled)
 	{
-		Vector2 input_dir = Vector2Normalize(input);
-		mech.dir_torso_goal = input_dir;
-		mech.vel += Vector3{ input_dir.x, input_dir.y, 0.0f } * mech.move_speed * dt;
+		Vector2 mouse = GetMousePosition();
+		mouse.x = Remap(mouse.x, 0.0f, GetScreenWidth(), WORLD_MIN.x, WORLD_MAX.x);
+		mouse.y = Remap(mouse.y, GetScreenHeight(), 0.0f, WORLD_MIN.y, WORLD_MAX.y);
+
+		input_turn = Vector2Normalize(mouse - Vector2{ mech.pos.x, mech.pos.y });
+		input_move = Vector2Zeros;
+		if (IsKeyDown(KEY_W)) input_move += Vector2UnitY;
+		if (IsKeyDown(KEY_S)) input_move -= Vector2UnitY;
+		if (IsKeyDown(KEY_A)) input_move -= Vector2UnitX;
+		if (IsKeyDown(KEY_D)) input_move += Vector2UnitX;
 	}
-	
-	mech.vel *= powf(0.05f, dt);
-	mech.pos += mech.vel * dt;
 
-	mech.collider.pos = mech.pos + mech.collider_offset;
+	if (Vector2Length(input_move) >= deadzone)
+	{
+		input_move = Vector2Normalize(input_move);
+		mech.dir_legs_goal = input_move;
+		mech.vel += Vector3{ input_move.x, input_move.y, 0.0f } * mech.move_speed * dt;
+	}
 
-	mech.dir_torso_curr = Vector2RotateTowards(mech.dir_torso_curr, mech.dir_torso_goal, mech.turn_speed * GetFrameTime());
-	mech.dir_legs_curr = Vector2RotateTowards(mech.dir_legs_curr, mech.dir_legs_goal, mech.turn_speed * GetFrameTime());
+	if (Vector2Length(input_turn) >= deadzone)
+	{
+		input_turn = Vector2Normalize(input_turn);
+		mech.dir_torso_goal = input_turn;
+	}
+
+	mech.dir_torso_curr = Vector2RotateTowards(mech.dir_torso_curr, mech.dir_torso_goal, mech.turn_speed * dt);
+	mech.dir_legs_curr = Vector2RotateTowards(mech.dir_legs_curr, mech.dir_legs_goal, mech.turn_speed * dt);
 
 	mech.rot = QuaternionFromMatrix(MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr)));
+
+	mech.vel *= powf(0.05f, dt);
+	mech.pos += mech.vel * dt;
+	mech.pos = Vector3Clamp(mech.pos, WORLD_MIN, WORLD_MAX);
+
+	mech.collider.pos = mech.pos + mech.collider_offset;
 }
 
 void MechDraw(size_t index, Material material, const World2& world)

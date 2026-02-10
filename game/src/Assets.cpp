@@ -80,7 +80,7 @@ void LoadMeshes()
     };
 
     Meshes& mesh = assets.mesh;
-    mesh.ground = GenMeshPlane(WORLD_MAX_X * 2.0f, WORLD_MAX_Y * 2.0f, 1, 1);
+    mesh.ground = GenMeshPlane(WORLD_MAX.x * 2.0f, WORLD_MAX.y * 2.0f, 1, 1);
 
     // Mech
     mesh.torso = LoadMesh("./assets/meshes/mech_torso.obj");
