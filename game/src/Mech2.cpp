@@ -24,6 +24,9 @@ void MechLoad(size_t index, World2& world)
 	mech.collider.type = COLLIDER_SPHERE;
 	mech.collider.sphere.radius = 25.0f;
 	mech.collider_offset = Vector3UnitZ * 8.0f;
+
+	mech.move_speed = 100.0f;
+	mech.turn_speed = 250.0f * DEG2RAD;
 }
 
 void MechUnload(size_t index, World2& world)
@@ -37,6 +40,25 @@ void MechUnload(size_t index, World2& world)
 void MechUpdate(size_t index, World2& world)
 {
 	Mech2& mech = world.mechs[index];
+
+	float dt = GetFrameTime();
+	const float deadzone = 0.5f;
+	Vector2 input = Vector2Zeros;
+	input.x = (GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_LEFT_X));
+	input.y = (GetGamepadAxisMovement(mech.player_number - 1, GAMEPAD_AXIS_LEFT_Y));
+	input.x = fabsf(input.x) >= deadzone ? input.x : 0.0f;
+	input.y = fabsf(input.y) >= deadzone ? input.y : 0.0f;
+	input.y *= -1.0f;
+
+	if (Vector2Length(input) >= deadzone)
+	{
+		Vector2 input_dir = Vector2Normalize(input);
+		mech.dir_torso_goal = input_dir;
+		mech.vel += Vector3{ input_dir.x, input_dir.y, 0.0f } * mech.move_speed * dt;
+	}
+	
+	mech.vel *= powf(0.05f, dt);
+	mech.pos += mech.vel * dt;
 
 	mech.collider.pos = mech.pos + mech.collider_offset;
 
