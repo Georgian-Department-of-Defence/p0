@@ -20,9 +20,10 @@
 #include "Constants.h"
 #include "Types.h"
 #include "MathExt.h"
-#include "Collision2D.h"
-#include "Collision3D.h"
-#include "Collider.h"
+//#include "Collider2D.h"
+//#include "Collision2D.h"
+#include "Collision3D.h"	// Collision math
+#include "Collider3D.h"		// Collision types (independent of collision math)
 
 // 5) Include assets & tools
 #include "Assets.cpp"

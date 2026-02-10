@@ -5,15 +5,15 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 	assert(a.collider.type != COLLIDER_TYPE_COUNT && b.collider.type != COLLIDER_TYPE_COUNT);
 	if (a.collider.type == COLLIDER_SPHERE)
 	{
-		float rA = a.collider.circle.radius;
+		float rA = a.collider.sphere.radius;
 
 		if (b.collider.type == COLLIDER_SPHERE)
 		{
-			SphereSphere(a.pos, rA, b.pos, b.collider.circle.radius, mtv);
+			SphereSphere(a.pos, rA, b.pos, b.collider.sphere.radius, mtv);
 		}
 		else if (b.collider.type == COLLIDER_SPHEROCYLINDER)
 		{
-			SphereCapsule(a.pos, rA, b.pos, b.collider.capsule.direction, b.collider.capsule.radius, b.collider.capsule.half_height, mtv);
+			SphereCapsule(a.pos, rA, b.pos, b.collider.spherocylinder.direction, b.collider.spherocylinder.radius, b.collider.spherocylinder.half_height, mtv);
 		}
 		else if (b.collider.type == COLLIDER_PLANE)
 		{

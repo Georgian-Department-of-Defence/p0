@@ -258,7 +258,8 @@
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\Building2.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Collider.h" />
+    <ClInclude Include="src\Collider2D.h" />
+    <ClInclude Include="src\Collider3D.h" />
     <ClInclude Include="src\Collision2D.h" />
     <ClInclude Include="src\Collision3D.h" />
     <ClInclude Include="src\Constants.h" />

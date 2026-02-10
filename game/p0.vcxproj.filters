@@ -265,7 +265,10 @@
     <ClInclude Include="src\Projectile2.h">
       <Filter>World\Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collider.h">
+    <ClInclude Include="src\Collider2D.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collider3D.h">
       <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
