@@ -19,6 +19,7 @@ struct Entity
 	float restitution = 0.0f;
 	float friction = 0.0f;
 	Collider collider;
+	Vector3 collider_offset = Vector3Zeros;
 	virtual void OnCollisionPre(Entity* entity) { }
 	virtual void OnCollisionPost(Entity* entity) { }
 

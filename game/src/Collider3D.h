@@ -27,6 +27,8 @@ struct Collider3D
 			Vector3 normal;
 		} plane;
 	};
+
+	Vector3 pos;
 };
 
 using Collider = Collider3D;

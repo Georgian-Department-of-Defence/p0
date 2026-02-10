@@ -90,12 +90,19 @@ void WorldDraw(const World2& world)
 	BeginMode3D(*GetCamera());
 	for (const Mech2& mech : world.mechs)
 	{
-		DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
-	
 		Texture tex = assets.texture.gradient;
 		Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
 		DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
 	}
+
+	for (const Mech2& mech : world.mechs)
+	{
+		DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
+
+		Color color = ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f });
+		DrawSphere(mech.pos + mech.collider_offset, 8.0f, color);
+	}
+
 	EndMode3D();
 	EndTextureMode();
 
