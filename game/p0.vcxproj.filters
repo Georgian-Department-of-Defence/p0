@@ -206,7 +206,7 @@
     <ClInclude Include="src\ParticleEmitter.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collision.h">
+    <ClInclude Include="src\Collision2D.h">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\WidgetsScene.h">

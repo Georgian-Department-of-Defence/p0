@@ -21,7 +21,7 @@ void MechLoad(size_t index, World2& world)
 	mech.dir_torso_curr = mech.dir_torso_goal = dir;
 	mech.dir_legs_curr = mech.dir_legs_goal = dir;
 
-	mech.collider.type = COLLIDER_CIRCLE;
+	mech.collider.type = COLLIDER_SPHERE;
 	mech.collider.circle.radius = 25.0f;
 }
 

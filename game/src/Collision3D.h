@@ -1,5 +1,4 @@
 #pragma once
-#include "raymathext.h"
 // All formulas for sphere, capsule, AABB, and infinite plane collision!
 
 // Outputs nearest two points along line top1_bot1 and line top2_bot2

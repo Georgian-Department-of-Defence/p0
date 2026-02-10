@@ -8,14 +8,25 @@ enum EntityType : uint32_t
 	ENTITY_TYPE_COUNT
 };
 
-enum ColliderType : uint32_t
+//enum ColliderType2D : uint32_t
+//{
+//	COLLIDER_CIRCLE,
+//	COLLIDER_CAPSULE,
+//	COLLIDER_PLANE,
+//	COLLIDER_BOX,
+//	COLLIDER_TYPE_COUNT
+//};
+
+enum ColliderType3D : uint32_t
 {
-	COLLIDER_CIRCLE,
-	COLLIDER_CAPSULE,
+	COLLIDER_SPHERE,
+	COLLIDER_SPHEROCYLINDER,
 	COLLIDER_PLANE,
 	COLLIDER_BOX,
 	COLLIDER_TYPE_COUNT
 };
+
+using ColliderType = ColliderType3D;
 
 enum BuildingType : uint32_t
 {

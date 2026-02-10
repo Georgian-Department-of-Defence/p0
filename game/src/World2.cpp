@@ -152,10 +152,10 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 	{
 		for (size_t j = i + 1; j < entities.size(); j++)
 		{
-			Vector2 mtv = Vector2Zeros;
+			Vector3 mtv = Vector3Zeros;
 			Entity* a = entities[i];
 			Entity* b = entities[j];
-			if (EntityCheckCollision(*a, *b, &mtv))
+			if (EntityCheckCollision3D(*a, *b, &mtv))
 			{
 				EntityHit hit;
 				hit.a = a;
@@ -182,8 +182,8 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 
 	for (const EntityHit& hit : hits)
 	{
-		Vector2 mtv_a = hit.mtv *  1.0f;
-		Vector2 mtv_b = hit.mtv * -1.0f;
+		Vector3 mtv_a = hit.mtv *  1.0f;
+		Vector3 mtv_b = hit.mtv * -1.0f;
 		hit.a->OnCollisionPre(hit.b);
 		hit.b->OnCollisionPre(hit.a);
 	}
@@ -193,8 +193,8 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 
 	for (const EntityHit& hit : hits)
 	{
-		Vector2 mtv_a = hit.mtv *  1.0f;
-		Vector2 mtv_b = hit.mtv * -1.0f;
+		Vector3 mtv_a = hit.mtv *  1.0f;
+		Vector3 mtv_b = hit.mtv * -1.0f;
 		hit.a->OnCollisionPost(hit.b);
 		hit.b->OnCollisionPost(hit.a);
 	}
