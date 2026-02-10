@@ -89,8 +89,18 @@ void MechUpdate(size_t index, World2& world)
 	mech.vel *= powf(0.05f, dt);
 	mech.pos += mech.vel * dt;
 	mech.pos = Vector3Clamp(mech.pos, WORLD_MIN, WORLD_MAX);
-
 	mech.collider.pos = mech.pos + mech.collider_offset;
+
+	constexpr Vector3 GEAR_MOUNT_OFFSETS[4] =
+	{
+		{ -8.0f, 5.0f, 15.0f },
+		{ -3.0f, 2.0f, 15.0f },
+		{  3.0f, 2.0f, 15.0f },
+		{  8.0f, 5.0f, 15.0f }
+	};
+
+	for (size_t i = 0; i < 4; i++)
+		mech.gear_mount_positions[i] = mech.pos + Vector3RotateByQuaternion(GEAR_MOUNT_OFFSETS[i], mech.rot);
 }
 
 void MechDraw(size_t index, Material material, const World2& world)

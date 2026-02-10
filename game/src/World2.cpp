@@ -101,6 +101,9 @@ void WorldDraw(const World2& world)
 
 		Color color = ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f });
 		DrawSphere(mech.pos + mech.collider_offset, 8.0f, color);
+
+		for (size_t i = 0; i < 4; i++)
+			DrawSphere(mech.gear_mount_positions[i], 0.5f, DARKGREEN);
 	}
 
 	EndMode3D();
