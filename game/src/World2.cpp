@@ -39,6 +39,9 @@ void WorldUpdate(World2& world)
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUpdate(i, world);
 
+	for (size_t i = 0; i < world.projectiles.size(); i++)
+		world.projectiles[i]->OnUpdate();
+
 	for (Light& light : world.lights)
 		LightUpdateUniforms(light, assets.material.lighting.shader);
 
@@ -80,6 +83,12 @@ void WorldDraw(const World2& world)
 
 		for (size_t i = 0; i < world.mechs.size(); i++)
 			MechDraw(i, material, world);
+
+		for (const Projectile2* p : world.projectiles)
+		{
+			Matrix m = MatrixLookRotation(Vector3Normalize(p->vel)) * MatrixTranslate(p->pos.x, p->pos.y, p->pos.z);
+			DrawMesh(*p->mesh, assets.material.flat, m);
+		}
 
 		// TODO -- generate building colliders based on mesh BoundingBox height?
 		//for (size_t i = 0; i < world.buildings.size(); i++)
@@ -181,7 +190,7 @@ std::vector<Entity*> WorldGetEntities(const World2& world)
 		i++;
 	}
 
-	for (const Projectile2& projectile : world.projectiles)
+	for (const Projectile2* projectile : world.projectiles)
 	{
 		entities[i] = (Entity*)&projectile;
 		i++;

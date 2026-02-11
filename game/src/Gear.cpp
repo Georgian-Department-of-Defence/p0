@@ -2,6 +2,17 @@
 
 void Rifle::OnUse(Mech2& mech, World2& world)
 {
+	Bullet* b = new Bullet;
+	b->pos = pos;
+	b->vel = EntityGetDirection(mech) * 20.0f;
+
+	b->mesh = &assets.mesh.bullet;
+	b->color = RED;
+
+	b->collider.type = COLLIDER_SPHERE;
+	b->collider.sphere.radius = 3.0f;
+
+	world.projectiles.push_back(b);
 }
 
 void Shotgun::OnUse(Mech2& mech, World2& world)

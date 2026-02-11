@@ -4,7 +4,7 @@ struct World2
 {
 	std::vector<Mech2> mechs;
 	std::vector<Building2> buildings;
-	std::vector<Projectile2> projectiles;
+	std::vector<Projectile2*> projectiles;
 	std::vector<Light> lights;
 };
 

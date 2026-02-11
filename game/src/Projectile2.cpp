@@ -19,3 +19,11 @@ void Projectile2::OnCollisionPost(Entity* entity)
 		}
 	}
 }
+
+void Bullet::OnUpdate()
+{
+	float dt = GetFrameTime();
+	vel += acc * dt;
+	pos += vel * dt;
+	collider.pos = pos;
+}
