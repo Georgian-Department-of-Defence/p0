@@ -4,7 +4,7 @@ void MechLoad(size_t index, World2& world)
 {
 	Mech2& mech = world.mechs[index];
 
-	if (index == 0) mech.debug_enabled = true;
+	//if (index == 0) mech.debug_enabled = true;
 
 	mech.id = EntityGenId();
 	mech.type = ENTITY_MECH;

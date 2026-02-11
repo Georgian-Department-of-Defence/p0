@@ -6,6 +6,16 @@ void WorldLoad(World2& world)
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechLoad(i, world);
 
+	for (float x = WORLD_MIN.x + 10.0f; x < WORLD_MAX.x - 10.0f; x += 25.0f)
+	{
+		// TODO -- Remove collider_offset and code translation directly (rules seem to differ per-entity-type)?
+		Building2 building;
+		building.pos = Vector3Zeros + Vector3UnitX * x;
+		building.collider = MakeCapsule(building.pos, building.pos + Vector3UnitZ * 16.0f, 3.0f);
+
+		world.buildings.push_back(building);
+	}
+
 	Light sun;
 	LightLoadUniforms(sun, 0, assets.material.lighting.shader);
 	sun.direction = Vector3Normalize(Vector3Zeros - g_camera_system.light_pos);
@@ -71,6 +81,13 @@ void WorldDraw(const World2& world)
 		for (size_t i = 0; i < world.mechs.size(); i++)
 			MechDraw(i, material, world);
 
+		// TODO -- generate building colliders based on mesh BoundingBox height?
+		//for (size_t i = 0; i < world.buildings.size(); i++)
+		//{
+		//	Building2 b = world.buildings[i];
+		//	DrawMesh(assets.mesh.bmo, assets.material.flat, MatrixTranslate(b.pos.x, b.pos.y, b.pos.z));
+		//}
+
 		//DrawParticles(world, renderer);
 		EndMode3D();
 	}
@@ -111,6 +128,7 @@ void WorldDraw(const World2& world)
 
 			for (size_t i = 0; i < 4; i++)
 				DrawSphere(mech.gear_mount_positions[i], 0.5f, DARKGREEN);
+
 		}
 
 		// Collider debug

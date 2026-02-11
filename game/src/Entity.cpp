@@ -12,10 +12,10 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 		{
 			return SphereSphere(pA, a.collider.sphere.radius, pB, b.collider.sphere.radius, mtv);
 		}
-		else if (b.collider.type == COLLIDER_SPHEROCYLINDER)
+		else if (b.collider.type == COLLIDER_CAPSULE)
 		{
 			return SphereCapsule(pA, a.collider.sphere.radius,
-				pB, b.collider.spherocylinder.direction, b.collider.spherocylinder.radius, b.collider.spherocylinder.half_height, mtv);
+				pB, b.collider.capsule.direction, b.collider.capsule.radius, b.collider.capsule.half_height, mtv);
 		}
 		else if (b.collider.type == COLLIDER_PLANE)
 		{

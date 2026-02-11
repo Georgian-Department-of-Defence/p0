@@ -75,11 +75,11 @@ void DrawCollider(Collider collider, Color color)
             DrawSphere(collider.pos, collider.sphere.radius, color);
             break;
 
-        case COLLIDER_SPHEROCYLINDER:
+        case COLLIDER_CAPSULE:
         {
-            Vector3 a = collider.pos + collider.spherocylinder.direction * collider.spherocylinder.half_height;
-            Vector3 b = collider.pos - collider.spherocylinder.direction * collider.spherocylinder.half_height;
-            DrawCapsule(a, b, collider.spherocylinder.radius, 3, 3, color);
+            Vector3 cylinder_top = collider.pos + collider.capsule.direction * collider.capsule.half_height;
+            Vector3 cylinder_bot = collider.pos - collider.capsule.direction * collider.capsule.half_height;
+            DrawCapsule(cylinder_bot, cylinder_top, collider.capsule.radius, 8, 8, color);
             break;
         }
 
