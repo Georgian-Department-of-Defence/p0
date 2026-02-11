@@ -26,6 +26,7 @@ struct Entity
 	Mesh* mesh = nullptr;
 	Color color = WHITE;
 	ParticleEmitter emitter;
+	std::string name;
 };
 
 struct EntityHit3D

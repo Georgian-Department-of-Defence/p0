@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+#include <string>
 
 // 2) Include raylib headers (raymath.h needs math.h so best to include libc before raylib)
 #include <raylib.h>

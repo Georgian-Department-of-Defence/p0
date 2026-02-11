@@ -13,7 +13,7 @@ void WorldLoad(World2& world)
 		building.pos = Vector3Zeros + Vector3UnitX * x;
 		building.collider = MakeCapsule(building.pos, building.pos + Vector3UnitZ * 16.0f, 3.0f);
 
-		world.buildings.push_back(building);
+		//world.buildings.push_back(building);
 	}
 
 	Light sun;
@@ -192,7 +192,7 @@ std::vector<Entity*> WorldGetEntities(const World2& world)
 
 	for (const Projectile2* projectile : world.projectiles)
 	{
-		entities[i] = (Entity*)&projectile;
+		entities[i] = (Entity*)projectile;
 		i++;
 	}
 
