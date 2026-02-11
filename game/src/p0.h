@@ -38,6 +38,7 @@
 #include "Mech2.h"
 #include "Building2.h"
 #include "Projectile2.h"
+#include "Gear.h"
 
 // 7) Include world
 #include "World2.cpp"
@@ -47,3 +48,4 @@
 #include "Mech2.cpp"
 #include "Building2.cpp"
 #include "Projectile2.cpp"
+#include "Gear.cpp"

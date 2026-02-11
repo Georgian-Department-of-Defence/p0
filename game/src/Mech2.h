@@ -1,4 +1,5 @@
 #pragma once
+struct Gear;
 struct Mech2 : public Entity
 {
 	Vector2 dir_torso_curr = Vector2Zeros;
@@ -7,7 +8,7 @@ struct Mech2 : public Entity
 	Vector2 dir_legs_curr = Vector2Zeros;
 	Vector2 dir_legs_goal = Vector2Zeros;
 
-	Vector3 gear_mount_positions[4];
+	Gear* gear[4];
 
 	float move_speed = 0.0f;
 	float turn_speed = 0.0f;

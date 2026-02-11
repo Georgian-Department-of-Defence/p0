@@ -4,7 +4,7 @@ void MechLoad(size_t index, World2& world)
 {
 	Mech2& mech = world.mechs[index];
 
-	//if (index == 0) mech.debug_enabled = true;
+	if (index == 0) mech.debug_enabled = true;
 
 	mech.id = EntityGenId();
 	mech.type = ENTITY_MECH;
@@ -29,10 +29,19 @@ void MechLoad(size_t index, World2& world)
 
 	mech.move_speed = 100.0f;
 	mech.turn_speed = 100.0f * DEG2RAD;
+
+	mech.gear[0] = GearLoadRifle();
+	mech.gear[1] = GearLoadShotgun();
+	mech.gear[2] = GearLoadGrenadeLauncher();
+	mech.gear[3] = GearLoadDasher();
 }
 
 void MechUnload(size_t index, World2& world)
 {
+	Mech2& mech = world.mechs[index];
+	for (size_t i = 0; i < 4; i++)
+		delete mech.gear[i];
+
 	// Structure data such that 0 is a reasonable default value for all fields
 	// ie player_number is 1-4 suggesting that 0 is incorrect (and therefore a reasonable default state)
 	// ***NOTE*** type enums will require restructuring such that ENUM_TYPE_COUNT at the end is replaced with ENUM_NONE always has the value 0!
@@ -83,8 +92,8 @@ void MechUpdate(size_t index, World2& world)
 
 	mech.dir_torso_curr = Vector2RotateTowards(mech.dir_torso_curr, mech.dir_torso_goal, mech.turn_speed * dt);
 	mech.dir_legs_curr = Vector2RotateTowards(mech.dir_legs_curr, mech.dir_legs_goal, mech.turn_speed * dt);
-
-	mech.rot = QuaternionFromMatrix(MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr)));
+	mech.rot = MatrixRotateZ(Vector2Angle(Vector2UnitY, mech.dir_torso_curr));
+	Vector3 mech_dir = EntityGetDirection(mech);
 
 	mech.vel *= powf(0.05f, dt);
 	mech.pos += mech.vel * dt;
@@ -99,8 +108,34 @@ void MechUpdate(size_t index, World2& world)
 		{  8.0f, 5.0f, 15.0f }
 	};
 
+	bool use_gear[4];
+	use_gear[0] = IsGamepadButtonDown(mech.player_number - 1, GAMEPAD_BUTTON_LEFT_TRIGGER_2);
+	use_gear[1] = IsGamepadButtonDown(mech.player_number - 1, GAMEPAD_BUTTON_LEFT_TRIGGER_1);
+	use_gear[2] = IsGamepadButtonDown(mech.player_number - 1, GAMEPAD_BUTTON_RIGHT_TRIGGER_1);
+	use_gear[3] = IsGamepadButtonDown(mech.player_number - 1, GAMEPAD_BUTTON_RIGHT_TRIGGER_2);
+
+	if (mech.debug_enabled)
+	{
+		use_gear[0] = IsKeyDown(KEY_ONE);
+		use_gear[1] = IsKeyDown(KEY_TWO);
+		use_gear[2] = IsKeyDown(KEY_THREE);
+		use_gear[3] = IsKeyDown(KEY_FOUR);
+	}
+
 	for (size_t i = 0; i < 4; i++)
-		mech.gear_mount_positions[i] = mech.pos + Vector3RotateByQuaternion(GEAR_MOUNT_OFFSETS[i], mech.rot);
+	{
+		Gear& gear = *mech.gear[i];
+		mech.gear[i]->pos_draw = mech.pos + GEAR_MOUNT_OFFSETS[i] * mech.rot;
+		mech.gear[i]->pos = mech.gear[i]->pos_draw + mech_dir * 2.0f;
+
+		gear.cooldown_current += dt;
+		if (gear.cooldown_current >= gear.cooldown_total && use_gear[i])
+		{
+			gear.cooldown_current = 0.0f;
+			gear.OnUse(mech, world);
+		}
+		gear.OnUpdate(mech, world);
+	}
 }
 
 void MechDraw(size_t index, Material material, const World2& world)

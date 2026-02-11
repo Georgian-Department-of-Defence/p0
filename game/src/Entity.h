@@ -12,7 +12,7 @@ struct Entity
 	Vector3 pos = Vector3Zeros;
 	Vector3 vel = Vector3Zeros;
 	Vector3 acc = Vector3Zeros;
-	Quaternion rot = QuaternionIdentity();
+	Matrix rot = MatrixIdentity();
 
 	float gravity_scale = 0.0f;
 	float mass_inverse = 0.0f;
@@ -43,9 +43,15 @@ inline Id EntityGenId()
 	return ++id;
 }
 
+// Misleading because this is only 2d.
+//inline Vector3 EntityGetDirection(const Entity& entity)
+//{
+//	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
+//}
+
 inline Vector3 EntityGetDirection(const Entity& entity)
 {
-	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
+	return MatrixColY(entity.rot);
 }
 
 bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv);

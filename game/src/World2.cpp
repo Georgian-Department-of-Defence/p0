@@ -123,11 +123,15 @@ void WorldDraw(const World2& world)
 		// Mech debug
 		for (const Mech2& mech : world.mechs)
 		{
-			DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
+			DrawAxesDebug(mech.pos + Vector3UnitZ, mech.rot, 25.0f, 4.0f);
 			//DrawSphere(mech.pos + mech.collider_offset, 8.0f, ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f }));
 
 			for (size_t i = 0; i < 4; i++)
-				DrawSphere(mech.gear_mount_positions[i], 0.5f, DARKGREEN);
+			{
+				Gear& gear = *mech.gear[i];
+				DrawSphere(gear.pos_draw, 0.5f, DARKGREEN);
+				DrawSphere(gear.pos, 0.5f, DARKBLUE);
+			}
 
 		}
 

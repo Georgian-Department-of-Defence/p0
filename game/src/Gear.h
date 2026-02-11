@@ -1,7 +1,45 @@
 #pragma once
-#include "Gear.h"
-#include "Types.h"
 
+struct Gear
+{
+	virtual void OnUse(Mech2& mech, World2& world) = 0;
+	virtual void OnUpdate(Mech2& mech, World2& world) {};
+
+	Vector3 pos = Vector3Zeros;			// Where the gear is used from
+	Vector3 pos_draw = Vector3Zeros;	// Where the gear mesh is mounted
+
+	float cooldown_current = 0.0f;
+	float cooldown_total = 0.0f;
+};
+
+struct Rifle : public Gear
+{
+	virtual void OnUse(Mech2& mech, World2& world) final;
+};
+
+struct Shotgun : public Gear
+{
+	virtual void OnUse(Mech2& mech, World2& world) final;
+};
+
+struct GrenadeLauncher : public Gear
+{
+	virtual void OnUse(Mech2& mech, World2& world) final;
+	virtual void OnUpdate(Mech2& mech, World2& world) final;
+};
+
+struct Dasher : public Gear
+{
+	virtual void OnUse(Mech2& mech, World2& world) final;
+	virtual void OnUpdate(Mech2& mech, World2& world) final;
+};
+
+Gear* GearLoadRifle();
+Gear* GearLoadShotgun();
+Gear* GearLoadGrenadeLauncher();
+Gear* GearLoadDasher();
+
+/*
 struct GearRifle
 {
 
@@ -141,3 +179,4 @@ inline Gear CreateGearDasher()
 	g.heat = 30;
 	return g;
 }
+*/
