@@ -24,7 +24,7 @@ void MechLoad(size_t index, World2& world)
 	mech.dir_legs_curr = mech.dir_legs_goal = dir;
 
 	mech.collider.type = COLLIDER_SPHERE;
-	mech.collider.sphere.radius = 25.0f;
+	mech.collider.sphere.radius = 8.0f;
 	mech.collider_offset = Vector3UnitZ * 8.0f;
 
 	mech.move_speed = 100.0f;

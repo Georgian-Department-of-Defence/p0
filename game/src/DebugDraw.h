@@ -4,3 +4,5 @@ void DrawAxesDebug(Vector3 position, Matrix rotation, float length, float thickn
 
 void DrawTextureColor(RenderTexture rt);
 void DrawTextureDepth(RenderTexture rt);
+
+void DrawCollider(Collider collider, Color color);

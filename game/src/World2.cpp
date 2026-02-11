@@ -93,6 +93,8 @@ void WorldDraw(const World2& world)
 	BeginTextureMode(assets.framebuffer.main_resolve);
 	BeginMode3D(*GetCamera());
 	{
+		std::vector<Entity*> entities = WorldGetEntities(world);
+
 		// UI
 		for (const Mech2& mech : world.mechs)
 		{
@@ -101,14 +103,20 @@ void WorldDraw(const World2& world)
 			DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
 		}
 
-		// Debug (separate loop for flexibility, just add/remove code here instead of making DrawDebug functions)
+		// Mech debug
 		for (const Mech2& mech : world.mechs)
 		{
 			DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
-			DrawSphere(mech.pos + mech.collider_offset, 8.0f, ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f }));
+			//DrawSphere(mech.pos + mech.collider_offset, 8.0f, ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f }));
 
 			for (size_t i = 0; i < 4; i++)
 				DrawSphere(mech.gear_mount_positions[i], 0.5f, DARKGREEN);
+		}
+
+		// Collider debug
+		for (Entity* entity : entities)
+		{
+			DrawCollider(entity->collider, entity->collider.debug_color);
 		}
 	}
 	EndMode3D();
@@ -163,6 +171,8 @@ std::vector<Entity*> WorldGetEntities(const World2& world)
 void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 {
 	std::vector<Entity*> entities = WorldGetEntities(world);
+	for (Entity* entity : entities) entity->collider.debug_color = ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f });
+
 	for (size_t i = 0; i < entities.size(); i++)
 	{
 		for (size_t j = i + 1; j < entities.size(); j++)
@@ -172,6 +182,10 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 			Entity* b = entities[j];
 			if (EntityCheckCollision3D(*a, *b, &mtv))
 			{
+				a->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
+				b->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
+				mtv.z = 0.0f;
+
 				EntityHit hit;
 				hit.a = a;
 				hit.b = b;

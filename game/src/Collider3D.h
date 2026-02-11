@@ -29,6 +29,7 @@ struct Collider3D
 	};
 
 	Vector3 pos;
+	Color debug_color;
 };
 
 using Collider = Collider3D;

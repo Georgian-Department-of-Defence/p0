@@ -16,4 +16,3 @@ void WorldDraw(const World2& world);
 std::vector<Entity*> WorldGetEntities(const World2& world);
 void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits);
 void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits);
-

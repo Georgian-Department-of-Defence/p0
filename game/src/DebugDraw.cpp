@@ -66,3 +66,31 @@ void DrawTextureDepth(RenderTexture rt)
     DrawTexturePro(rt.depth, src_rec, dst_rec, Vector2Zeros, 0.0f, WHITE);
     EndShaderMode();
 }
+
+void DrawCollider(Collider collider, Color color)
+{
+    switch (collider.type)
+    {
+        case COLLIDER_SPHERE:
+            DrawSphere(collider.pos, collider.sphere.radius, color);
+            break;
+
+        case COLLIDER_SPHEROCYLINDER:
+        {
+            Vector3 a = collider.pos + collider.spherocylinder.direction * collider.spherocylinder.half_height;
+            Vector3 b = collider.pos - collider.spherocylinder.direction * collider.spherocylinder.half_height;
+            DrawCapsule(a, b, collider.spherocylinder.radius, 3, 3, color);
+            break;
+        }
+
+        case COLLIDER_PLANE:
+            // Finish this when I actually need to see a plane xD
+            break;
+
+        case COLLIDER_BOX:
+        {
+            DrawCubeV(collider.pos, collider.box.extents * 2.0f, color);
+            break;
+        }
+    }
+}
