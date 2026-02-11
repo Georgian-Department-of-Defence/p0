@@ -41,6 +41,7 @@ void WorldDraw(const World2& world)
 {
 	// Shadow pass
 	BeginTextureMode(assets.framebuffer.shadow_map);
+	{
 		ClearBackground(ORANGE);
 		rlEnableDepthTest();
 		rlSetMatrixModelview(g_camera_system.light_view);
@@ -50,15 +51,18 @@ void WorldDraw(const World2& world)
 			MechDraw(i, assets.material.flat, world);
 
 		EndMode3D();
+	}
 	EndTextureMode();
 
 	// Scene pass
-	Material material = assets.material.lighting;
-	material.maps[MATERIAL_MAP_DIFFUSE].color = WHITE;
 	BeginTextureMode(assets.framebuffer.main_multisample);
+	{
 		ClearBackground(BLACK);
 		rlSetClipPlanes(0.1f, 500.0f);
 		BeginMode3D(*GetCamera());
+
+		Material material = assets.material.lighting;
+		material.maps[MATERIAL_MAP_DIFFUSE].color = WHITE;
 		SetShaderValue(material.shader, material.shader.locs[SHADER_LOC_VECTOR_VIEW], &GetCamera()->position, SHADER_UNIFORM_VEC3);
 		SetShaderValueMatrix(material.shader, world.lights.back().loc_light_view_proj, g_camera_system.light_view * g_camera_system.light_proj);
 
@@ -69,6 +73,7 @@ void WorldDraw(const World2& world)
 
 		//DrawParticles(world, renderer);
 		EndMode3D();
+	}
 	EndTextureMode();
 
 	// Resolve MSAA
@@ -84,28 +89,28 @@ void WorldDraw(const World2& world)
 		rlDisableFramebuffer();
 	}
 
-	// UI pass (billboards & debug)
+	// UI & debug
 	BeginTextureMode(assets.framebuffer.main_resolve);
-	glClear(GL_DEPTH_BUFFER_BIT);
 	BeginMode3D(*GetCamera());
-	for (const Mech2& mech : world.mechs)
 	{
-		Texture tex = assets.texture.gradient;
-		Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
-		DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
+		// UI
+		for (const Mech2& mech : world.mechs)
+		{
+			Texture tex = assets.texture.gradient;
+			Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
+			DrawBillboardRec(*GetCamera(), tex, src, mech.pos + Vector3{ 0.0f, 10.0f, 20.0f }, { 16.0f, 4.0f }, WHITE);
+		}
+
+		// Debug (separate loop for flexibility, just add/remove code here instead of making DrawDebug functions)
+		for (const Mech2& mech : world.mechs)
+		{
+			DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
+			DrawSphere(mech.pos + mech.collider_offset, 8.0f, ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f }));
+
+			for (size_t i = 0; i < 4; i++)
+				DrawSphere(mech.gear_mount_positions[i], 0.5f, DARKGREEN);
+		}
 	}
-
-	for (const Mech2& mech : world.mechs)
-	{
-		DrawAxesDebug(mech.pos + Vector3UnitZ, QuaternionToMatrix(mech.rot), 25.0f, 4.0f);
-
-		Color color = ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f });
-		DrawSphere(mech.pos + mech.collider_offset, 8.0f, color);
-
-		for (size_t i = 0; i < 4; i++)
-			DrawSphere(mech.gear_mount_positions[i], 0.5f, DARKGREEN);
-	}
-
 	EndMode3D();
 	EndTextureMode();
 
