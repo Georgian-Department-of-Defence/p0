@@ -1,32 +1,62 @@
 #pragma once
+
+struct Sphere
+{
+	float radius;
+};
+
+struct Capsule
+{
+	float radius;
+	float half_height;
+	Vector3 direction;
+};
+
+struct Box
+{
+	Vector3 extents;
+};
+
+struct Plane
+{
+	Vector3 normal;
+};
+
 struct Collider3D
 {
 	ColliderType3D type = COLLIDER_TYPE_COUNT;
 
 	union
 	{
-		struct
-		{
-			float radius;
-		} sphere;
-
-		struct
-		{
-			float radius;
-			float half_height;
-			Vector3 direction;
-		} capsule;
-
-		struct
-		{
-			Vector3 extents;
-		} box;
-
-		struct
-		{
-			Vector3 normal;
-		} plane;
+		Sphere sphere;
+		Capsule capsule;
+		Box box;
+		Plane plane;
 	};
+	//union
+	//{
+	//	struct
+	//	{
+	//		float radius;
+	//	} sphere;
+	//
+	//	struct
+	//	{
+	//		float radius;
+	//		float half_height;
+	//		Vector3 direction;
+	//	} capsule;
+	//
+	//	struct
+	//	{
+	//		Vector3 extents;
+	//	} box;
+	//
+	//	struct
+	//	{
+	//		Vector3 normal;
+	//	} plane;
+	//};
 
 	Vector3 pos = Vector3Zeros;
 	Color debug_color = MAGENTA;

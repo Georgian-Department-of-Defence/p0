@@ -25,33 +25,40 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 	// TODO -- Add capsule checks
 	if (a.collider.type == COLLIDER_SPHERE)
 	{
+		Sphere cA = a.collider.sphere;
 		if (b.collider.type == COLLIDER_SPHERE)
 		{
-			return SphereSphere(pA, a.collider.sphere.radius, pB, b.collider.sphere.radius, mtv);
+			Sphere cB = b.collider.sphere;
+			return SphereSphere(pA, cA.radius, pB, cB.radius, mtv);
 		}
 		else if (b.collider.type == COLLIDER_CAPSULE)
 		{
-			return SphereCapsule(pA, a.collider.sphere.radius,
-				pB, b.collider.capsule.direction, b.collider.capsule.radius, b.collider.capsule.half_height, mtv);
-		}
-		else if (b.collider.type == COLLIDER_PLANE)
-		{
-			return SpherePlane(pA, a.collider.sphere.radius, pB, b.collider.plane.normal, mtv);
+			Capsule cB = b.collider.capsule;
+			return SphereCapsule(pA, cA.radius, pB, cB.direction, cB.radius, cB.half_height, mtv);
 		}
 		else if (b.collider.type == COLLIDER_BOX)
 		{
-			return SphereBox(pA, a.collider.sphere.radius, pB, b.collider.box.extents, mtv);
+			Box cB = b.collider.box;
+			return SphereBox(pA, cA.radius, pB, cB.extents, mtv);
+		}
+		else if (b.collider.type == COLLIDER_PLANE)
+		{
+			Plane cB = b.collider.plane;
+			return SpherePlane(pA, cA.radius, pB, cB.normal, mtv);
 		}
 	}
 
+	// This is also really silly... Make a virtual method for Collider???
 	//if (a.collider.type == COLLIDER_CAPSULE)
 	//{
-	//	if (b.collider.type == COLLIDER_CIRCLE)
+	//	Capsule cA = a.collider.capsule;
+	//	if (b.collider.type == COLLIDER_SPHERE)
 	//	{
-	//
+	//		Sphere cB = b.collider.sphere;
 	//	}
 	//	else if (b.collider.type == COLLIDER_CAPSULE)
 	//	{
+	//		Capsule cB = b.collider.capsule;
 	//
 	//	}
 	//	else if (b.collider.type == COLLIDER_PLANE)
@@ -63,6 +70,7 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 	//
 	//	}
 	//}
+
 	//
 	//if (a.collider.type == COLLIDER_PLANE)
 	//{
