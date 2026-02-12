@@ -35,7 +35,7 @@ void MechLoad(size_t index, World2& world)
 
 	mech.gear[0] = GearLoadRifle();
 	mech.gear[1] = GearLoadShotgun();
-	mech.gear[2] = GearLoadGrenadeLauncher();
+	mech.gear[2] = GearLoadRifle();
 	mech.gear[3] = GearLoadDasher();
 }
 

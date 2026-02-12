@@ -10,7 +10,7 @@ void Rifle::OnUse(Mech2& mech, World2& world)
 	b->color = RED;
 
 	b->collider.type = COLLIDER_SPHERE;
-	b->collider.sphere.radius = 3.0f;
+	b->collider.sphere.radius = 5.0f;
 
 	b->collision_type_mask = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING;
 	b->collision_team_mask = TARGET_MASK_ENEMY;

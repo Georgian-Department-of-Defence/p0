@@ -22,6 +22,7 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 	Vector3 pA = a.collider.pos;
 	Vector3 pB = b.collider.pos;
 
+	// TODO -- Add capsule checks
 	if (a.collider.type == COLLIDER_SPHERE)
 	{
 		if (b.collider.type == COLLIDER_SPHERE)
