@@ -5,6 +5,7 @@ struct Projectile2 : public Entity
 
 	virtual void OnUpdate() = 0;
 	void OnCollisionPost(Entity* entity) final;
+	void OnDestroy(World2& world) override;
 	// Worry about Bullet vs Grenade vs Missile collision callback later
 };
 

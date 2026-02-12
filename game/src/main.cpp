@@ -22,6 +22,8 @@ int main()
     while (!WindowShouldClose())
     {
         UpdateCamera();
+        if (IsKeyPressed(KEY_K) && !game.world.mechs.empty())
+            game.world.mechs.back().destroy_flag = true;
         WorldUpdate(game.world);
 
         BeginDrawing();

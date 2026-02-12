@@ -13,7 +13,7 @@ void WorldLoad(World2& world)
 		building.pos = Vector3Zeros + Vector3UnitX * x;
 		building.collider = MakeCapsule(building.pos, building.pos + Vector3UnitZ * 16.0f, 3.0f);
 
-		//world.buildings.push_back(building);
+		world.buildings.push_back(building);
 	}
 
 	Light sun;
@@ -39,8 +39,11 @@ void WorldUpdate(World2& world)
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUpdate(i, world);
 
-	for (size_t i = 0; i < world.projectiles.size(); i++)
-		world.projectiles[i]->OnUpdate();
+	for (Projectile2* p : world.projectiles)
+	{
+		p->OnUpdate();
+		p->destroy_flag |= !CheckCollisionBoxSphere(WorldGetBoundingBox(world), p->pos, 1.0f);
+	}
 
 	for (Light& light : world.lights)
 		LightUpdateUniforms(light, assets.material.lighting.shader);
@@ -48,6 +51,36 @@ void WorldUpdate(World2& world)
 	std::vector<EntityHit> hits;
 	WorldCheckCollisions(world, &hits);
 	WorldResolveCollisions(world, hits);
+	
+	for (Mech2& mech : world.mechs)
+	{
+		if (mech.destroy_flag)
+			mech.OnDestroy(world);
+	}
+
+	for (Building2& building : world.buildings)
+	{
+		if (building.destroy_flag)
+			building.OnDestroy(world);
+	}
+
+	for (Projectile2* p : world.projectiles)
+	{
+		if (p->destroy_flag)
+			p->OnDestroy(world);
+	}
+
+	auto projectile_predicate = [](Projectile2* p)
+	{
+		bool destroy = p->destroy_flag;
+		if (destroy)
+			delete p;
+		return destroy;
+	};
+
+	std::erase_if(world.mechs, [](Mech2& mech) { return mech.destroy_flag; });
+	std::erase_if(world.buildings, [](Building2& building) { return building.destroy_flag; });
+	std::erase_if(world.projectiles, projectile_predicate);
 }
 
 void WorldDraw(const World2& world)
@@ -141,7 +174,6 @@ void WorldDraw(const World2& world)
 				DrawSphere(gear.pos_draw, 0.5f, DARKGREEN);
 				DrawSphere(gear.pos, 0.5f, DARKBLUE);
 			}
-
 		}
 
 		// Collider debug
@@ -197,6 +229,14 @@ std::vector<Entity*> WorldGetEntities(const World2& world)
 	}
 
 	return entities;
+}
+
+BoundingBox WorldGetBoundingBox(const World2& world)
+{
+	BoundingBox box;
+	box.min = WORLD_MIN;
+	box.max = WORLD_MAX;
+	return box;
 }
 
 void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)

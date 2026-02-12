@@ -20,6 +20,11 @@ void Projectile2::OnCollisionPost(Entity* entity)
 	}
 }
 
+void Projectile2::OnDestroy(World2& world)
+{
+	PlaySound(assets.audio.hit);
+}
+
 void Bullet::OnUpdate()
 {
 	float dt = GetFrameTime();

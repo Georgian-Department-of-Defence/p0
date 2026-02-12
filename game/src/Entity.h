@@ -22,6 +22,7 @@ struct Entity
 	Vector3 collider_offset = Vector3Zeros;
 	virtual void OnCollisionPre(Entity* entity) { }
 	virtual void OnCollisionPost(Entity* entity) { }
+	virtual void OnDestroy(World2& world) { }
 
 	Mesh* mesh = nullptr;
 	Color color = WHITE;
