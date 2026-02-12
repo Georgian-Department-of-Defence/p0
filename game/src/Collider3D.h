@@ -33,30 +33,6 @@ struct Collider3D
 		Box box;
 		Plane plane;
 	};
-	//union
-	//{
-	//	struct
-	//	{
-	//		float radius;
-	//	} sphere;
-	//
-	//	struct
-	//	{
-	//		float radius;
-	//		float half_height;
-	//		Vector3 direction;
-	//	} capsule;
-	//
-	//	struct
-	//	{
-	//		Vector3 extents;
-	//	} box;
-	//
-	//	struct
-	//	{
-	//		Vector3 normal;
-	//	} plane;
-	//};
 
 	Vector3 pos = Vector3Zeros;
 	Color debug_color = MAGENTA;

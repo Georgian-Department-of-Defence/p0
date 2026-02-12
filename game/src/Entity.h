@@ -47,27 +47,14 @@ inline Id EntityGenId()
 	return ++id;
 }
 
-// Misleading because this is only 2d.
-//inline Vector3 EntityGetDirection(const Entity& entity)
-//{
-//	return Vector3RotateByQuaternion(Vector3UnitY, entity.rot);
-//}
-
 inline Vector3 EntityGetDirection(const Entity& entity)
 {
 	return MatrixColY(entity.rot);
 }
 
 bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv);
-//bool EntityCheckCollision2D(const Entity& a, const Entity& b, Vector2* mtv);
-//struct EntityHit2D
-//{
-//	Entity* a = nullptr;
-//	Entity* b = nullptr;
-//	Vector2 mtv = Vector2Zeros;
-//};
 
-// Collision notes:
+// Collision callback notes:
 // 1) mtv not necessary. Easier if mtv is used during physics resolution between on_pre & on_post.
 // 2) world not necessary unless we need to spawn entities on-collision (currently nothing, but particles in the future)?
 // 3) using virtual methods instead of function pointers because v-table will resolve entity_self

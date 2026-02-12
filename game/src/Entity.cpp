@@ -2,6 +2,8 @@
 
 bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 {
+	bool collision = false;
+	assert(mtv != nullptr);
 	assert(a.collider.type != COLLIDER_TYPE_COUNT && b.collider.type != COLLIDER_TYPE_COUNT);
 	{
 		bool can_types_collide = a.collision_type_mask & b.collision_type_mask;
@@ -29,49 +31,52 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 		if (b.collider.type == COLLIDER_SPHERE)
 		{
 			Sphere cB = b.collider.sphere;
-			return SphereSphere(pA, cA.radius, pB, cB.radius, mtv);
+			collision = SphereSphere(pA, cA.radius, pB, cB.radius, mtv);
 		}
 		else if (b.collider.type == COLLIDER_CAPSULE)
 		{
 			Capsule cB = b.collider.capsule;
-			return SphereCapsule(pA, cA.radius, pB, cB.direction, cB.radius, cB.half_height, mtv);
+			collision = SphereCapsule(pA, cA.radius, pB, cB.direction, cB.radius, cB.half_height, mtv);
 		}
 		else if (b.collider.type == COLLIDER_BOX)
 		{
 			Box cB = b.collider.box;
-			return SphereBox(pA, cA.radius, pB, cB.extents, mtv);
+			collision = SphereBox(pA, cA.radius, pB, cB.extents, mtv);
 		}
 		else if (b.collider.type == COLLIDER_PLANE)
 		{
 			Plane cB = b.collider.plane;
-			return SpherePlane(pA, cA.radius, pB, cB.normal, mtv);
+			collision = SpherePlane(pA, cA.radius, pB, cB.normal, mtv);
 		}
 	}
 
-	// This is also really silly... Make a virtual method for Collider???
-	//if (a.collider.type == COLLIDER_CAPSULE)
-	//{
-	//	Capsule cA = a.collider.capsule;
-	//	if (b.collider.type == COLLIDER_SPHERE)
-	//	{
-	//		Sphere cB = b.collider.sphere;
-	//	}
-	//	else if (b.collider.type == COLLIDER_CAPSULE)
-	//	{
-	//		Capsule cB = b.collider.capsule;
-	//
-	//	}
-	//	else if (b.collider.type == COLLIDER_PLANE)
-	//	{
-	//
-	//	}
-	//	else if (b.collider.type == COLLIDER_BOX)
-	//	{
-	//
-	//	}
-	//}
+	if (a.collider.type == COLLIDER_CAPSULE)
+	{
+		Capsule cA = a.collider.capsule;
+		if (b.collider.type == COLLIDER_SPHERE)
+		{
+			Sphere cB = b.collider.sphere;
+			collision = SphereCapsule(pB, cB.radius, pA, cA.direction, cA.radius, cA.half_height, mtv);
+			*mtv *= -1.0f;
+		}
+		else if (b.collider.type == COLLIDER_CAPSULE)
+		{
+			Capsule cB = b.collider.capsule;
+			collision = CapsuleCapsule(pA, cA.direction, cA.radius, cA.half_height, pB, cB.direction, cB.radius, cB.half_height, mtv);
+		}
+		else if (b.collider.type == COLLIDER_BOX)
+		{
+			Box cB = b.collider.box;
+			CapsuleBox(pA, cA.direction, cA.radius, cA.half_height, pB, cB.extents, mtv);
+		}
+		else if (b.collider.type == COLLIDER_PLANE)
+		{
+			Plane cB = b.collider.plane;
+			CapsulePlane(pA, cA.direction, cA.radius, cA.half_height, pB, cB.normal, mtv);
+		}
+	}
 
-	//
+	// Only circles & capsules supported currently
 	//if (a.collider.type == COLLIDER_PLANE)
 	//{
 	//	if (b.collider.type == COLLIDER_CIRCLE)
@@ -112,7 +117,7 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 	//	}
 	//}
 
-	return false;
+	return collision;
 }
 
 // TODO -- Switch to 3D collision so I don't have to convert from Vector2 to Vector3 everywhere!?!?!?

@@ -2,40 +2,25 @@
 
 void WorldLoad(World2& world)
 {
-	world.mechs.resize(0);
+	world.mechs.resize(4);
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechLoad(i, world);
 
-	//for (float x = WORLD_MIN.x + 10.0f; x < WORLD_MAX.x - 10.0f; x += 25.0f)
+	for (float x = WORLD_MIN.x + 10.0f; x < WORLD_MAX.x - 10.0f; x += 25.0f)
 	{
 		// TODO -- Remove collider_offset and code translation directly (rules seem to differ per-entity-type)?
 		Building2 building;
 		building.type = ENTITY_BUILDING;
 		building.team = TEAM_NONE;
 
-		building.pos = Vector3Zeros;// +Vector3UnitX * x;
+		building.pos = Vector3Zeros + Vector3UnitX * x;
 		building.collider = MakeCapsule(building.pos, building.pos + Vector3UnitZ * 16.0f, 3.0f);
 		building.collision_type_mask = ENTITY_MASK_ALL;
 		building.collision_team_mask = TARGET_MASK_ALL;
 
 		world.buildings.push_back(building);
 
-		Bullet* b = new Bullet;
-		b->pos = Vector3UnitY * 0.0f + Vector3UnitZ * 10.0f;
-		b->vel = Vector3UnitY * 0.0f;
-
-		b->mesh = &assets.mesh.bullet;
-		b->color = RED;
-
-		b->collider.type = COLLIDER_SPHERE;
-		b->collider.sphere.radius = 5.0f;
-
-		b->collision_type_mask = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING;
-		b->collision_team_mask = TARGET_MASK_ENEMY;
-		b->team = TEAM_RED;
-		b->type = ENTITY_PROJECTILE;
-
-		world.projectiles.push_back(b);
+		
 	}
 
 	Light sun;
@@ -69,14 +54,6 @@ void WorldUpdate(World2& world)
 
 	for (Light& light : world.lights)
 		LightUpdateUniforms(light, assets.material.lighting.shader);
-
-	if (!world.projectiles.empty() && IsKeyPressed(KEY_T))
-	{
-		Vector3 mtv = Vector3Zeros;
-		bool result = EntityCheckCollision3D(*world.projectiles.back(), world.buildings.back(), &mtv);
-		if (result)
-			TraceLog(LOG_INFO, "Lit");
-	}
 
 	std::vector<EntityHit> hits;
 	WorldCheckCollisions(world, &hits);
@@ -329,3 +306,29 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 		hit.b->OnCollisionPost(hit.a);
 	}
 }
+
+// Shoot single projectile at single building to test collision:
+//Bullet* b = new Bullet;
+//b->pos = Vector3UnitY * 0.0f + Vector3UnitZ * 10.0f;
+//b->vel = Vector3UnitY * 0.0f;
+//
+//b->mesh = &assets.mesh.bullet;
+//b->color = RED;
+//
+//b->collider.type = COLLIDER_SPHERE;
+//b->collider.sphere.radius = 5.0f;
+//
+//b->collision_type_mask = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING;
+//b->collision_team_mask = TARGET_MASK_ENEMY;
+//b->team = TEAM_RED;
+//b->type = ENTITY_PROJECTILE;
+//
+//world.projectiles.push_back(b);
+
+//if (!world.projectiles.empty() && IsKeyPressed(KEY_T))
+//{
+//	Vector3 mtv = Vector3Zeros;
+//	bool result = EntityCheckCollision3D(*world.projectiles.back(), world.buildings.back(), &mtv);
+//	if (result)
+//		TraceLog(LOG_INFO, "Lit");
+//}
