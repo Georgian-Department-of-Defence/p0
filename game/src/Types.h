@@ -1,5 +1,15 @@
 #pragma once
 
+//constexpr uint32_t ENTITY_MASK_NONE = 0;
+constexpr uint32_t ENTITY_MASK_MECH = 1;
+constexpr uint32_t ENTITY_MASK_BUILDING = 2;
+constexpr uint32_t ENTITY_MASK_PROJECTILE = 4;
+constexpr uint32_t ENTITY_MASK_ALL = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING | ENTITY_MASK_PROJECTILE;
+
+constexpr uint32_t TARGET_MASK_ALLY = 1;
+constexpr uint32_t TARGET_MASK_ENEMY = 2;
+constexpr uint32_t TARGET_MASK_ALL = TARGET_MASK_ALLY | TARGET_MASK_ENEMY;
+
 enum EntityType : uint32_t
 {
 	ENTITY_MECH,

@@ -4,7 +4,7 @@ void Rifle::OnUse(Mech2& mech, World2& world)
 {
 	Bullet* b = new Bullet;
 	b->pos = pos;
-	b->vel = EntityGetDirection(mech) * 20.0f;
+	b->vel = EntityGetDirection(mech) * 30.0f;
 
 	b->mesh = &assets.mesh.bullet;
 	b->color = RED;
@@ -12,11 +12,34 @@ void Rifle::OnUse(Mech2& mech, World2& world)
 	b->collider.type = COLLIDER_SPHERE;
 	b->collider.sphere.radius = 3.0f;
 
+	b->collision_type_mask = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING;
+	b->collision_team_mask = TARGET_MASK_ENEMY;
+	b->team = mech.team;
+
 	world.projectiles.push_back(b);
 }
 
 void Shotgun::OnUse(Mech2& mech, World2& world)
 {
+	Vector3 dir = EntityGetDirection(mech);
+	for (size_t i = 0; i < 3; i++)
+	{
+		Bullet* b = new Bullet;
+		b->pos = pos;
+		b->vel = dir * MatrixRotateZ(-20.0f * DEG2RAD + 20.0f * DEG2RAD * i) * 20.0f;
+
+		b->mesh = &assets.mesh.bullet;
+		b->color = GREEN;
+
+		b->collider.type = COLLIDER_SPHERE;
+		b->collider.sphere.radius = 3.0f;
+
+		b->collision_type_mask = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING;
+		b->collision_team_mask = TARGET_MASK_ENEMY;
+		b->team = mech.team;
+
+		world.projectiles.push_back(b);
+	}
 }
 
 void GrenadeLauncher::OnUse(Mech2& mech, World2& world)

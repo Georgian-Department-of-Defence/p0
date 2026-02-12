@@ -12,6 +12,9 @@ void MechLoad(size_t index, World2& world)
 	mech.team = index < 2 ? TEAM_RED : TEAM_BLUE;
 	mech.color = mech.team == TEAM_RED ? RED : BLUE;
 
+	mech.collision_type_mask = ENTITY_MASK_ALL;
+	mech.collision_team_mask = TARGET_MASK_ALL;
+
 	Vector3 spawn_positions[4];
 	spawn_positions[0] = { -20.0f, -40.0f, 0.0f };
 	spawn_positions[1] = { -20.0f,  40.0f, 0.0f };

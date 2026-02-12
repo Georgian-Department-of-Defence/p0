@@ -12,6 +12,8 @@ void WorldLoad(World2& world)
 		Building2 building;
 		building.pos = Vector3Zeros + Vector3UnitX * x;
 		building.collider = MakeCapsule(building.pos, building.pos + Vector3UnitZ * 16.0f, 3.0f);
+		building.collision_type_mask = ENTITY_MASK_ALL;
+		building.collision_team_mask = TARGET_MASK_ALL;
 
 		world.buildings.push_back(building);
 	}

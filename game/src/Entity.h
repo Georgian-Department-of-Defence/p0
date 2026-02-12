@@ -23,6 +23,8 @@ struct Entity
 	virtual void OnCollisionPre(Entity* entity) { }
 	virtual void OnCollisionPost(Entity* entity) { }
 	virtual void OnDestroy(World2& world) { }
+	size_t collision_type_mask = 0;	// Collides with Mech/Building/Projectile
+	size_t collision_team_mask = 0;	// Collides with Ally/Enemy/All
 
 	Mesh* mesh = nullptr;
 	Color color = WHITE;
