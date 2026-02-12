@@ -12,7 +12,6 @@ bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv)
 			bool result = false;
 			result |= (src.collision_team_mask & TARGET_MASK_ALLY) && src.team == dst.team;
 			result |= (src.collision_team_mask & TARGET_MASK_ENEMY) && src.team != dst.team;
-			result |= (src.collision_team_mask & TARGET_MASK_ALL); // Unnecessary, but doesn't hurt!
 			return result;
 		};
 
