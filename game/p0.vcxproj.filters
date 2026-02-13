@@ -140,6 +140,9 @@
     <ClCompile Include="src\Building2.cpp">
       <Filter>World\Buildings</Filter>
     </ClCompile>
+    <ClCompile Include="src\Collider3D.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">

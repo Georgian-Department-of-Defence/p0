@@ -39,6 +39,28 @@ struct Collider3D
 };
 
 using Collider = Collider3D;
+using CollisionFunction = bool(*)(const Collider& a, const Collider& b, Vector3* mtv);
+extern CollisionFunction collision_table[4][4];
+
+bool SphereSphere(const Collider& a, const Collider& b, Vector3* mtv);
+bool SphereCapsule(const Collider& a, const Collider& b, Vector3* mtv);
+bool SphereBox(const Collider& a, const Collider& b, Vector3* mtv);
+bool SpherePlane(const Collider& a, const Collider& b, Vector3* mtv);
+
+bool CapsuleSphere(const Collider& a, const Collider& b, Vector3* mtv);
+bool CapsuleCapsule(const Collider& a, const Collider& b, Vector3* mtv);
+bool CapsuleBox(const Collider& a, const Collider& b, Vector3* mtv);
+bool CapsulePlane(const Collider& a, const Collider& b, Vector3* mtv);
+
+bool BoxSphere(const Collider& a, const Collider& b, Vector3* mtv);
+bool BoxCapsule(const Collider& a, const Collider& b, Vector3* mtv);
+bool BoxBox(const Collider& a, const Collider& b, Vector3* mtv);
+bool BoxPlane(const Collider& a, const Collider& b, Vector3* mtv);
+
+bool PlaneSphere(const Collider& a, const Collider& b, Vector3* mtv);
+bool PlaneCapsule(const Collider& a, const Collider& b, Vector3* mtv);
+bool PlaneBox(const Collider& a, const Collider& b, Vector3* mtv);
+bool PlanePlane(const Collider& a, const Collider& b, Vector3* mtv);
 
 inline Collider MakeCapsule(Vector3 a/*bottom*/, Vector3 b/*top*/, float r)
 {

@@ -24,7 +24,7 @@
 //#include "Collider2D.h"
 //#include "Collision2D.h"
 #include "Collision3D.h"	// Collision math
-#include "Collider3D.h"		// Collision types (independent of collision math)
+#include "Collider3D.cpp"	// Collision types
 
 // 5) Include assets & tools
 #include "Assets.cpp"
