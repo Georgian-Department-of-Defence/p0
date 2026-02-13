@@ -18,7 +18,7 @@ void WorldLoad(World2& world)
 		building.collision_type_mask = ENTITY_MASK_ALL;
 		building.collision_team_mask = TARGET_MASK_ALL;
 
-		world.buildings.push_back(building);
+		//world.buildings.push_back(building);
 	}
 
 	Light sun;
@@ -97,9 +97,13 @@ void WorldDraw(const World2& world)
 		rlEnableDepthTest();
 		rlSetMatrixModelview(g_camera_system.light_view);
 		rlSetMatrixProjection(g_camera_system.light_proj);
+		Material material = assets.material.flat;
 
 		for (size_t i = 0; i < world.mechs.size(); i++)
-			MechDraw(i, assets.material.flat, world);
+			MechDraw(i, material, world);
+
+		for (const Projectile2* p : world.projectiles)
+			ProjectileDraw(*p, material);
 
 		EndMode3D();
 	}
@@ -123,10 +127,7 @@ void WorldDraw(const World2& world)
 			MechDraw(i, material, world);
 
 		for (const Projectile2* p : world.projectiles)
-		{
-			Matrix m = MatrixLookRotation(Vector3Normalize(p->vel)) * MatrixTranslate(p->pos.x, p->pos.y, p->pos.z);
-			DrawMesh(*p->mesh, assets.material.flat, m);
-		}
+			ProjectileDraw(*p, material);
 
 		// TODO -- generate building colliders based on mesh BoundingBox height?
 		//for (size_t i = 0; i < world.buildings.size(); i++)

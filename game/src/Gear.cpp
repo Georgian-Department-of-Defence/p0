@@ -7,6 +7,7 @@ void Rifle::OnUse(Mech2& mech, World2& world)
 
 	b->pos = pos;
 	b->vel = EntityGetDirection(mech) * 30.0f;
+	b->gravity_scale = 0.0f;
 
 	b->mesh = &assets.mesh.bullet;
 	b->color = RED;
@@ -31,7 +32,8 @@ void Shotgun::OnUse(Mech2& mech, World2& world)
 		b->type = ENTITY_PROJECTILE;
 
 		b->pos = pos;
-		b->vel = dir * MatrixRotateZ(-20.0f * DEG2RAD + 20.0f * DEG2RAD * i) * 20.0f;
+		b->vel = (dir * MatrixRotateZ(-20.0f * DEG2RAD + 20.0f * DEG2RAD * i)) * 20.0f;
+		b->gravity_scale = 0.0f;
 
 		b->mesh = &assets.mesh.bullet;
 		b->color = GREEN;

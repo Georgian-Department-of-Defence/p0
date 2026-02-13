@@ -25,19 +25,8 @@ void Projectile2::OnDestroy(World2& world)
 	PlaySound(assets.audio.hit);
 }
 
-void Bullet::OnUpdate()
+void Projectile2::Update()
 {
-	float dt = GetFrameTime();
-	acc = GRAVITY * gravity_scale;
-	vel += acc * dt;
-	pos += vel * dt;
-	collider.pos = pos;
-}
-
-void Missile::OnUpdate()
-{
-	assert(collider.type == COLLIDER_CAPSULE);
-
 	float dt = GetFrameTime();
 	acc = GRAVITY * gravity_scale;
 	vel += acc * dt;
@@ -45,6 +34,26 @@ void Missile::OnUpdate()
 
 	Vector3 direction = Vector3Normalize(vel);
 	rot = MatrixLookRotation(direction);
-	collider.capsule.direction = direction;
+
 	collider.pos = pos;
+	if (collider.type == COLLIDER_CAPSULE)
+	{
+		collider.capsule.direction = direction;
+	}
+}
+
+void ProjectileDraw(const Projectile2& p, Material material)
+{
+	material.maps[MATERIAL_MAP_DIFFUSE].color = p.color;
+	DrawMesh(*p.mesh, material, p.rot * MatrixTranslate(p.pos.x, p.pos.y, p.pos.z));
+}
+
+void Bullet::OnUpdate()
+{
+	Update();
+}
+
+void Missile::OnUpdate()
+{
+	Update();
 }
