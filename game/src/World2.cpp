@@ -19,8 +19,6 @@ void WorldLoad(World2& world)
 		building.collision_team_mask = TARGET_MASK_ALL;
 
 		world.buildings.push_back(building);
-
-		
 	}
 
 	Light sun;

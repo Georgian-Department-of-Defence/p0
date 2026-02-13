@@ -26,6 +26,9 @@ struct GrenadeLauncher : public Gear
 {
 	virtual void OnUse(Mech2& mech, World2& world) final;
 	virtual void OnUpdate(Mech2& mech, World2& world) final;
+
+	float launch_time = 0.0f;
+	int grenade_count = 0;
 };
 
 struct Dasher : public Gear

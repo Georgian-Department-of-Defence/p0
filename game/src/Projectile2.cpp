@@ -28,7 +28,23 @@ void Projectile2::OnDestroy(World2& world)
 void Bullet::OnUpdate()
 {
 	float dt = GetFrameTime();
+	acc = GRAVITY * gravity_scale;
 	vel += acc * dt;
 	pos += vel * dt;
+	collider.pos = pos;
+}
+
+void Missile::OnUpdate()
+{
+	assert(collider.type == COLLIDER_CAPSULE);
+
+	float dt = GetFrameTime();
+	acc = GRAVITY * gravity_scale;
+	vel += acc * dt;
+	pos += vel * dt;
+
+	Vector3 direction = Vector3Normalize(vel);
+	rot = MatrixLookRotation(direction);
+	collider.capsule.direction = direction;
 	collider.pos = pos;
 }

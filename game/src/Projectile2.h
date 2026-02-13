@@ -13,3 +13,8 @@ struct Bullet : public Projectile2
 {
 	virtual void OnUpdate() final;
 };
+
+struct Missile : public Projectile2
+{
+	virtual void OnUpdate() final;
+};
