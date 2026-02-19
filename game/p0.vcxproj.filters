@@ -60,9 +60,6 @@
     <ClCompile Include="src\DebugDraw.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="src\World.cpp">
-      <Filter>World</Filter>
-    </ClCompile>
     <ClCompile Include="src\Projectile.cpp">
       <Filter>World\Projectile</Filter>
     </ClCompile>
@@ -115,7 +112,6 @@
     <ClCompile Include="src\Map.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Light.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -166,9 +162,6 @@
     </ClInclude>
     <ClInclude Include="src\DebugDraw.h">
       <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="src\World.h">
-      <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="src\Projectile.h">
       <Filter>World\Projectile</Filter>
@@ -224,9 +217,6 @@
     <ClInclude Include="src\Collision3D.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\WorldDef.h">
-      <Filter>World</Filter>
-    </ClInclude>
     <ClInclude Include="src\Steering.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -239,7 +229,6 @@
     <ClInclude Include="src\Map.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Light.h">
       <Filter>Rendering</Filter>
     </ClInclude>

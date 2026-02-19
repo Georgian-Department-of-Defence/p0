@@ -154,10 +154,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Game.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\Gear.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -222,10 +218,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\World.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\MechAnimation.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -270,7 +262,6 @@
     <ClInclude Include="src\DebugDraw.h" />
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\Entity.h" />
-    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GearScene.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\LoadoutSelectScene.h" />
@@ -291,12 +282,10 @@
     <ClInclude Include="src\Types.h" />
     <ClInclude Include="src\Widgets.h" />
     <ClInclude Include="src\WidgetsScene.h" />
-    <ClInclude Include="src\World.h" />
     <ClInclude Include="src\MechAnimation.h" />
     <ClInclude Include="src\Mech.h" />
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\World2.h" />
-    <ClInclude Include="src\WorldDef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
