@@ -3,7 +3,7 @@
 void Rifle::OnUse(Mech2& mech, World2& world)
 {
 	Bullet* b = new Bullet;
-	b->type = ENTITY_PROJECTILE;
+	b->entity_type = ENTITY_PROJECTILE;
 
 	b->pos = pos;
 	b->vel = EntityGetDirection(mech) * 30.0f;
@@ -19,6 +19,8 @@ void Rifle::OnUse(Mech2& mech, World2& world)
 	b->collision_team_mask = TARGET_MASK_ENEMY;
 	b->team = mech.team;
 
+	b->damage = 50.0f;
+
 	world.projectiles.push_back(b);
 	PlaySound(assets.audio.fire_rifle);
 }
@@ -29,7 +31,7 @@ void Shotgun::OnUse(Mech2& mech, World2& world)
 	for (size_t i = 0; i < 3; i++)
 	{
 		Bullet* b = new Bullet;
-		b->type = ENTITY_PROJECTILE;
+		b->entity_type = ENTITY_PROJECTILE;
 
 		b->pos = pos;
 		b->vel = (dir * MatrixRotateZ(-20.0f * DEG2RAD + 20.0f * DEG2RAD * i)) * 20.0f;
@@ -44,6 +46,8 @@ void Shotgun::OnUse(Mech2& mech, World2& world)
 		b->collision_type_mask = ENTITY_MASK_MECH | ENTITY_MASK_BUILDING;
 		b->collision_team_mask = TARGET_MASK_ENEMY;
 		b->team = mech.team;
+
+		b->damage = 50.0f;
 
 		world.projectiles.push_back(b);
 	}
@@ -70,7 +74,7 @@ void GrenadeLauncher::OnUpdate(Mech2& mech, World2& world)
 			Vector3 dir = EntityGetDirection(mech) * MatrixRotateZ(roll) * MatrixRotateX(pitch);
 
 			Missile* m = new Missile;
-			m->type = ENTITY_PROJECTILE;
+			m->entity_type = ENTITY_PROJECTILE;
 
 			m->pos = pos;
 			m->vel = dir * 50.0f;
@@ -83,6 +87,8 @@ void GrenadeLauncher::OnUpdate(Mech2& mech, World2& world)
 
 			m->color = BLUE;
 			m->mesh = &assets.mesh.grenade;
+
+			m->damage = 50.0f;
 
 			world.projectiles.push_back(m);
 			PlaySound(assets.audio.fire_grenade);

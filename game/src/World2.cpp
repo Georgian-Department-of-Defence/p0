@@ -8,17 +8,8 @@ void WorldLoad(World2& world)
 
 	for (float x = WORLD_MIN.x + 10.0f; x < WORLD_MAX.x - 10.0f; x += 25.0f)
 	{
-		// TODO -- Remove collider_offset and code translation directly (rules seem to differ per-entity-type)?
-		Building2 building;
-		building.type = ENTITY_BUILDING;
-		building.team = TEAM_NONE;
-
-		building.pos = Vector3Zeros + Vector3UnitX * x;
-		building.collider = MakeCapsule(building.pos, building.pos + Vector3UnitZ * 16.0f, 3.0f);
-		building.collision_type_mask = ENTITY_MASK_ALL;
-		building.collision_team_mask = TARGET_MASK_ALL;
-
-		//world.buildings.push_back(building);
+		Building2 building = MakeBuilding({ x, 0.0f, 0.0f }, BUILDING_BMO);
+		world.buildings.push_back(building);
 	}
 
 	Light sun;
@@ -43,6 +34,9 @@ void WorldUpdate(World2& world)
 {
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUpdate(i, world);
+
+	for (Building2& building : world.buildings)
+		BuildingUpdate(building);
 
 	for (Projectile2* p : world.projectiles)
 	{
@@ -102,6 +96,9 @@ void WorldDraw(const World2& world)
 		for (size_t i = 0; i < world.mechs.size(); i++)
 			MechDraw(i, material, world);
 
+		for (const Building2& b : world.buildings)
+			BuildingDraw(b, material);
+
 		for (const Projectile2* p : world.projectiles)
 			ProjectileDraw(*p, material);
 
@@ -125,6 +122,9 @@ void WorldDraw(const World2& world)
 
 		for (size_t i = 0; i < world.mechs.size(); i++)
 			MechDraw(i, material, world);
+
+		for (const Building2& b : world.buildings)
+			BuildingDraw(b, material);
 
 		for (const Projectile2* p : world.projectiles)
 			ProjectileDraw(*p, material);

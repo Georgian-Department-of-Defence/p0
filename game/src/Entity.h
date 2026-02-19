@@ -5,7 +5,7 @@ struct World2;
 struct Entity
 {
 	Id id = 0;
-	EntityType type = ENTITY_TYPE_COUNT;
+	EntityType entity_type = ENTITY_TYPE_COUNT;
 	Team team = TEAM_NONE;
 	bool destroy_flag = false;
 

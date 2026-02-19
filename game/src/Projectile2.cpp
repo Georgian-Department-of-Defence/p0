@@ -2,7 +2,7 @@
 
 void Projectile2::OnCollisionPost(Entity* entity)
 {
-	switch (entity->type)
+	switch (entity->entity_type)
 	{
 		// Damage mech
 		case ENTITY_MECH:
@@ -18,6 +18,8 @@ void Projectile2::OnCollisionPost(Entity* entity)
 			break;
 		}
 	}
+
+	destroy_flag |= true;
 }
 
 void Projectile2::OnDestroy(World2& world)

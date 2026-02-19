@@ -7,7 +7,7 @@ void MechLoad(size_t index, World2& world)
 	if (index == 0) mech.debug_enabled = true;
 
 	mech.id = EntityGenId();
-	mech.type = ENTITY_MECH;
+	mech.entity_type = ENTITY_MECH;
 	mech.player_number = uint8_t(index + 1);
 	mech.team = index < 2 ? TEAM_RED : TEAM_BLUE;
 	mech.color = mech.team == TEAM_RED ? RED : BLUE;
@@ -157,7 +157,7 @@ void MechDraw(size_t index, Material material, const World2& world)
 
 void Mech2::OnCollisionPost(Entity* entity)
 {
-	switch (entity->type)
+	switch (entity->entity_type)
 	{
 		// Damage other mech
 		case ENTITY_MECH:
