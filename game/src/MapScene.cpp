@@ -12,6 +12,12 @@ void MapScene::OnUnload(Game& game)
 
 void MapScene::OnUpdate(Game& game)
 {
+	if (IsKeyPressed(KEY_G))
+		GameChangeScene(game, SCENE_DEV_GEAR);
+
+	if (IsKeyPressed(KEY_K) && !game.world.mechs.empty())
+		game.world.mechs.back().destroy_flag |= true;
+
 	WorldUpdate(game.world);
 }
 

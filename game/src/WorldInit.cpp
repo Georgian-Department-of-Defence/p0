@@ -32,6 +32,14 @@ void WorldUnload(World2& world)
 {
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUnload(i, world);
+
+	for (Projectile2* p : world.projectiles)
+		delete p;
+
+	world.mechs.clear();
+	world.buildings.clear();
+	world.projectiles.clear();
+	world.lights.clear();
 }
 
 void MapLoad(MapType map, World2& world)
