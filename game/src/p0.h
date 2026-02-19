@@ -6,6 +6,7 @@
 #include <math.h>
 #include <assert.h>
 #include <string>
+#include <fstream>
 
 // 2) Include raylib headers (raymath.h needs math.h so best to include libc before raylib)
 #include <raylib.h>
@@ -42,6 +43,7 @@
 #include "Gear.h"
 
 // 7) Include world
+#include "Map.cpp"
 #include "World2.cpp"
 
 // 8) Include entity definitions (now that world exists)
