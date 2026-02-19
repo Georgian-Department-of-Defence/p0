@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "MapScene.cpp"
+#include "GearScene.cpp"
 
 void GameInit(Game& game, SceneType scene)
 {
@@ -8,7 +10,7 @@ void GameInit(Game& game, SceneType scene)
 	//game.scenes[SCENE_BATTLE] = new BattleScene;
 	//
 	//game.scenes[SCENE_DEV_ANIMATIONS] = new AnimationsScene;
-	//game.scenes[SCENE_DEV_GEAR] = new GearScene;
+	game.scenes[SCENE_DEV_GEAR] = new GearScene;
 	game.scenes[SCENE_DEV_MAP] = new MapScene;
 	//game.scenes[SCENE_DEV_PARTICLES] = new ParticlesScene;
 	//game.scenes[SCENE_DEV_PHYSICS] = new PhysicsScene;
@@ -19,12 +21,12 @@ void GameInit(Game& game, SceneType scene)
 	//	game.scenes[i]->OnInit(game.world);
 
 	game.current = scene;
-	game.scenes[game.current]->OnLoad(game.world);
+	game.scenes[game.current]->OnLoad(game);
 }
 
 void GameQuit(Game& game)
 {
-	game.scenes[game.current]->OnUnload(game.world);
+	game.scenes[game.current]->OnUnload(game);
 
 	//for (size_t i = 0; i < SCENE_TYPE_COUNT; i++)
 	//	game.scenes[i]->OnQuit(game.world);
@@ -35,17 +37,17 @@ void GameQuit(Game& game)
 
 void GameUpdate(Game& game)
 {
-	game.scenes[game.current]->OnUpdate(game.world);
+	game.scenes[game.current]->OnUpdate(game);
 }
 
 void GameDraw(Game& game)
 {
-	game.scenes[game.current]->OnDraw(game.world);
+	game.scenes[game.current]->OnDraw(game);
 }
 
 void GameChangeScene(Game& game, SceneType scene)
 {
-	game.scenes[game.current]->OnUnload(game.world);
+	game.scenes[game.current]->OnUnload(game);
 	game.current = scene;
-	game.scenes[game.current]->OnLoad(game.world);
+	game.scenes[game.current]->OnLoad(game);
 }

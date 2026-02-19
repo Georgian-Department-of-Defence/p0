@@ -271,6 +271,5 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Scene2.h" />
   </ItemGroup>
 </Project>

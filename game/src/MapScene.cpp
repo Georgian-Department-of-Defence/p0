@@ -1,21 +1,21 @@
 #include "MapScene.h"
 
-void MapScene::OnLoad(World2& world)
+void MapScene::OnLoad(Game& game)
 {
-	WorldLoad(world);
+	WorldLoad(game.world);
 }
 
-void MapScene::OnUnload(World2& world)
+void MapScene::OnUnload(Game& game)
 {
-	WorldUnload(world);
+	WorldUnload(game.world);
 }
 
-void MapScene::OnUpdate(World2& world)
+void MapScene::OnUpdate(Game& game)
 {
-	WorldUpdate(world);
+	WorldUpdate(game.world);
 }
 
-void MapScene::OnDraw(World2& world)
+void MapScene::OnDraw(Game& game)
 {
-	WorldDraw(world);
+	WorldDraw(game.world);
 }

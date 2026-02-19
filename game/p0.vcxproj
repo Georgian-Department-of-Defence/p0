@@ -292,7 +292,6 @@
     <ClInclude Include="src\PhysicsScene.h" />
     <ClInclude Include="src\Gear.h" />
     <ClInclude Include="src\Projectile2.h" />
-    <ClInclude Include="src\Scene2.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
     <ClInclude Include="src\Steering.h" />
     <ClInclude Include="src\TeamSelectScene.h" />
