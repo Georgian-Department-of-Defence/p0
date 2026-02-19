@@ -72,8 +72,8 @@ struct Assets
 
 extern Assets assets;
 
-void LoadAssets();
-void UnloadAssets();
+void InitAssets();
+void QuitAssets();
 
 // Materials are shaders + uniform data such as colours & textures.
 // Easier to work at the material level than the shader level.

@@ -2,6 +2,9 @@
 
 void WorldUpdate(World2& world)
 {
+	if (IsKeyPressed(KEY_K) && !world.mechs.empty())
+		world.mechs.back().destroy_flag |= true;
+
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUpdate(i, world);
 

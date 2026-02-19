@@ -42,7 +42,7 @@ inline Camera* GetCamera()
     return camera;
 }
 
-void LoadCamera();
-void UnloadCamera();
+void InitCamera();
+void QuitCamera();
 
 void UpdateCamera();

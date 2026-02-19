@@ -1,40 +1,21 @@
 #include "MapScene.h"
-#include "Camera.h"
 
-void MapScene::OnLoad(Game& game)
+void MapScene::OnLoad(World2& world)
 {
-	LoadWorld(game.world);
+	WorldLoad(world);
 }
 
-void MapScene::OnUnload(Game& game)
+void MapScene::OnUnload(World2& world)
 {
-	UnloadWorld(game.world);
+	WorldUnload(world);
 }
 
-void MapScene::OnStart(Game& game)
+void MapScene::OnUpdate(World2& world)
 {
+	WorldUpdate(world);
 }
 
-void MapScene::OnStop(Game& game)
+void MapScene::OnDraw(World2& world)
 {
-}
-
-void MapScene::OnUpdate(Game& game)
-{
-	UpdateCamera();
-	UpdateWorld(game.world);
-}
-
-void MapScene::OnDraw(Game& game)
-{
-	DrawWorld(game.world, game.renderer);
-}
-
-void MapScene::OnDrawDebug(Game& game)
-{
-	DrawWorldDebug(game.world, game.renderer);
-}
-
-void MapScene::OnDrawGui(Game& game)
-{
+	WorldDraw(world);
 }

@@ -10,7 +10,7 @@ void SetCursor(bool enabled)
         EnableCursor();
 }
 
-void LoadCamera()
+void InitCamera()
 {
     // Original FoV was 28.5 degrees
     //CameraPitch(&td_camera, 10.0f * DEG2RAD, false, false, true);
@@ -57,7 +57,7 @@ void LoadCamera()
     SetCursor(g_camera_system.cursor_enabled);
 }
 
-void UnloadCamera()
+void QuitCamera()
 {
 }
 

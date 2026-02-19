@@ -52,3 +52,12 @@
 #include "Building2.cpp"
 #include "Projectile2.cpp"
 #include "Gear.cpp"
+
+// 9) Include scenes (which operate on world)
+#include "Scene2.h"
+#include "Game.h"
+
+#include "MapScene.cpp"
+
+// 10) Include game (world + scenes)
+#include "Game.cpp"

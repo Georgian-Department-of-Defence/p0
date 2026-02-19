@@ -1,10 +1,5 @@
 #include "p0.h"
 
-struct Game
-{
-    World2 world;
-};
-
 int main()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
@@ -13,29 +8,26 @@ int main()
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
     SetMasterVolume(0.25f); // Make audio quiet for testing
     
-    LoadCamera();
-    LoadAssets();
+    // TODO -- Merge camera with Game?
+    InitCamera();
+    InitAssets();
 
     Game game;
-    WorldLoad(game.world);
-
+    GameInit(game, SCENE_DEV_MAP);
     while (!WindowShouldClose())
     {
         UpdateCamera();
-        if (IsKeyPressed(KEY_K) && !game.world.mechs.empty())
-            game.world.mechs.back().destroy_flag = true;
-        WorldUpdate(game.world);
+        GameUpdate(game);
 
         BeginDrawing();
-            ClearBackground(MAGENTA);
-            WorldDraw(game.world);
-            DrawFPS(10, 30);
+            GameDraw(game);
+            DrawFPS(10, 10);
         EndDrawing();
     }
+    GameQuit(game);
 
-    WorldUnload(game.world);
-    UnloadAssets();
-    UnloadCamera();
+    QuitAssets();
+    QuitCamera();
 
     CloseAudioDevice();
     CloseWindow();

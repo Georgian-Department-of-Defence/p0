@@ -63,9 +63,6 @@
     <ClCompile Include="src\Projectile.cpp">
       <Filter>World\Projectile</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\TeamSelectScene.cpp">
       <Filter>Scenes\Game</Filter>
     </ClCompile>
@@ -151,6 +148,7 @@
     <ClCompile Include="src\WorldInit.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
@@ -177,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="src\Projectile.h">
       <Filter>World\Projectile</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene.h">
-      <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="src\TeamSelectScene.h">
       <Filter>Scenes\Game</Filter>
@@ -275,5 +270,7 @@
     <ClInclude Include="src\Collider3D.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Scene2.h" />
   </ItemGroup>
 </Project>

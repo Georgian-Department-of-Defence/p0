@@ -17,7 +17,7 @@ void UnloadTextures();
 void UnloadMeshes();
 void UnloadAudio();
 
-void LoadAssets()
+void InitAssets()
 {
     LoadAudio();
     LoadMeshes();
@@ -26,7 +26,7 @@ void LoadAssets()
     LoadFramebuffers();
 }
 
-void UnloadAssets()
+void QuitAssets()
 {
     UnloadFramebuffers();
     UnloadMaterials();

@@ -1,18 +1,11 @@
 #pragma once
-#include "Scene.h"
 
-class MapScene : public Scene
+class MapScene : public Scene2
 {
 public:
-	void OnLoad(Game& game) final;
-	void OnUnload(Game& game) final;
+    void OnLoad(World2& world) final;
+    void OnUnload(World2& world) final;
 
-	void OnStart(Game& game) final;
-	void OnStop(Game& game) final;
-
-	void OnUpdate(Game& game)final;
-	void OnDraw(Game& game) final;
-
-	void OnDrawDebug(Game& game) final;
-	void OnDrawGui(Game& game) final;
+    void OnUpdate(World2& world) final;
+    void OnDraw(World2& world)final;
 };

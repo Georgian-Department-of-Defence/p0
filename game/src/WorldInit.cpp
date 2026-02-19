@@ -7,13 +7,14 @@ void WorldLoad(World2& world)
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechLoad(i, world);
 
-	//for (float x = WORLD_MIN.x + 10.0f; x < WORLD_MAX.x - 10.0f; x += 25.0f)
-	//{
-	//	Building2 building = MakeBuilding({ x, 0.0f, 0.0f }, BUILDING_BMO);
-	//	world.buildings.push_back(building);
-	//}
+	for (float x = WORLD_MIN.x + 10.0f; x < WORLD_MAX.x - 10.0f; x += 25.0f)
+	{
+		Building2 building = MakeBuilding({ x, 0.0f, 0.0f }, BUILDING_BMO);
+		world.buildings.push_back(building);
+	}
 
-	MapLoad(MAP_MINTY_AFTERSHAVE, world);
+	// Success!
+	//MapLoad(MAP_MINTY_AFTERSHAVE, world);
 
 	Light sun;
 	LightLoadUniforms(sun, 0, assets.material.lighting.shader);

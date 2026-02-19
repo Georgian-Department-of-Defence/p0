@@ -154,6 +154,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Gear.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -195,10 +199,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\Projectile2.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -278,6 +278,7 @@
     <ClInclude Include="src\DebugDraw.h" />
     <ClInclude Include="src\EditorScene.h" />
     <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GearScene.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\LoadoutSelectScene.h" />
@@ -291,7 +292,7 @@
     <ClInclude Include="src\PhysicsScene.h" />
     <ClInclude Include="src\Gear.h" />
     <ClInclude Include="src\Projectile2.h" />
-    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\Scene2.h" />
     <ClInclude Include="src\SplashScreenScene.h" />
     <ClInclude Include="src\Steering.h" />
     <ClInclude Include="src\TeamSelectScene.h" />
