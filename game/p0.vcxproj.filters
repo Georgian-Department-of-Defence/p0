@@ -139,6 +139,18 @@
     <ClCompile Include="src\Collider3D.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="src\WorldCollision.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WorldDraw.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WorldUpdate.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WorldInit.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\raylib.ico">
