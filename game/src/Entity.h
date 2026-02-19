@@ -15,7 +15,7 @@ struct Entity
 	Matrix rot = MatrixIdentity();
 
 	float gravity_scale = 0.0f;
-	float mass_inverse = 0.0f;
+	float mass_inverse = 1.0f;
 	float restitution = 0.0f;
 	float friction = 0.0f;
 	Collider collider;
@@ -50,6 +50,11 @@ inline Id EntityGenId()
 inline Vector3 EntityGetDirection(const Entity& entity)
 {
 	return MatrixColY(entity.rot);
+}
+
+inline bool EntityIsMassInfinite(const Entity& entity)
+{
+	return entity.mass_inverse <= EPSILON;
 }
 
 bool EntityCheckCollision3D(const Entity& a, const Entity& b, Vector3* mtv);

@@ -30,16 +30,22 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 
 void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 {
-	// Pre-pass to ensure mtvs resolve A from B
-	//for (EntityHit& hit : hits)
-	//{
-	//	Vector2 pA = { hit.a->pos.x, hit.a->pos.y };
-	//	Vector2 pB = { hit.b->pos.x, hit.b->pos.y };
-	//	Vector2 BA = pA - pB;
-	//	if (Vector2DotProduct(BA, hit.mtv) < 0.0f)
-	//		hit.mtv *= -1.0f;
-	//}
-	// Update: easier to swap the direction of MTV in the case of B??
+	// Pre-pass to ensure A is *always* dynamic and B is either static or dynamic
+	for (EntityHit& hit : hits)
+	{
+		if (EntityIsMassInfinite(*hit.a))
+		{
+			Entity* tmp = hit.b;
+			hit.b = hit.a;
+			hit.a = tmp;
+			hit.mtv *= -1.0f;
+		}
+
+		// MTV direction sanity-check
+		Vector3 dir = hit.a->pos - hit.b->pos;
+		float dot = Vector3DotProduct(dir, hit.mtv);
+		assert(dot > 0.0f);
+	}
 
 	for (const EntityHit& hit : hits)
 	{
@@ -49,8 +55,22 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 		hit.b->OnCollisionPre(hit.a);
 	}
 
-	// *Insert impulse & friction code here*
-	// *Insert position code here*
+	for (const EntityHit& hit : hits)
+	{
+		// *Insert impulse & friction code here*
+		// Friction & impulse probably not necessary.
+		// Might even make things worse when coupled with type-specific collision logic...
+
+		if (EntityIsMassInfinite(*hit.b))
+		{
+			hit.a->pos += hit.mtv;
+		}
+		else
+		{
+			hit.a->pos += hit.mtv * 0.5f;
+			hit.b->pos -= hit.mtv * 0.5f;
+		}
+	}
 
 	for (const EntityHit& hit : hits)
 	{

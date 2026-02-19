@@ -47,13 +47,6 @@ void WorldDraw(const World2& world)
 		for (const Projectile2* p : world.projectiles)
 			ProjectileDraw(*p, material);
 
-		// TODO -- generate building colliders based on mesh BoundingBox height?
-		//for (size_t i = 0; i < world.buildings.size(); i++)
-		//{
-		//	Building2 b = world.buildings[i];
-		//	DrawMesh(assets.mesh.bmo, assets.material.flat, MatrixTranslate(b.pos.x, b.pos.y, b.pos.z));
-		//}
-
 		//DrawParticles(world, renderer);
 		EndMode3D();
 	}
