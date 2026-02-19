@@ -9,6 +9,7 @@ Building2 MakeBuilding(Vector3 position, BuildingType type)
 
     b.collision_type_mask = ENTITY_MASK_ALL;
     b.collision_team_mask = TARGET_MASK_ALL;
+    b.mass_inverse = 0.0f;
 
     b.durability_max = 50.0f;
     b.durability = b.durability_max;
