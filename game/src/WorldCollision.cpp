@@ -29,23 +29,28 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 		}
 	}
 
+	auto CollisionHelper = [&hits](Entity* a, Entity* b)
+	{
+		Vector3 mtv = Vector3Zeros;
+		if (EntityCheckCollision3D(*a, *b, &mtv))
+		{
+			mtv.z = 0.0f;
+
+			EntityHit hit;
+			hit.a = a;
+			hit.b = b;
+			hit.mtv = mtv;
+			hits->push_back(hit);
+		}
+	};
+
 	for (size_t i = 0; i < entities.size(); i++)
 	{
 		for (size_t j = i + 1; j < entities.size(); j++)
 		{
-			Vector3 mtv = Vector3Zeros;
 			Entity* a = entities[i];
 			Entity* b = entities[j];
-			if (EntityCheckCollision3D(*a, *b, &mtv))
-			{
-				mtv.z = 0.0f;
-
-				EntityHit hit;
-				hit.a = a;
-				hit.b = b;
-				hit.mtv = mtv;
-				hits->push_back(hit);
-			}
+			CollisionHelper(a, b);
 		}
 	}
 }
