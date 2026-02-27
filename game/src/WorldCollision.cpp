@@ -2,34 +2,38 @@
 
 void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 {
-	// So far, this is the only function that needs to store a collection of all entities (because we need a nested loop)
-	// Everything else can get by with WorldForEach
+	// Don't need entity queries outside of this function (entity commands are better anyways)
+	std::vector<Entity*> entities_static, entities_dynamic;
+	entities_static.resize(world.buildings.size());
+	entities_dynamic.resize(world.mechs.size() + world.projectiles.size());
 
-	std::vector<Entity*> entities;
-	entities.resize(world.mechs.size() + world.buildings.size() + world.projectiles.size());
+	{
+		size_t i = 0;
+
+		for (const Building2& building : world.buildings)
+		{
+			entities_static[i] = (Entity*)&building;
+			i++;
+		}
+	}
+
 	{
 		size_t i = 0;
 
 		for (const Mech2& mech : world.mechs)
 		{
-			entities[i] = (Entity*)&mech;
-			i++;
-		}
-
-		for (const Building2& building : world.buildings)
-		{
-			entities[i] = (Entity*)&building;
+			entities_dynamic[i] = (Entity*)&mech;
 			i++;
 		}
 
 		for (const Projectile2* projectile : world.projectiles)
 		{
-			entities[i] = (Entity*)projectile;
+			entities_dynamic[i] = (Entity*)projectile;
 			i++;
 		}
 	}
 
-	auto CollisionHelper = [&hits](Entity* a, Entity* b)
+	auto CheckCollision = [&hits](Entity* a, Entity* b)
 	{
 		Vector3 mtv = Vector3Zeros;
 		if (EntityCheckCollision3D(*a, *b, &mtv))
@@ -44,13 +48,21 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 		}
 	};
 
-	for (size_t i = 0; i < entities.size(); i++)
+	for (Entity* a : entities_dynamic)
 	{
-		for (size_t j = i + 1; j < entities.size(); j++)
+		for (Entity* b : entities_static)
 		{
-			Entity* a = entities[i];
-			Entity* b = entities[j];
-			CollisionHelper(a, b);
+			CheckCollision(a, b);
+		}
+	}
+
+	for (size_t i = 0; i < entities_dynamic.size(); i++)
+	{
+		for (size_t j = i + 1; j < entities_dynamic.size(); j++)
+		{
+			Entity* a = entities_dynamic[i];
+			Entity* b = entities_dynamic[j];
+			CheckCollision(a, b);
 		}
 	}
 }
@@ -58,6 +70,7 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 {
 	// Pre-pass to ensure A is *always* dynamic and B is either static or dynamic
+	// (This pre-pass is no longer necessary since I've added static vs dynamic splitting, but still good to have)!
 	for (EntityHit& hit : hits)
 	{
 		if (EntityIsMassInfinite(*hit.a))
