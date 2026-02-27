@@ -1,14 +1,33 @@
 #include "World2.h"
 
-void WorldCheckCollisionsHelper(const std::vector<Entity*>& entities, std::vector<EntityHit>* hits)
-{
-
-}
-
 void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 {
-	std::vector<Entity*> entities = WorldGetEntities(world);
-	for (Entity* entity : entities) entity->collider.debug_color = ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f });
+	// So far, this is the only function that needs to store a collection of all entities (because we need a nested loop)
+	// Everything else can get by with WorldForEach
+
+	std::vector<Entity*> entities;
+	entities.resize(world.mechs.size() + world.buildings.size() + world.projectiles.size());
+	{
+		size_t i = 0;
+
+		for (const Mech2& mech : world.mechs)
+		{
+			entities[i] = (Entity*)&mech;
+			i++;
+		}
+
+		for (const Building2& building : world.buildings)
+		{
+			entities[i] = (Entity*)&building;
+			i++;
+		}
+
+		for (const Projectile2* projectile : world.projectiles)
+		{
+			entities[i] = (Entity*)projectile;
+			i++;
+		}
+	}
 
 	for (size_t i = 0; i < entities.size(); i++)
 	{
@@ -36,10 +55,6 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 	// Pre-pass to ensure A is *always* dynamic and B is either static or dynamic
 	for (EntityHit& hit : hits)
 	{
-		// Colour colliding entities red for testing (even if collision is resolved later in the frame)
-		hit.a->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
-		hit.b->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
-
 		if (EntityIsMassInfinite(*hit.a))
 		{
 			Entity* tmp = hit.b;
@@ -82,6 +97,33 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 		hit.a->OnCollisionPost(hit.b);
 		hit.b->OnCollisionPost(hit.a);
 	}
+}
+
+void WorldCollisionDebugPre(World2& world)
+{
+	WorldForEach(world, [](World2& w, Entity* e)
+	{
+		e->collider.debug_collision = false;
+		e->collider.debug_color = ColorFromNormalized({ 0.0f, 1.0f, 0.0f, 0.75f });
+	});
+}
+
+void WorldCollisionDebugPost(World2& world, std::vector<EntityHit> hits)
+{
+	for (EntityHit& hit : hits)
+	{
+		hit.a->collider.debug_collision = hit.b->collider.debug_collision = true;
+		hit.a->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
+		hit.b->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
+	}
+}
+
+BoundingBox WorldGetBoundingBox(const World2& world)
+{
+	BoundingBox box;
+	box.min = WORLD_MIN;
+	box.max = WORLD_MAX;
+	return box;
 }
 
 // Shoot single projectile at single building to test collision:

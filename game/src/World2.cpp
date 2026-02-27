@@ -4,73 +4,44 @@
 #include "WorldUpdate.cpp"
 #include "WorldDraw.cpp"
 
-BoundingBox WorldGetBoundingBox(const World2& world)
+void WorldForEach(World2& world, EntityCommand cmd)
 {
-	BoundingBox box;
-	box.min = WORLD_MIN;
-	box.max = WORLD_MAX;
-	return box;
+	for (size_t i = 0; i < world.mechs.size(); i++)
+	{
+		Entity* e = (Entity*)&world.mechs[i];
+		cmd(world, e);
+	}
+
+	for (size_t i = 0; i < world.buildings.size(); i++)
+	{
+		Entity* e = (Entity*)&world.buildings[i];
+		cmd(world, e);
+	}
+
+	for (size_t i = 0; i < world.projectiles.size(); i++)
+	{
+		Entity* e = (Entity*)world.projectiles[i];
+		cmd(world, e);
+	}
 }
 
-std::vector<Entity*> WorldGetEntities(const World2& world)
+void WorldForEachConst(const World2& world, EntityCommandConst cmd)
 {
-	size_t i = 0;
-	std::vector<Entity*> entities;
-	entities.resize(world.mechs.size() + world.buildings.size() + world.projectiles.size());
-
-	for (const Mech2& mech : world.mechs)
+	for (size_t i = 0; i < world.mechs.size(); i++)
 	{
-		entities[i] = (Entity*)&mech;
-		i++;
+		const Entity* e = (const Entity*)&world.mechs[i];
+		cmd(world, e);
 	}
 
-	for (const Building2& building : world.buildings)
+	for (size_t i = 0; i < world.buildings.size(); i++)
 	{
-		entities[i] = (Entity*)&building;
-		i++;
+		const Entity* e = (const Entity*)&world.buildings[i];
+		cmd(world, e);
 	}
 
-	for (const Projectile2* projectile : world.projectiles)
+	for (size_t i = 0; i < world.projectiles.size(); i++)
 	{
-		entities[i] = (Entity*)projectile;
-		i++;
+		const Entity* e = (const Entity*)world.projectiles[i];
+		cmd(world, e);
 	}
-
-	return entities;
-}
-
-std::vector<Entity*> WorldGetStaticEntities(const World2& world)
-{
-	size_t i = 0;
-	std::vector<Entity*> entities;
-	entities.resize(world.buildings.size());
-
-	for (const Building2& building : world.buildings)
-	{
-		entities[i] = (Entity*)&building;
-		i++;
-	}
-
-	return entities;
-}
-
-std::vector<Entity*> WorldGetDynamicEntities(const World2& world)
-{
-	size_t i = 0;
-	std::vector<Entity*> entities;
-	entities.resize(world.mechs.size() + world.projectiles.size());
-
-	for (const Mech2& mech : world.mechs)
-	{
-		entities[i] = (Entity*)&mech;
-		i++;
-	}
-
-	for (const Projectile2* projectile : world.projectiles)
-	{
-		entities[i] = (Entity*)projectile;
-		i++;
-	}
-
-	return entities;
 }

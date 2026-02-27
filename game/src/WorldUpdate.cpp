@@ -1,48 +1,35 @@
 #include "World2.h"
 
-void WorldForEach(World2& world, EntityCommand cmd)
-{
-	for (size_t i = 0; i < world.mechs.size(); i++)
-	{
-		Entity* e = (Entity*)&world.mechs[i];
-		cmd(world, e);
-	}
-		
-	for (size_t i = 0; i < world.buildings.size(); i++)
-	{
-		Entity* e = (Entity*)&world.buildings[i];
-		cmd(world, e);
-	}
-
-	for (size_t i = 0; i < world.projectiles.size(); i++)
-	{
-		Entity* e = (Entity*)world.projectiles[i];
-		cmd(world, e);
-	}
-}
-
 void WorldUpdate(World2& world)
 {
 	// 1. Static (per-type) updates
-	for (size_t i = 0; i < world.mechs.size(); i++)
-		MechUpdate(i, world);
-
-	for (Building2& building : world.buildings)
-		BuildingUpdate(building);
-
-	for (Projectile2* p : world.projectiles)
 	{
-		p->OnUpdate();
-		p->destroy_flag |= !CheckCollisionBoxSphere(WorldGetBoundingBox(world), p->pos, 1.0f);
+		for (size_t i = 0; i < world.mechs.size(); i++)
+			MechUpdate(i, world);
+
+		for (Building2& building : world.buildings)
+			BuildingUpdate(building);
+
+		for (Projectile2* p : world.projectiles)
+		{
+			p->OnUpdate();
+			p->destroy_flag |= !CheckCollisionBoxSphere(WorldGetBoundingBox(world), p->pos, 1.0f);
+		}
+
+		for (Light& light : world.lights)
+			LightUpdateUniforms(light, assets.material.lighting.shader);
 	}
 
-	for (Light& light : world.lights)
-		LightUpdateUniforms(light, assets.material.lighting.shader);
-
 	// 2. Collision checks & callbacks
-	std::vector<EntityHit> hits;
-	WorldCheckCollisions(world, &hits);
-	WorldResolveCollisions(world, hits);
+	{
+		WorldCollisionDebugPre(world);			// Set collision status to false and colour colliders green
+
+		std::vector<EntityHit> hits;
+		WorldCheckCollisions(world, &hits);
+		WorldResolveCollisions(world, hits);
+
+		WorldCollisionDebugPost(world, hits);	// Set collision status to true and colour colliders red
+	}
 
 	// 3. Destroy callbacks
 	WorldForEach(world, [](World2& w, Entity* e)

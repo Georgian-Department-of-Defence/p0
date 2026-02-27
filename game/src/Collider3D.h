@@ -25,6 +25,7 @@ struct Plane
 struct Collider3D
 {
 	ColliderType3D type = COLLIDER_TYPE_COUNT;
+	Vector3 pos = Vector3Zeros;
 
 	union
 	{
@@ -34,8 +35,8 @@ struct Collider3D
 		Plane plane;
 	};
 
-	Vector3 pos = Vector3Zeros;
 	Color debug_color = MAGENTA;
+	bool debug_collision = false;
 };
 
 using Collider = Collider3D;

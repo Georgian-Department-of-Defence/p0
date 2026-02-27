@@ -69,8 +69,6 @@ void WorldDraw(const World2& world)
 	BeginTextureMode(assets.framebuffer.main_resolve);
 	BeginMode3D(*GetCamera());
 	{
-		std::vector<Entity*> entities = WorldGetEntities(world);
-
 		// UI
 		for (const Mech2& mech : world.mechs)
 		{
@@ -94,10 +92,10 @@ void WorldDraw(const World2& world)
 		}
 
 		// Collider debug
-		for (Entity* entity : entities)
+		WorldForEachConst(world, [](const World2& w, const Entity* e)
 		{
-			DrawCollider(entity->collider, entity->collider.debug_color);
-		}
+			DrawCollider(e->collider, e->collider.debug_color);
+		});
 	}
 	EndMode3D();
 	EndTextureMode();
