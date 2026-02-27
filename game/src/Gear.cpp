@@ -69,8 +69,8 @@ void GrenadeLauncher::OnUpdate(Mech2& mech, World2& world)
 			launch_time = 0.0f;
 			grenade_count--;
 
-			float pitch = (60.0f + Random(-15.0f, 15.0f)) * DEG2RAD;
-			float roll = Random(-30.0f, 30.0f) * DEG2RAD;
+			float pitch = (60.0f + Random(-5.0f, 5.0f)) * DEG2RAD;
+			float roll = Random(-10.0f, 10.0f) * DEG2RAD;
 			Vector3 dir = EntityGetDirection(mech) * MatrixRotateZ(roll) * MatrixRotateX(pitch);
 
 			Missile* m = new Missile;
