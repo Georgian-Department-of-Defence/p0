@@ -1,7 +1,29 @@
 #include "World2.h"
 
+void WorldForEach(World2& world, EntityCommand cmd)
+{
+	for (size_t i = 0; i < world.mechs.size(); i++)
+	{
+		Entity* e = (Entity*)&world.mechs[i];
+		cmd(world, e);
+	}
+		
+	for (size_t i = 0; i < world.buildings.size(); i++)
+	{
+		Entity* e = (Entity*)&world.buildings[i];
+		cmd(world, e);
+	}
+
+	for (size_t i = 0; i < world.projectiles.size(); i++)
+	{
+		Entity* e = (Entity*)world.projectiles[i];
+		cmd(world, e);
+	}
+}
+
 void WorldUpdate(World2& world)
 {
+	// 1. Static (per-type) updates
 	for (size_t i = 0; i < world.mechs.size(); i++)
 		MechUpdate(i, world);
 
@@ -17,37 +39,26 @@ void WorldUpdate(World2& world)
 	for (Light& light : world.lights)
 		LightUpdateUniforms(light, assets.material.lighting.shader);
 
+	// 2. Collision checks & callbacks
 	std::vector<EntityHit> hits;
 	WorldCheckCollisions(world, &hits);
 	WorldResolveCollisions(world, hits);
 
-	for (Mech2& mech : world.mechs)
+	// 3. Destroy callbacks
+	WorldForEach(world, [](World2& w, Entity* e)
 	{
-		if (mech.destroy_flag)
-			mech.OnDestroy(world);
-	}
+		if (e->destroy_flag)
+			e->OnDestroy(w);
+	});
 
-	for (Building2& building : world.buildings)
-	{
-		if (building.destroy_flag)
-			building.OnDestroy(world);
-	}
-
-	for (Projectile2* p : world.projectiles)
-	{
-		if (p->destroy_flag)
-			p->OnDestroy(world);
-	}
-
-	auto projectile_predicate = [](Projectile2* p)
-		{
-			bool destroy = p->destroy_flag;
-			if (destroy)
-				delete p;
-			return destroy;
-		};
-
+	// 4. Deletion & removal
 	std::erase_if(world.mechs, [](Mech2& mech) { return mech.destroy_flag; });
 	std::erase_if(world.buildings, [](Building2& building) { return building.destroy_flag; });
-	std::erase_if(world.projectiles, projectile_predicate);
+	std::erase_if(world.projectiles, [](Projectile2* p)
+	{
+		bool destroy = p->destroy_flag;
+		if (destroy)
+			delete p;
+		return destroy;
+	});
 }

@@ -1,5 +1,10 @@
 #include "World2.h"
 
+void WorldCheckCollisionsHelper(const std::vector<Entity*>& entities, std::vector<EntityHit>* hits)
+{
+
+}
+
 void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 {
 	std::vector<Entity*> entities = WorldGetEntities(world);
@@ -14,8 +19,6 @@ void WorldCheckCollisions(const World2& world, std::vector<EntityHit>* hits)
 			Entity* b = entities[j];
 			if (EntityCheckCollision3D(*a, *b, &mtv))
 			{
-				a->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
-				b->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
 				mtv.z = 0.0f;
 
 				EntityHit hit;
@@ -33,6 +36,10 @@ void WorldResolveCollisions(World2& world, std::vector<EntityHit> hits)
 	// Pre-pass to ensure A is *always* dynamic and B is either static or dynamic
 	for (EntityHit& hit : hits)
 	{
+		// Colour colliding entities red for testing (even if collision is resolved later in the frame)
+		hit.a->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
+		hit.b->collider.debug_color = ColorFromNormalized({ 1.0f, 0.0f, 0.0f, 0.75f });
+
 		if (EntityIsMassInfinite(*hit.a))
 		{
 			Entity* tmp = hit.b;
