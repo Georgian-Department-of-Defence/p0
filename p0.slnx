@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="game/p0.vcxproj" Id="e5785900-d104-880b-3ab3-880b265e880b">
+    <BuildDependency Project="raylib-5.5/raylib.vcxproj" />
+  </Project>
+  <Project Path="raylib-5.5/raylib.vcxproj" Id="8898ea18-743a-15ef-5df5-284349369c3f" />
+</Solution>
